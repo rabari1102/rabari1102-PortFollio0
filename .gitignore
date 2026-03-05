@@ -1,0 +1,15 @@
+# Environment variables (never commit these!)
+.env
+.env.local
+.env.development
+.env.production
+
+# Vercel
+.vercel
+
+# Node modules
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
