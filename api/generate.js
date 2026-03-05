@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing prompt or mode" });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyBApveNId7LmD1Vjpmpbq96-ea1pJz7eRw";
     if (!apiKey) {
         return res.status(500).json({ error: "API key not configured on server." });
     }
