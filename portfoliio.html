@@ -1593,25 +1593,136 @@
             transform: translateY(0);
         }
 
-        @media(max-width:900px) {
-            .achievements-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        /* IMPROVED RESPONSIVENESS AND SLIDER FIXES */
+        @media(max-width: 950px) {
 
-            .cloud-grid {
+            .achievements-grid,
+            .projects-grid,
+            .skills-grid,
+            .ai-integrations,
+            .cloud-grid,
+            .ai-tools-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
             .two-col {
                 grid-template-columns: 1fr;
             }
+        }
 
+        @media(max-width: 768px) {
+
+            .nav-links,
+            .nav-contact {
+                display: none;
+            }
+
+            .mobile-nav {
+                display: block;
+            }
+
+            /* Give bottom spacing so the mobile nav doesn't cover content */
+            main {
+                padding-bottom: 80px;
+            }
+
+            /* Fix the hero text sizing */
+            .hero-name {
+                font-size: 2.8rem;
+            }
+
+            .hero-summary {
+                font-size: 0.95rem;
+            }
+
+            /* Fix grid squishing on small screens */
+            .achievements-grid,
+            .projects-grid,
+            .skills-grid,
+            .ai-integrations,
             .ai-tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .cloud-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .ai-integrations {
+            .hero-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                justify-content: center;
+                width: 100%;
+            }
+
+            .ai-workflow {
+                gap: 8px;
+            }
+
+            .ai-wf-arrow {
+                display: none;
+            }
+
+            /* Fix nested grids causing layout breaks on mobile */
+            .proj-case-row {
                 grid-template-columns: 1fr;
+                gap: 8px;
+            }
+
+            /* Fix horizontal metrics slider causing page overflow */
+            .metrics-strip {
+                flex-wrap: wrap;
+                /* Allows it to stack instead of sliding off screen */
+                justify-content: center;
+                overflow-x: visible;
+                padding: 16px;
+                border-radius: 12px;
+                gap: 10px;
+            }
+
+            .metric-sep {
+                display: none;
+                /* Hide bullets on mobile */
+            }
+
+            .metric-item {
+                background: rgba(34, 211, 238, 0.08);
+                padding: 4px 10px;
+                border-radius: 50px;
+                font-size: 0.75rem;
+            }
+
+            .how-i-work {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .cloud-grid {
+                grid-template-columns: 1fr;
+                /* Stack cloud items on very small phones */
+            }
+
+            .compact-cta-btns {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .compact-cta-btns a {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
             }
         }
 
