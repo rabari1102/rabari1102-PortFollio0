@@ -7,31 +7,17 @@ const tiers = [
         dot: '#22d3ee',
         groups: [
             { cat: 'Node.js Ecosystem', tags: ['Node.js', 'NestJS', 'Express.js', 'TypeScript', 'JavaScript', 'Electron.js'] },
-            { cat: 'Databases', tags: ['MongoDB', 'PostgreSQL', 'MySQL', 'Redis', 'SQLite'] },
+            { cat: 'Databases', tags: ['MongoDB', 'PostgreSQL', 'MySQL', 'DynamoDB', 'Redis', 'SQLite'] },
             { cat: 'Architecture', tags: ['Microservices', 'Event-Driven', 'WebSockets', 'RESTful APIs', 'MQTT'] },
             { cat: 'Security & Auth', tags: ['JWT', 'OAuth2.0', 'RBAC', 'FCM'] },
-        ]
-    },
-    {
-        level: 'Proficient',
-        color: 'var(--blue)',
-        dot: '#60a5fa',
-        groups: [
             { cat: 'Message Queues', tags: ['Kafka', 'BullMQ', 'RabbitMQ', 'Node-RED'] },
             { cat: 'Cloud & DevOps', tags: ['AWS S3', 'AWS EC2', 'DynamoDB', 'Docker', 'Jenkins', 'Firebase'] },
             { cat: 'ORM & Tools', tags: ['TypeORM', 'Mongoose', 'Sequelize', 'Swagger', 'Postman', 'Git'] },
             { cat: 'APIs & Protocols', tags: ['GraphQL', 'Redis Pub/Sub', 'Twilio'] },
-        ]
-    },
-    {
-        level: 'Familiar',
-        color: 'var(--purple)',
-        dot: '#a78bfa',
-        groups: [
             { cat: 'Search & Analytics', tags: ['OpenSearch', 'Elasticsearch'] },
             { cat: 'AI Integration', tags: ['Gemini API', 'OpenAI API', 'RTSP', 'GStreamer'] },
         ]
-    },
+    }
 ]
 
 export default function Skills() {
