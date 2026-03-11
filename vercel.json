@@ -6,8 +6,11 @@
             "use": "@vercel/node"
         },
         {
-            "src": "portfoliio.html",
-            "use": "@vercel/static"
+            "src": "package.json",
+            "use": "@vercel/static-build",
+            "config": {
+                "distDir": "dist"
+            }
         }
     ],
     "routes": [
@@ -17,7 +20,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "/portfoliio.html"
+            "dest": "/index.html"
         }
     ]
 }
