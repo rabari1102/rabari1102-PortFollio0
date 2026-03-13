@@ -652,7 +652,7 @@ function Footer() {
     <footer>
       <div className="footer-logo">KP.DEV</div>
       <span>Pragnesh Kalotara · Backend & AI Developer</span>
-      <span>© 2025</span>
+      <span>© 2026</span>
     </footer>
   )
 }
