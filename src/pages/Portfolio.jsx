@@ -222,7 +222,7 @@ function Nav() {
   return (
     <nav className={scrolled ? 'scrolled' : ''}>
       <a href="#home" className="nav-logo" onClick={e => { e.preventDefault(); navTo('home') }}>
-        PK<span>.</span>
+        KP<span>.DEV</span>
       </a>
       <ul className="nav-links">
         {[['home','Home'],['impact','Impact'],['experience','Experience'],['projects','Projects'],['skills','Skills'],['ai-mastery','AI']].map(([id, label]) => (
@@ -273,7 +273,7 @@ function Hero() {
             </div>
 
             <h1 className="hero-name">
-              PRAGNESH<br /><span className="accent">KALO</span><span className="accent2">TARA</span>
+              PRAGNESH<br /><span className="accent">KALOTARA</span>
             </h1>
 
             <div className="hero-typing-wrap">
@@ -313,7 +313,7 @@ function Hero() {
             </div>
           </div>
 
-          <div className="hero-terminal reveal" style={{ transitionDelay: '200ms' }}>
+          <div className="hero-terminal reveal" style={{ transitionDelay: '200ms', marginTop: '-2rem', marginLeft: '1.5rem' }}>
             <div className="terminal-card">
               <div className="terminal-bar">
                 <span className="t-dot t-red" /><span className="t-dot t-yellow" /><span className="t-dot t-green" />
@@ -443,7 +443,6 @@ function Projects() {
         <div className="projects-grid">
           {PROJECTS.map((p, i) => (
             <div className="proj-card reveal" key={p.title} style={{ transitionDelay: `${i * 80}ms` }}>
-              <span className="proj-num">{p.num}</span>
               <span className="proj-tag">{p.tag}</span>
               <h3 className="proj-title">{p.title}</h3>
               <div className="proj-sub">{p.sub}</div>
@@ -629,9 +628,9 @@ function Contact() {
 function Footer() {
   return (
     <footer>
-      <div className="footer-logo">PK.</div>
+      <div className="footer-logo">KP.DEV</div>
       <span>Pragnesh Kalotara · Backend & AI Developer</span>
-      <span>Built with precision · 2025</span>
+      <span>© 2025</span>
     </footer>
   )
 }

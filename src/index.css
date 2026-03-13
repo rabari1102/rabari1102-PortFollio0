@@ -107,7 +107,7 @@ section { padding: 6rem 0; }
 .hero-available .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
 
-.hero-name { font-family: var(--display); font-size: clamp(3.5rem, 7.5vw, 8rem); line-height: 0.88; letter-spacing: 0.02em; margin-bottom: 0.6rem; }
+.hero-name { font-family: var(--display); font-size: clamp(2.8rem, 5.5vw, 5.8rem); line-height: 0.92; letter-spacing: 0.04em; margin-bottom: 0.6rem; }
 .hero-name .accent { color: var(--cyan); }
 .hero-name .accent2 { color: var(--violet); }
 
