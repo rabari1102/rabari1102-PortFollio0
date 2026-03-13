@@ -401,7 +401,7 @@ function Experience() {
           {EXPERIENCE.map((job, i) => {
             const isRight = i % 2 === 0
             return (
-              <div className={`tl-row reveal ${isRight ? 'tl-right' : 'tl-left'}`} key={job.company} style={{ transitionDelay: `${i * 100}ms` }}>
+              <div className={`tl-row reveal ${isRight ? 'tl-right' : 'tl-left'}`} key={job.company} style={{ transitionDelay: `${i * 150}ms` }}>
                 {/* Empty spacer for the opposite side */}
                 <div className="tl-spacer" />
                 {/* Center dot */}
@@ -748,7 +748,7 @@ export default function Portfolio() {
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' })
+    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' })
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 
     return () => {
