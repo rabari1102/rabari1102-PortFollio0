@@ -62,8 +62,21 @@ const EXPERIENCE = [
       'Implemented BAP-TOOL (Quotation Management), increasing quotation generation speed by 40%',
       'Designed event-driven microservices supporting 99.9% uptime under high-volume data streams',
       'Established JWT authentication framework reducing unauthorized access attempts by 75%',
+      'Created comprehensive API documentation and monitoring systems to ensure high system reliability',
     ],
     tags: ['Node.js', 'MQTT', 'MongoDB', 'Socket.io', 'Electron.js', 'AWS S3', 'JWT', 'NestJS'],
+  },
+  {
+    company: 'TUVOC Technology',
+    current: false,
+    badges: [],
+    meta: 'Backend Developer · Jan 2023 – Aug 2023 · On-site',
+    bullets: [
+      'Developed RESTful APIs using Express.js, improving backend response times by 30% with detailed Swagger documentation',
+      'Optimized MongoDB schemas with strategic indexing, reducing database query times by 45%',
+      'Implemented real-time data synchronization system using WebSockets, enhancing live data tracking capabilities',
+    ],
+    tags: ['Express.js', 'Node.js', 'MongoDB', 'WebSockets', 'Swagger', 'TypeScript'],
   },
 ]
 
@@ -377,27 +390,41 @@ function Experience() {
   return (
     <section id="experience">
       <div className="container">
-        <div className="reveal">
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <p className="sec-label">Career</p>
           <h2 className="sec-title">Work Experience</h2>
-          <div className="sec-divider" />
+          <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
         </div>
-        <div className="timeline">
-          {EXPERIENCE.map((job, i) => (
-            <div className={`timeline-item reveal ${job.current ? 'current' : ''}`} key={job.company} style={{ transitionDelay: `${i * 100}ms` }}>
-              <div className="tl-badges">
-                {job.badges.map(b => <span key={b.label} className={`tl-badge ${b.cls}`}>{b.label}</span>)}
+        <div className="timeline-centered">
+          {/* Center spine */}
+          <div className="timeline-spine" />
+          {EXPERIENCE.map((job, i) => {
+            const isRight = i % 2 === 0
+            return (
+              <div className={`tl-row reveal ${isRight ? 'tl-right' : 'tl-left'}`} key={job.company} style={{ transitionDelay: `${i * 100}ms` }}>
+                {/* Empty spacer for the opposite side */}
+                <div className="tl-spacer" />
+                {/* Center dot */}
+                <div className={`tl-dot ${job.current ? 'tl-dot-current' : ''}`}>
+                  <div className="tl-dot-inner" />
+                </div>
+                {/* Card */}
+                <div className="tl-card">
+                  <div className="tl-badges">
+                    {job.badges.map(b => <span key={b.label} className={`tl-badge ${b.cls}`}>{b.label}</span>)}
+                  </div>
+                  <div className="tl-company">{job.company}</div>
+                  <div className="tl-meta">{job.meta}</div>
+                  <ul className="tl-bullets">
+                    {job.bullets.map((b, j) => <li key={j}>{b}</li>)}
+                  </ul>
+                  <div className="tl-tags">
+                    {job.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
+                  </div>
+                </div>
               </div>
-              <div className="tl-company">{job.company}</div>
-              <div className="tl-meta">{job.meta}</div>
-              <ul className="tl-bullets">
-                {job.bullets.map((b, j) => <li key={j}>{b}</li>)}
-              </ul>
-              <div className="tl-tags">
-                {job.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
     </section>
