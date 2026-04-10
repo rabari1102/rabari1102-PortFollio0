@@ -22,20 +22,6 @@ const IMPACTS = [
 
 const EXPERIENCE = [
   {
-    company: 'Apotec',
-    current: true,
-    badges: [{ cls: 'badge-current', label: 'Current' }],
-    meta: 'Sr. Backend Developer · Dec 2025 – Present · Ahmedabad',
-    bullets: [
-      'Working on Node.js + TypeScript production codebase, contributing to ongoing features and maintenance',
-      'Identifying and resolving bugs across the backend, improving system stability and code quality',
-      'Integrating and maintaining third-party APIs within distributed microservices architecture',
-      'Gaining hands-on experience with OpenSearch and Elasticsearch for search and analytics use cases',
-      'Working with AWS DynamoDB as the primary NoSQL data store in a cloud-native environment',
-    ],
-    tags: ['Node.js', 'TypeScript', 'AWS DynamoDB', 'OpenSearch', 'Elasticsearch', 'Microservices'],
-  },
-  {
     company: 'Qfact (Treeroot Informatics)',
     current: false,
     badges: [{ cls: 'badge-lead', label: 'Team Lead' }],

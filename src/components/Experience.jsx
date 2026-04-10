@@ -2,18 +2,6 @@ import { useState } from 'react'
 
 const jobs = [
     {
-        company: 'Apotec', badges: [{ cls: 'badge-current', label: 'Current' }],
-        meta: 'Sr. Backend Developer · Dec 2025 – Present · Ahmedabad',
-        bullets: [
-            'Working on existing Node.js + TypeScript production codebase, contributing to ongoing feature development and maintenance',
-            'Identifying and resolving bugs across the backend, improving system stability and code quality',
-            'Integrating and maintaining third-party APIs within distributed microservices architecture',
-            'Gaining hands-on experience with OpenSearch and Elasticsearch for search and analytics use cases',
-            'Working with AWS DynamoDB as the primary NoSQL data store in a cloud-native environment',
-        ],
-        tags: ['Node.js', 'TypeScript', 'AWS DynamoDB', 'OpenSearch', 'Elasticsearch', 'Microservices'],
-    },
-    {
         company: 'Qfact (Treeroot Informatics)', badges: [{ cls: 'badge-lead', label: 'Team Lead' }],
         meta: 'Team Lead & Sr. Backend Developer · Mar 2025 – Present · Work from home',
         bullets: [
