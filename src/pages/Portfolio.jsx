@@ -75,10 +75,10 @@ const PROJECTS = [
     title: 'Telep-Eco',
     sub: 'Real-time IoT Monitoring Platform',
     arch: 'MQTT · Event-Driven · Microservices',
-    problem: 'Handle 5,000+ IoT devices in real time with low latency',
-    role: 'Architected MQTT backend & microservices solo',
+    problem: 'Handle 5,000+ IoT devices in real time with ultra-low latency',
+    role: 'Architected MQTT backend & microservices pipeline solo',
     tags: ['Node.js', 'MQTT', 'MongoDB', 'Socket.io', 'AWS S3'],
-    outcome: '✅ 99.9% uptime · 25% lower bandwidth · 5,000+ concurrent devices',
+    outcome: '99.9% uptime · 25% lower bandwidth · 5,000+ concurrent devices',
     pills: ['5,000+ devices', '25% less overhead', '99.9% uptime'],
   },
   {
@@ -86,10 +86,10 @@ const PROJECTS = [
     title: 'QFACT Platform',
     sub: 'Modular Enterprise Workflow Platform',
     arch: 'NestJS Microservices · BullMQ · Queue-Driven',
-    problem: 'Enterprise platform needing async workflows & voice integration',
-    role: 'Led 6-dev team, designed full microservices architecture',
+    problem: 'Enterprise workflow platform requiring async queues & voice dispatching',
+    role: 'Led 6-dev engineering team & designed full backend architecture',
     tags: ['NestJS', 'TypeScript', 'MySQL', 'Twilio', 'BullMQ', 'FCM'],
-    outcome: '✅ 40% faster APIs · 35% efficiency gain · 95% on-time delivery',
+    outcome: '40% faster APIs · 35% efficiency gain · 95% on-time delivery',
     pills: ['40% faster APIs', '35% efficiency gain', '6-dev team'],
   },
   {
@@ -97,10 +97,10 @@ const PROJECTS = [
     title: 'Telep-AI',
     sub: 'AI-Powered Desktop Streaming App',
     arch: 'Electron.js · RTSP Pipeline · Real-time AI',
-    problem: 'Real-time AI camera monitoring with low detection latency',
-    role: 'Designed cross-platform app + RTSP streaming pipeline',
+    problem: 'Real-time AI camera telemetry with minimal detection latency',
+    role: 'Designed cross-platform desktop application + RTSP streaming engine',
     tags: ['Electron.js', 'Node.js', 'SQLite', 'RTSP', 'GStreamer'],
-    outcome: '✅ 50% faster warning response · 40% inference boost · Multi-platform',
+    outcome: '50% faster warning response · 40% inference boost · Multi-platform',
     pills: ['50% faster response', '40% inference boost', 'Multi-platform'],
   },
   {
@@ -108,10 +108,10 @@ const PROJECTS = [
     title: 'Hospital System',
     sub: 'Comprehensive Hospital Management Platform',
     arch: 'NestJS Modular · ACID-compliant · Dockerized',
-    problem: 'Complex modular healthcare platform for patients, appointments & billing',
+    problem: 'Complex modular healthcare platform for patient workflows & billing',
     role: 'Solo architect — NestJS modular backend with full ACID compliance',
     tags: ['NestJS', 'PostgreSQL', 'TypeORM', 'Docker', 'JWT', 'RBAC'],
-    outcome: '✅ 20% less patient wait time · ACID-compliant · Fully Dockerized',
+    outcome: '20% less patient wait time · ACID-compliant · Fully Dockerized',
     pills: ['20% less wait time', 'ACID compliant', 'Dockerized'],
   },
   {
@@ -119,10 +119,10 @@ const PROJECTS = [
     title: 'Helpdesk System',
     sub: 'Employee Ticket Management & Support Platform',
     arch: 'Node.js · WebSockets · RBAC · Real-time Notifications',
-    problem: 'Streamline employee ticket generation, assignment and resolution workflows',
-    role: 'Designed full backend — APIs, RBAC, real-time notifications, integrations',
+    problem: 'Streamline employee ticket generation, assignment, and resolution workflows',
+    role: 'Designed full backend — REST APIs, RBAC, WebSockets, and integration bots',
     tags: ['Node.js', 'TypeScript', 'MongoDB', 'WebSockets', 'Slack API', 'MS Teams'],
-    outcome: '✅ 30% faster response time · 25% efficiency gain · SLA automation',
+    outcome: '30% faster response time · 25% efficiency gain · SLA automation',
     pills: ['30% faster response', '25% efficiency gain', 'SLA met'],
   },
   {
@@ -130,10 +130,10 @@ const PROJECTS = [
     title: 'Quotation Manager',
     sub: 'BAP-TOOL — Quotation Management System',
     arch: 'Express.js · JWT · AWS S3 · Workflow Automation',
-    problem: 'Automate quotation generation across multiple manufacturing phases',
-    role: 'Built end-to-end workflow automation with JWT auth and AWS S3 storage',
+    problem: 'Automate quotation generation across complex manufacturing stages',
+    role: 'Built end-to-end workflow engine with secure JWT auth and cloud storage',
     tags: ['Node.js', 'Angular', 'TypeScript', 'MongoDB', 'AWS S3', 'JWT'],
-    outcome: '✅ 40% faster quotation speed · 60% security improvement · Fault-tolerant',
+    outcome: '40% faster quotation speed · 60% security improvement · Fault-tolerant',
     pills: ['40% faster', '60% more secure', 'AWS S3'],
   },
 ]
@@ -177,12 +177,12 @@ const ALL_SKILLS = [
 ]
 
 const AI_CARDS = [
-  { icon: '🤖', title: 'LLM Integration', desc: 'Production-grade integration of OpenAI and Gemini APIs into backend services with streaming, rate limiting, and error handling.' },
-  { icon: '🔍', title: 'AI-Powered Search', desc: 'Semantic search pipelines using vector embeddings and RAG architecture on top of Elasticsearch/OpenSearch.' },
-  { icon: '📹', title: 'Computer Vision', desc: 'Real-time AI inference pipelines using RTSP streams and GStreamer for IoT camera monitoring platforms.' },
-  { icon: '⚡', title: 'Async AI Queues', desc: 'BullMQ-powered background AI processing jobs for batch inference, model outputs, and report generation.' },
-  { icon: '🛡️', title: 'AI Safety Layers', desc: 'Content moderation, output validation, and guardrails for AI-generated content in production APIs.' },
-  { icon: '📊', title: 'Prompt Engineering', desc: 'System prompt design, few-shot examples, and chain-of-thought patterns for reliable structured outputs.' },
+  { icon: '🤖', title: 'LLM API Integration', desc: 'Production-grade integration of OpenAI and Gemini APIs into backend microservices with streaming, rate limiting, and fallback handling.' },
+  { icon: '🔍', title: 'AI-Powered Vector Search', desc: 'Semantic search pipelines using vector embeddings and RAG architecture on top of Elasticsearch and OpenSearch.' },
+  { icon: '📹', title: 'Computer Vision Pipelines', desc: 'Real-time AI inference pipelines using RTSP video streams and GStreamer for IoT camera monitoring systems.' },
+  { icon: '⚡', title: 'Async AI Task Queues', desc: 'BullMQ-powered background AI processing workers for batch inference, document extraction, and automatic report generation.' },
+  { icon: '🛡️', title: 'AI Guardrails & Moderation', desc: 'Content moderation, output schema validation, and guardrail rules for AI-generated text in production APIs.' },
+  { icon: '📊', title: 'Prompt Engineering', desc: 'System prompt design, few-shot templates, and chain-of-thought strategies for deterministic structured outputs.' },
 ]
 
 const TESTIMONIALS = [
@@ -197,19 +197,18 @@ const TICKER_ITEMS = [
   'WebSockets', 'GraphQL', 'BullMQ', 'Elasticsearch', 'OpenAI API', 'RBAC · JWT',
 ]
 
-// ── SHARED HELPERS ──────────────────────────────────────────────────────────────
 const REDUCED = typeof window !== 'undefined'
   && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#________'
 
-// Kinetic letter-by-letter reveal (used for the hero name)
+// Kinetic letter-by-letter reveal (used for hero title)
 function Kinetic({ text, className = '', base = 0, aria }) {
   return (
     <span className={className} aria-label={aria || text}>
       {text.split('').map((c, i) => (
         <span className="kchar-wrap" key={i} aria-hidden="true">
           <span className="kchar" style={{ animationDelay: `${base + i * 42}ms` }}>
-            {c === ' ' ? ' ' : c}
+            {c === ' ' ? '\u00A0' : c}
           </span>
         </span>
       ))}
@@ -217,8 +216,8 @@ function Kinetic({ text, className = '', base = 0, aria }) {
   )
 }
 
-// Decode / scramble text once it scrolls into view (used for section titles)
-function Scramble({ text, className = '', as: Tag = 'span' }) {
+// Decode / scramble text effect for section headings
+function Scramble({ text, className = '', as: Tag = 'h2' }) {
   const ref = useRef(null)
   useEffect(() => {
     const el = ref.current
@@ -254,7 +253,7 @@ function Scramble({ text, className = '', as: Tag = 'span' }) {
   return <Tag ref={ref} className={className}>{text}</Tag>
 }
 
-// Animated number count-up when it enters the viewport
+// CountUp animation for metric statistics
 function CountUp({ value, className = '', duration = 1700 }) {
   const ref = useRef(null)
   useEffect(() => {
@@ -287,10 +286,8 @@ function CountUp({ value, className = '', duration = 1700 }) {
   return <span ref={ref} className={className}>{value}</span>
 }
 
-// A cursor-tracking light overlay dropped inside any `.card-spotlight`
 const Spot = () => <span className="spotlight-layer" aria-hidden="true" />
 
-// ── COMPONENTS ────────────────────────────────────────────────────────────────
 function ScrollProgress() {
   const [w, setW] = useState(0)
   useEffect(() => {
@@ -324,31 +321,33 @@ function Nav() {
   const navTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <nav className={scrolled ? 'scrolled' : ''}>
-      <a href="#home" className="nav-logo" onClick={e => { e.preventDefault(); navTo('home') }}>
-        KP<span>.DEV</span>
-      </a>
-      <ul className="nav-links">
-        {[
-          ['home','Home'],
-          ['impact','Impact'],
-          ['experience','Experience'],
-          ['projects','Projects'],
-          ['skills','Skills'],
-          ['ai','AI Agent'],
-          ['cloud-spotlight','Cloud'],
-          ['edu-contact','Contact']
-        ].map(([id, label]) => (
-          <li key={id}>
-            <a href={`#${id}`} className={active === id ? 'active' : ''} onClick={e => { e.preventDefault(); navTo(id) }}>{label}</a>
-          </li>
-        ))}
-        <li><a href="#edu-contact" className="nav-cta magnetic" onClick={e => { e.preventDefault(); navTo('edu-contact') }}>Hire Me</a></li>
-      </ul>
-      <div className="nav-hamburger" onClick={() => navTo('edu-contact')}>
-        <span /><span /><span />
-      </div>
-    </nav>
+    <header>
+      <nav className={scrolled ? 'scrolled' : ''}>
+        <a href="#home" className="nav-logo" onClick={e => { e.preventDefault(); navTo('home') }}>
+          KP<span>.DEV</span>
+        </a>
+        <ul className="nav-links">
+          {[
+            ['home','Home'],
+            ['impact','Impact'],
+            ['experience','Experience'],
+            ['projects','Projects'],
+            ['skills','Skills'],
+            ['ai','AI Agent'],
+            ['cloud-spotlight','Cloud'],
+            ['edu-contact','Contact']
+          ].map(([id, label]) => (
+            <li key={id}>
+              <a href={`#${id}`} className={active === id ? 'active' : ''} onClick={e => { e.preventDefault(); navTo(id) }}>{label}</a>
+            </li>
+          ))}
+          <li><a href="#edu-contact" className="nav-cta magnetic" onClick={e => { e.preventDefault(); navTo('edu-contact') }}>Hire Me</a></li>
+        </ul>
+        <div className="nav-hamburger" onClick={() => navTo('edu-contact')}>
+          <span /><span /><span />
+        </div>
+      </nav>
+    </header>
   )
 }
 
@@ -380,9 +379,15 @@ function Hero() {
       <div className="container">
         <div className="hero-layout">
           <div>
-            <div className="hero-available reveal">
-              <div className="pulse-dot" />
-              AVAILABLE FOR OPPORTUNITIES · WORLDWIDE
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+              <div className="hero-available reveal">
+                <div className="pulse-dot" />
+                AVAILABLE FOR OPPORTUNITIES · WORLDWIDE
+              </div>
+              <div className="hero-ai-badge reveal">
+                <span>🤖</span>
+                AI-AUGMENTED DEVELOPER
+              </div>
             </div>
 
             <h1 className="hero-name">
@@ -397,18 +402,28 @@ function Hero() {
             </div>
 
             <p className="hero-desc reveal">
-              Results-driven Team Lead & Backend Developer with <strong>3+ years</strong> designing scalable microservices
-              and real-time platforms. Specialized in <strong>Node.js, NestJS & TypeScript</strong> — optimized performance
-              by 40%, led teams of 6, shipped production systems with 99.9% uptime.
+              Results-driven Team Lead & Backend Engineer with <strong>3+ years of experience</strong> designing scalable microservices
+              and real-time systems. Specialized in <strong>Node.js, NestJS & TypeScript</strong> — optimized performance
+              by 40%, led teams of 6 developers, and shipped production platforms with 99.9% uptime.
             </p>
+
+            <div className="metrics-strip reveal">
+              <span className="metric-item">📡 <strong>5,000+</strong> IoT devices</span>
+              <span className="metric-sep">·</span>
+              <span className="metric-item">⚡ <strong>99.9%</strong> uptime</span>
+              <span className="metric-sep">·</span>
+              <span className="metric-item">🚀 <strong>40%</strong> API speedup</span>
+              <span className="metric-sep">·</span>
+              <span className="metric-item">👥 Led <strong>6</strong> devs</span>
+            </div>
 
             <div className="hero-btns reveal">
               <button className="btn-primary magnetic" onClick={() => navTo('edu-contact')}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Hire Me
               </button>
               <a href="https://drive.google.com/file/d/1-sj2u70gfamVeGHpOp8MrB5rkuvipjwE/view?usp=sharing" target="_blank" className="btn-resume magnetic" rel="noopener noreferrer">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Resume
               </a>
               <a href="https://www.linkedin.com/in/pragnesh-kalotara-23870116a" target="_blank" className="btn-secondary" rel="noopener noreferrer">
@@ -422,7 +437,7 @@ function Hero() {
             </div>
 
             <div className="hero-metrics reveal">
-              {[['3+','Years Exp'],['6','Team Lead'],['5K+','IoT Devices'],['99.9%','Uptime']].map(([v,l]) => (
+              {[['3+','Years Exp'],['6','Team Lead'],['5K+','IoT Devices'],['99.9%','Uptime SLA']].map(([v,l]) => (
                 <div key={l}><div className="metric-val"><CountUp value={v} /></div><div className="metric-lbl">{l}</div></div>
               ))}
             </div>
@@ -441,14 +456,14 @@ function Hero() {
                 <div className="t-line t-gap"><span className="t-prompt">➜</span><span className="t-tilde">~</span><span className="t-cmd">cat about.json</span></div>
                 <div className="t-json-block">
                   <span className="t-brace">{'{'}</span>
-                  <div className="t-json-line"><span className="t-key">"role"</span><span className="t-colon">:</span><span className="t-str">"Sr. Backend Engineer & Team Lead"</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"stack"</span><span className="t-colon">:</span><span className="t-str">["NestJS","Node.js","TypeScript"]</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"experience"</span><span className="t-colon">:</span><span className="t-str">"3+ years"</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"team_led"</span><span className="t-colon">:</span><span className="t-num">6</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"iot_devices"</span><span className="t-colon">:</span><span className="t-num">5000</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"uptime"</span><span className="t-colon">:</span><span className="t-str">"99.9%"</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"location"</span><span className="t-colon">:</span><span className="t-str">"Ahmedabad, India"</span><span className="t-comma">,</span></div>
-                  <div className="t-json-line"><span className="t-key">"available"</span><span className="t-colon">:</span><span className="t-bool">true</span></div>
+                  <div className="t-json-line"><span className="t-key">"role"</span><span className="t-colon">:</span> <span className="t-str">"Sr. Backend Engineer & Team Lead"</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"stack"</span><span className="t-colon">:</span> <span className="t-str">["NestJS", "Node.js", "TypeScript"]</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"experience"</span><span className="t-colon">:</span> <span className="t-str">"3+ years"</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"team_led"</span><span className="t-colon">:</span> <span className="t-num">6</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"iot_devices"</span><span className="t-colon">:</span> <span className="t-num">5000</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"uptime"</span><span className="t-colon">:</span> <span className="t-str">"99.9%"</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"location"</span><span className="t-colon">:</span> <span className="t-str">"Ahmedabad, India"</span><span className="t-comma">,</span></div>
+                  <div className="t-json-line"><span className="t-key">"available"</span><span className="t-colon">:</span> <span className="t-bool">true</span></div>
                   <span className="t-brace">{'}'}</span>
                 </div>
                 <div className="t-line t-gap"><span className="t-prompt">➜</span><span className="t-tilde">~</span><span className="t-cmd">./get_in_touch.sh</span></div>
@@ -487,7 +502,7 @@ function Impact() {
   return (
     <section id="impact">
       <div className="container">
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <p className="sec-label">By The Numbers</p>
           <Scramble as="h2" className="sec-title" text="Real-World Impact" />
           <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
@@ -526,12 +541,12 @@ function Experience() {
                 <div className={`tl-dot ${job.current ? 'tl-dot-current' : ''}`}>
                   <div className="tl-dot-inner" />
                 </div>
-                <div className="tl-card card-spotlight">
+                <article className="tl-card card-spotlight">
                   <Spot />
                   <div className="tl-badges">
                     {job.badges.map(b => <span key={b.label} className={`tl-badge ${b.cls}`}>{b.label}</span>)}
                   </div>
-                  <div className="tl-company">{job.company}</div>
+                  <h3 className="tl-company">{job.company}</h3>
                   <div className="tl-meta">{job.meta}</div>
                   <ul className="tl-bullets">
                     {job.bullets.map((b, j) => <li key={j}>{b}</li>)}
@@ -539,7 +554,7 @@ function Experience() {
                   <div className="tl-tags">
                     {job.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
                   </div>
-                </div>
+                </article>
               </div>
             )
           })}
@@ -560,7 +575,7 @@ function Projects() {
         </div>
         <div className="projects-grid">
           {PROJECTS.map((p, i) => (
-            <div className="proj-card card-spotlight reveal" key={p.title} style={{ transitionDelay: `${i * 80}ms` }}>
+            <article className="proj-card card-spotlight reveal" key={p.title} style={{ transitionDelay: `${i * 80}ms` }}>
               <Spot />
               <span className="proj-tag">{p.tag}</span>
               <h3 className="proj-title">{p.title}</h3>
@@ -570,7 +585,7 @@ function Projects() {
                 <strong>Problem:</strong> {p.problem}<br />
                 <strong>Role:</strong> {p.role}
               </p>
-              <div className="proj-outcome">{p.outcome}</div>
+              <div className="proj-outcome">✅ {p.outcome}</div>
               <div className="proj-pills">
                 {p.pills.map(pill => <span key={pill} className="proj-pill">{pill}</span>)}
               </div>
@@ -580,7 +595,7 @@ function Projects() {
               <a href="https://github.com/rabari1102" target="_blank" className="proj-link" rel="noopener noreferrer">
                 View on GitHub →
               </a>
-            </div>
+            </article>
           ))}
         </div>
       </div>
@@ -615,7 +630,7 @@ function Skills() {
           {SKILL_BARS.map((cat, i) => (
             <div className="skill-cat card-spotlight reveal" key={cat.cat} style={{ transitionDelay: `${i * 70}ms` }}>
               <Spot />
-              <div className="skill-cat-title">{cat.cat}</div>
+              <h3 className="skill-cat-title">{cat.cat}</h3>
               <div className="skill-cat-sub">{cat.sub}</div>
               {cat.bars.map(bar => (
                 <div className="skill-bar-row" key={bar.name}>
@@ -631,7 +646,7 @@ function Skills() {
 
         <div className="skill-tags-section reveal">
           <div className="skill-tags-group">
-            <div className="skill-tags-title">Complete Technical Arsenal</div>
+            <h3 className="skill-tags-title">Complete Technical Arsenal</h3>
             <div className="skill-tags-sub">// Every technology I work with in production</div>
             <div className="skill-tags">
               {ALL_SKILLS.map(s => <span key={s} className="skill-tag">{s}</span>)}
@@ -654,12 +669,12 @@ function AiMastery() {
         </div>
         <div className="ai-grid">
           {AI_CARDS.map((card, i) => (
-            <div className="ai-card card-spotlight reveal" key={card.title} style={{ transitionDelay: `${i * 70}ms` }}>
+            <article className="ai-card card-spotlight reveal" key={card.title} style={{ transitionDelay: `${i * 70}ms` }}>
               <Spot />
               <div className="ai-card-icon">{card.icon}</div>
-              <div className="ai-card-title">{card.title}</div>
+              <h3 className="ai-card-title">{card.title}</h3>
               <p className="ai-card-desc">{card.desc}</p>
-            </div>
+            </article>
           ))}
         </div>
       </div>
@@ -671,14 +686,14 @@ function Testimonials() {
   return (
     <section id="testimonials">
       <div className="container">
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
           <p className="sec-label">Social Proof</p>
           <Scramble as="h2" className="sec-title" text="What People Say" />
           <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
         </div>
         <div className="testimonials-grid">
           {TESTIMONIALS.map((t, i) => (
-            <div className="testi-card card-spotlight reveal" key={t.name} style={{ transitionDelay: `${i * 100}ms` }}>
+            <article className="testi-card card-spotlight reveal" key={t.name} style={{ transitionDelay: `${i * 100}ms` }}>
               <Spot />
               <div className="testi-quote">"</div>
               <p className="testi-text">{t.quote}</p>
@@ -689,7 +704,7 @@ function Testimonials() {
                   <div className="testi-role">{t.role}</div>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </div>
@@ -701,7 +716,7 @@ function Footer() {
   return (
     <footer>
       <div className="footer-logo">KP.DEV</div>
-      <span>Pragnesh Kalotara · Backend & AI Developer</span>
+      <span>Pragnesh Kalotara · Senior Backend & AI Developer</span>
       <span>© 2026</span>
     </footer>
   )
@@ -734,13 +749,11 @@ function MobileNav() {
   )
 }
 
-// ── INTERACTIONS (cursor · spotlight · magnetic) ────────────────────────────────
 function useInteractions() {
   useEffect(() => {
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches
     const cleanups = []
 
-    // Spotlight glow tracks the pointer inside each card
     document.querySelectorAll('.card-spotlight').forEach(card => {
       const onMove = (e) => {
         const r = card.getBoundingClientRect()
@@ -752,7 +765,6 @@ function useInteractions() {
     })
 
     if (fine && !REDUCED) {
-      // Magnetic pull on buttons
       document.querySelectorAll('.magnetic').forEach(el => {
         const strength = 0.35
         const onMove = (e) => {
@@ -767,7 +779,6 @@ function useInteractions() {
         cleanups.push(() => { el.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave) })
       })
 
-      // Subtle 3D tilt on `.tilt` cards
       document.querySelectorAll('.tilt').forEach(el => {
         const onMove = (e) => {
           const r = el.getBoundingClientRect()
@@ -781,7 +792,6 @@ function useInteractions() {
         cleanups.push(() => { el.removeEventListener('pointermove', onMove); el.removeEventListener('pointerleave', onLeave) })
       })
 
-      // Custom cursor (dot + trailing ring)
       document.body.classList.add('custom-cursor')
       const dot = document.getElementById('cursor-dot')
       const ring = document.getElementById('cursor-ring')
@@ -815,7 +825,6 @@ function useInteractions() {
   }, [])
 }
 
-// ── MAIN PAGE ──────────────────────────────────────────────────────────────────
 export default function Portfolio() {
   useEffect(() => {
     const canvas = document.getElementById('bg-canvas')
@@ -861,7 +870,7 @@ export default function Portfolio() {
 
     const drawBg = () => {
       const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
-      g.addColorStop(0, '#03040a'); g.addColorStop(0.5, '#060810'); g.addColorStop(1, '#020307')
+      g.addColorStop(0, '#030712'); g.addColorStop(0.5, '#060a14'); g.addColorStop(1, '#02040a')
       ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, canvas.height)
       drawGrid()
       folX += (mouseX - folX) * 0.12; folY += (mouseY - folY) * 0.12
