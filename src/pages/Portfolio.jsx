@@ -194,6 +194,99 @@ const TICKER_ITEMS = [
   'WebSockets', 'GraphQL', 'BullMQ', 'Elasticsearch', 'OpenAI API', 'RBAC · JWT',
 ]
 
+// ── SHARED HELPERS ──────────────────────────────────────────────────────────────
+const REDUCED = typeof window !== 'undefined'
+  && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const SCRAMBLE_CHARS = '!<>-_\\/[]{}=+*^?#________'
+
+// Kinetic letter-by-letter reveal (used for the hero name)
+function Kinetic({ text, className = '', base = 0, aria }) {
+  return (
+    <span className={className} aria-label={aria || text}>
+      {text.split('').map((c, i) => (
+        <span className="kchar-wrap" key={i} aria-hidden="true">
+          <span className="kchar" style={{ animationDelay: `${base + i * 42}ms` }}>
+            {c === ' ' ? ' ' : c}
+          </span>
+        </span>
+      ))}
+    </span>
+  )
+}
+
+// Decode / scramble text once it scrolls into view (used for section titles)
+function Scramble({ text, className = '', as: Tag = 'span' }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    el.textContent = text
+    if (REDUCED) return
+    let raf, frame = 0, done = false
+    const queue = text.split('').map((to) => {
+      const start = Math.floor(Math.random() * 16)
+      return { to, start, end: start + Math.floor(Math.random() * 18) + 8, char: '' }
+    })
+    const render = () => {
+      let out = '', complete = 0
+      for (const q of queue) {
+        if (frame >= q.end) { complete++; out += q.to }
+        else if (frame >= q.start) {
+          if (!q.char || Math.random() < 0.3) q.char = SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+          out += `<span class="scramble-dim">${q.char}</span>`
+        } else out += q.to === ' ' ? ' ' : '<span class="scramble-hide">' + q.to + '</span>'
+      }
+      el.innerHTML = out
+      if (complete === queue.length) { el.textContent = text; return }
+      frame++; raf = requestAnimationFrame(render)
+    }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting && !done) { done = true; render(); obs.disconnect() }
+      })
+    }, { threshold: 0.4 })
+    obs.observe(el)
+    return () => { cancelAnimationFrame(raf); obs.disconnect() }
+  }, [text])
+  return <Tag ref={ref} className={className}>{text}</Tag>
+}
+
+// Animated number count-up when it enters the viewport
+function CountUp({ value, className = '', duration = 1700 }) {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const m = String(value).match(/^(\D*)(-?[\d.]+)(.*)$/)
+    if (!m || REDUCED) { el.textContent = value; return }
+    const [, pre, numStr, suf] = m
+    const target = parseFloat(numStr)
+    const decimals = (numStr.split('.')[1] || '').length
+    el.textContent = pre + (0).toFixed(decimals) + suf
+    let raf, started = false
+    const run = () => {
+      const t0 = performance.now()
+      const tick = (now) => {
+        const p = Math.min(1, (now - t0) / duration)
+        const eased = 1 - Math.pow(1 - p, 3)
+        el.textContent = pre + (target * eased).toFixed(decimals) + suf
+        if (p < 1) raf = requestAnimationFrame(tick)
+        else el.textContent = pre + target.toFixed(decimals) + suf
+      }
+      raf = requestAnimationFrame(tick)
+    }
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting && !started) { started = true; run(); obs.disconnect() } })
+    }, { threshold: 0.4 })
+    obs.observe(el)
+    return () => { cancelAnimationFrame(raf); obs.disconnect() }
+  }, [value])
+  return <span ref={ref} className={className}>{value}</span>
+}
+
+// A cursor-tracking light overlay dropped inside any `.card-spotlight`
+const Spot = () => <span className="spotlight-layer" aria-hidden="true" />
+
 // ── COMPONENTS ────────────────────────────────────────────────────────────────
 function ScrollProgress() {
   const [w, setW] = useState(0)
@@ -238,7 +331,7 @@ function Nav() {
             <a href={`#${id}`} className={active === id ? 'active' : ''} onClick={e => { e.preventDefault(); navTo(id) }}>{label}</a>
           </li>
         ))}
-        <li><a href="#edu-contact" className="nav-cta" onClick={e => { e.preventDefault(); navTo('edu-contact') }}>Hire Me</a></li>
+        <li><a href="#edu-contact" className="nav-cta magnetic" onClick={e => { e.preventDefault(); navTo('edu-contact') }}>Hire Me</a></li>
       </ul>
       <div className="nav-hamburger" onClick={() => navTo('edu-contact')}>
         <span /><span /><span />
@@ -274,14 +367,16 @@ function Hero() {
     <section id="home">
       <div className="container">
         <div className="hero-layout">
-          <div className="reveal">
-            <div className="hero-available">
+          <div>
+            <div className="hero-available reveal">
               <div className="pulse-dot" />
               AVAILABLE FOR OPPORTUNITIES · WORLDWIDE
             </div>
 
             <h1 className="hero-name">
-              PRAGNESH<br /><span className="accent">KALOTARA</span>
+              <Kinetic text="PRAGNESH" aria="Pragnesh" />
+              <br />
+              <Kinetic text="KALOTARA" className="accent" base={360} aria="Kalotara" />
             </h1>
 
             <div className="hero-typing-wrap">
@@ -289,18 +384,18 @@ function Hero() {
               <span className="hero-typing-cursor">|</span>
             </div>
 
-            <p className="hero-desc">
+            <p className="hero-desc reveal">
               Results-driven Team Lead & Backend Developer with <strong>3+ years</strong> designing scalable microservices
               and real-time platforms. Specialized in <strong>Node.js, NestJS & TypeScript</strong> — optimized performance
               by 40%, led teams of 6, shipped production systems with 99.9% uptime.
             </p>
 
-            <div className="hero-btns">
-              <button className="btn-primary" onClick={() => navTo('edu-contact')}>
+            <div className="hero-btns reveal">
+              <button className="btn-primary magnetic" onClick={() => navTo('edu-contact')}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Hire Me
               </button>
-              <a href="https://drive.google.com/file/d/1-sj2u70gfamVeGHpOp8MrB5rkuvipjwE/view?usp=sharing" target="_blank" className="btn-resume" rel="noopener noreferrer">
+              <a href="https://drive.google.com/file/d/1-sj2u70gfamVeGHpOp8MrB5rkuvipjwE/view?usp=sharing" target="_blank" className="btn-resume magnetic" rel="noopener noreferrer">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 Resume
               </a>
@@ -314,15 +409,16 @@ function Hero() {
               </a>
             </div>
 
-            <div className="hero-metrics">
+            <div className="hero-metrics reveal">
               {[['3+','Years Exp'],['6','Team Lead'],['5K+','IoT Devices'],['99.9%','Uptime']].map(([v,l]) => (
-                <div key={l}><div className="metric-val">{v}</div><div className="metric-lbl">{l}</div></div>
+                <div key={l}><div className="metric-val"><CountUp value={v} /></div><div className="metric-lbl">{l}</div></div>
               ))}
             </div>
           </div>
 
           <div className="hero-terminal reveal" style={{ transitionDelay: '200ms', marginTop: '-2rem', marginLeft: '1.5rem' }}>
-            <div className="terminal-card">
+            <div className="terminal-card card-spotlight tilt">
+              <Spot />
               <div className="terminal-bar">
                 <span className="t-dot t-red" /><span className="t-dot t-yellow" /><span className="t-dot t-green" />
                 <span className="t-title">bash — pragnesh@dev</span>
@@ -349,6 +445,10 @@ function Hero() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="scroll-hint reveal" aria-hidden="true">
+          <span>SCROLL</span>
+          <div className="scroll-hint-line" />
         </div>
       </div>
     </section>
@@ -377,415 +477,3 @@ function Impact() {
       <div className="container">
         <div className="reveal" style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <p className="sec-label">By The Numbers</p>
-          <h2 className="sec-title">Real-World Impact</h2>
-          <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
-        </div>
-        <div className="impact-grid">
-          {IMPACTS.map((m, i) => (
-            <div className="impact-card reveal" key={m.label} style={{ transitionDelay: `${i * 60}ms` }}>
-              <div className="impact-num">{m.num}</div>
-              <div className="impact-label">{m.label}</div>
-              <div className="impact-sub">{m.sub}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Experience() {
-  return (
-    <section id="experience">
-      <div className="container">
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-          <p className="sec-label">Career</p>
-          <h2 className="sec-title">Work Experience</h2>
-          <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
-        </div>
-        <div className="timeline-centered">
-          {/* Center spine */}
-          <div className="timeline-spine" />
-          {EXPERIENCE.map((job, i) => {
-            const isRight = i % 2 === 0
-            return (
-              <div className={`tl-row reveal ${isRight ? 'tl-right' : 'tl-left'}`} key={job.company} style={{ transitionDelay: `${i * 150}ms` }}>
-                {/* Empty spacer for the opposite side */}
-                <div className="tl-spacer" />
-                {/* Center dot */}
-                <div className={`tl-dot ${job.current ? 'tl-dot-current' : ''}`}>
-                  <div className="tl-dot-inner" />
-                </div>
-                {/* Card */}
-                <div className="tl-card">
-                  <div className="tl-badges">
-                    {job.badges.map(b => <span key={b.label} className={`tl-badge ${b.cls}`}>{b.label}</span>)}
-                  </div>
-                  <div className="tl-company">{job.company}</div>
-                  <div className="tl-meta">{job.meta}</div>
-                  <ul className="tl-bullets">
-                    {job.bullets.map((b, j) => <li key={j}>{b}</li>)}
-                  </ul>
-                  <div className="tl-tags">
-                    {job.tags.map(t => <span key={t} className="tl-tag">{t}</span>)}
-                  </div>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Projects() {
-  return (
-    <section id="projects">
-      <div className="container">
-        <div className="reveal">
-          <p className="sec-label">Portfolio</p>
-          <h2 className="sec-title">Featured Projects</h2>
-          <div className="sec-divider" />
-        </div>
-        <div className="projects-grid">
-          {PROJECTS.map((p, i) => (
-            <div className="proj-card reveal" key={p.title} style={{ transitionDelay: `${i * 80}ms` }}>
-              <span className="proj-tag">{p.tag}</span>
-              <h3 className="proj-title">{p.title}</h3>
-              <div className="proj-sub">{p.sub}</div>
-              <div className="proj-arch">{p.arch}</div>
-              <p className="proj-desc">
-                <strong>Problem:</strong> {p.problem}<br />
-                <strong>Role:</strong> {p.role}
-              </p>
-              <div className="proj-outcome">{p.outcome}</div>
-              <div className="proj-pills">
-                {p.pills.map(pill => <span key={pill} className="proj-pill">{pill}</span>)}
-              </div>
-              <div className="proj-stack">
-                {p.tags.map(t => <span key={t}>{t}</span>)}
-              </div>
-              <a href="https://github.com/rabari1102" target="_blank" className="proj-link" rel="noopener noreferrer">
-                View on GitHub →
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Skills() {
-  useEffect(() => {
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.querySelectorAll('.skill-bar-fill').forEach(bar => {
-            bar.style.width = bar.dataset.width + '%'
-          })
-        }
-      })
-    }, { threshold: 0.2 })
-    document.querySelectorAll('.skill-cat').forEach(el => obs.observe(el))
-    return () => obs.disconnect()
-  }, [])
-
-  return (
-    <section id="skills">
-      <div className="container">
-        <div className="reveal">
-          <p className="sec-label">Technical Expertise</p>
-          <h2 className="sec-title">Skills & Proficiency</h2>
-          <div className="sec-divider" />
-        </div>
-        <div className="skills-display">
-          {SKILL_BARS.map((cat, i) => (
-            <div className="skill-cat reveal" key={cat.cat} style={{ transitionDelay: `${i * 70}ms` }}>
-              <div className="skill-cat-title">{cat.cat}</div>
-              <div className="skill-cat-sub">{cat.sub}</div>
-              {cat.bars.map(bar => (
-                <div className="skill-bar-row" key={bar.name}>
-                  <div className="skill-bar-label"><span>{bar.name}</span><span>{bar.pct}%</span></div>
-                  <div className="skill-bar-track">
-                    <div className="skill-bar-fill" data-width={bar.pct} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-
-        <div className="skill-tags-section reveal">
-          <div className="skill-tags-group">
-            <div className="skill-tags-title">Complete Technical Arsenal</div>
-            <div className="skill-tags-sub">// Every technology I work with in production</div>
-            <div className="skill-tags">
-              {ALL_SKILLS.map(s => <span key={s} className="skill-tag">{s}</span>)}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function AiMastery() {
-  return (
-    <section id="ai-mastery">
-      <div className="container">
-        <div className="reveal">
-          <p className="sec-label">AI-Augmented Development</p>
-          <h2 className="sec-title">AI Capabilities</h2>
-          <div className="sec-divider" />
-        </div>
-        <div className="ai-grid">
-          {AI_CARDS.map((card, i) => (
-            <div className="ai-card reveal" key={card.title} style={{ transitionDelay: `${i * 70}ms` }}>
-              <div className="ai-card-icon">{card.icon}</div>
-              <div className="ai-card-title">{card.title}</div>
-              <p className="ai-card-desc">{card.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Testimonials() {
-  return (
-    <section id="testimonials">
-      <div className="container">
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <p className="sec-label">Social Proof</p>
-          <h2 className="sec-title">What People Say</h2>
-          <div className="sec-divider" style={{ margin: '0.8rem auto 0' }} />
-        </div>
-        <div className="testimonials-grid">
-          {TESTIMONIALS.map((t, i) => (
-            <div className="testi-card reveal" key={t.name} style={{ transitionDelay: `${i * 100}ms` }}>
-              <div className="testi-quote">"</div>
-              <p className="testi-text">{t.quote}</p>
-              <div className="testi-author">
-                <div className="testi-avatar">{t.init}</div>
-                <div>
-                  <div className="testi-name">{t.name}</div>
-                  <div className="testi-role">{t.role}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Contact() {
-  const [copied, setCopied] = useState(false)
-  const copy = () => {
-    navigator.clipboard.writeText('pkb110201@gmail.com')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-  return (
-    <section id="edu-contact">
-      <div className="container">
-        <div className="contact-inner">
-          <div className="reveal">
-            <p className="sec-label">Get In Touch</p>
-            <h2 className="sec-title">Let's Build<br />Something Great</h2>
-            <div className="sec-divider" style={{ margin: '0.8rem auto 2rem' }} />
-          </div>
-          <p className="reveal" style={{ color: 'var(--muted)', marginBottom: '1rem' }}>
-            Whether you have a complex backend to architect, an AI feature to integrate,
-            or just want to talk tech — I'm always open.
-          </p>
-          <a href="mailto:pkb110201@gmail.com" className="contact-email-big reveal">
-            pkb110201@gmail.com
-          </a>
-          <div className="contact-links reveal">
-            <button className="contact-link" onClick={copy}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-              {copied ? 'Copied!' : 'Copy Email'}
-            </button>
-            <a href="https://www.linkedin.com/in/pragnesh-kalotara-23870116a" target="_blank" className="contact-link" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              LinkedIn
-            </a>
-            <a href="https://github.com/rabari1102" target="_blank" className="contact-link" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
-              GitHub
-            </a>
-            <a href="https://drive.google.com/file/d/1-sj2u70gfamVeGHpOp8MrB5rkuvipjwE/view?usp=sharing" target="_blank" className="contact-link" rel="noopener noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Resume
-            </a>
-          </div>
-          <button className="btn-primary reveal" onClick={() => window.open('mailto:pkb110201@gmail.com')}>
-            Say Hello →
-          </button>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Footer() {
-  return (
-    <footer>
-      <div className="footer-logo">KP.DEV</div>
-      <span>Pragnesh Kalotara · Backend & AI Developer</span>
-      <span>© 2026</span>
-    </footer>
-  )
-}
-
-function MobileNav() {
-  const navTo = (id, btn) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    document.querySelectorAll('.mobile-btn').forEach(b => b.classList.remove('active'))
-    btn.classList.add('active')
-  }
-  const items = [
-    { id: 'home', label: 'Home', icon: <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /> },
-    { id: 'impact', label: 'Impact', icon: <><circle cx="12" cy="8" r="6" /><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" /></> },
-    { id: 'experience', label: 'Work', icon: <><rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" /></> },
-    { id: 'projects', label: 'Projects', icon: <><polyline points="16 18 22 12 16 6" /><polyline points="8 6 2 12 8 18" /></> },
-    { id: 'skills', label: 'Skills', icon: <><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></> },
-  ]
-  return (
-    <div className="mobile-nav">
-      <div className="mobile-nav-inner">
-        {items.map((n, i) => (
-          <button key={n.id} className={`mobile-btn${i === 0 ? ' active' : ''}`} onClick={e => navTo(n.id, e.currentTarget)}>
-            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{n.icon}</svg>
-            {n.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ── MAIN PAGE ──────────────────────────────────────────────────────────────────
-export default function Portfolio() {
-  useEffect(() => {
-    const canvas = document.getElementById('bg-canvas')
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const follower = document.getElementById('mouse-follower')
-    let particles = [], raf
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2
-    let folX = mouseX, folY = mouseY
-
-    const onMouseMove = (e) => { mouseX = e.clientX; mouseY = e.clientY }
-    window.addEventListener('mousemove', onMouseMove)
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-    const codeSnippets = ['async', 'await', 'const', '=>', '{ }', '[]', 'return', 'export', 'import', '.then()', 'null', 'void', 'class', 'type', 'interface', 'NestJS', 'Node', 'Docker']
-
-    const initParticles = () => {
-      particles = []
-      if (reduced) return
-      const n = window.innerWidth < 768 ? 30 : 65
-      for (let i = 0; i < n; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-          r: Math.random() * 1.4 + 0.3,
-          isCode: Math.random() < 0.2,
-          text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
-          codeVy: -0.25 - Math.random() * 0.3,
-          alpha: 0.04 + Math.random() * 0.07,
-        })
-      }
-    }
-
-    const drawGrid = () => {
-      ctx.strokeStyle = 'rgba(34,211,238,0.03)'
-      ctx.lineWidth = 1
-      const s = 70
-      for (let x = 0; x < canvas.width; x += s) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke() }
-      for (let y = 0; y < canvas.height; y += s) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke() }
-    }
-
-    const drawBg = () => {
-      const g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
-      g.addColorStop(0, '#03040a'); g.addColorStop(0.5, '#060810'); g.addColorStop(1, '#020307')
-      ctx.fillStyle = g; ctx.fillRect(0, 0, canvas.width, canvas.height)
-      drawGrid()
-      folX += (mouseX - folX) * 0.12; folY += (mouseY - folY) * 0.12
-      if (follower) { follower.style.left = folX + 'px'; follower.style.top = folY + 'px' }
-
-      if (!reduced) {
-        ctx.font = "12px 'Fira Code', monospace"
-        particles.forEach((p, i) => {
-          if (p.isCode) {
-            p.y += p.codeVy
-            if (p.y < -20) { p.y = canvas.height + 20; p.x = Math.random() * canvas.width }
-            ctx.fillStyle = `rgba(34,211,238,${p.alpha})`
-            ctx.fillText(p.text, p.x, p.y)
-          } else {
-            p.x += p.vx; p.y += p.vy
-            if (p.x < 0 || p.x > canvas.width) p.vx *= -1
-            if (p.y < 0 || p.y > canvas.height) p.vy *= -1
-            const mDx = p.x - mouseX, mDy = p.y - mouseY, mDist = Math.sqrt(mDx * mDx + mDy * mDy)
-            if (mDist < 150) { p.x += mDx * 0.01; p.y += mDy * 0.01 }
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-            ctx.fillStyle = mDist < 120 ? 'rgba(255,255,255,0.8)' : 'rgba(34,211,238,.3)'; ctx.fill()
-            for (let j = i + 1; j < particles.length; j++) {
-              const q = particles[j]
-              if (q.isCode) continue
-              const dx = p.x - q.x, dy = p.y - q.y, d = Math.sqrt(dx * dx + dy * dy)
-              if (d < 130) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.strokeStyle = `rgba(34,211,238,${0.07 - (d / 130) * 0.07})`; ctx.lineWidth = 0.4; ctx.stroke() }
-            }
-          }
-        })
-      }
-      raf = requestAnimationFrame(drawBg)
-    }
-
-    const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; initParticles() }
-    window.addEventListener('resize', resize)
-    resize(); drawBg()
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target) } })
-    }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' })
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-
-    return () => {
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('resize', resize)
-      cancelAnimationFrame(raf)
-      observer.disconnect()
-    }
-  }, [])
-
-  return (
-    <>
-      <ScrollProgress />
-      <canvas id="bg-canvas" />
-      <div id="mouse-follower" />
-      <Nav />
-      <main>
-        <Hero />
-        <AiTicker />
-        <Impact />
-        <Experience />
-        <Projects />
-        <Skills />
-        <AiMastery />
-        <Testimonials />
-        <Contact />
-      </main>
-      <Footer />
-      <MobileNav />
-    </>
-  )
-}
