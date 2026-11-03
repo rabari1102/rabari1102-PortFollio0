@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 // Lightweight per-route <head> manager: no dependency, no SSR needed.
 // Each page renders one <Seo/>; values are overwritten on navigation.
 const SITE = 'https://thepragnesh.in'
-const DEFAULT_IMAGE = `${SITE}/og.png`
+const DEFAULT_IMAGE = `${SITE}/og.jpg`
 
 function upsertMeta(attr, key, content) {
   if (!content) return
