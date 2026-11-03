@@ -5,6 +5,7 @@ import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Home from './pages/Home'
 import ProjectPage from './pages/ProjectPage'
+import NotFound from './pages/NotFound'
 
 // Scroll to the #hash after navigation (e.g. "/#work" from a project page), otherwise to the top.
 function ScrollManager() {
@@ -27,8 +28,9 @@ export default function App() {
       <ScrollManager />
       <Nav />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/work/:id" element={<ProjectPage />} />
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </MotionConfig>

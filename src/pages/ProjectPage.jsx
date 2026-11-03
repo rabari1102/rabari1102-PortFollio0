@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import ProjectCover from '../components/ProjectCover'
 import Reveal from '../components/ui/Reveal'
+import Seo from '../components/Seo'
+import NotFound from './NotFound'
 import { getProject, projects } from '../data/projects'
 
 const platformLabel = { site: 'Website', web: 'Web app', desktop: 'Desktop app', phone: 'Mobile app', combo: 'Web + Android app' }
@@ -12,11 +13,7 @@ export default function ProjectPage() {
   const { id } = useParams()
   const project = getProject(id)
 
-  useEffect(() => {
-    if (project) document.title = `${project.title} · Pragnesh Kalotara`
-  }, [project])
-
-  if (!project) return <Navigate to="/#work" replace />
+  if (!project) return <NotFound />
 
   const idx = projects.indexOf(project)
   const next = projects[(idx + 1) % projects.length]
@@ -25,6 +22,11 @@ export default function ProjectPage() {
 
   return (
     <main className="project-page" style={{ '--c': project.accent }}>
+      <Seo
+        title={`${project.title} · ${project.sector} — Pragnesh Kalotara`}
+        description={project.summary}
+        path={`/work/${project.id}`}
+      />
       <div className="container">
         <Link to="/#work" className="back-link mono">
           <ArrowLeft size={16} /> All work
