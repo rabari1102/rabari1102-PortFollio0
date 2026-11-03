@@ -1,178 +1,215 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Check, Copy, FileText, Mail, Phone, Send } from 'lucide-react'
 import Reveal from './ui/Reveal'
-import MagneticButton from './ui/MagneticButton'
+import { Underline } from './ui/Scribbles'
+import { GithubIcon, LinkedinIcon, WhatsappIcon } from './ui/Icons'
+import { profile } from '../data/site'
+
+const types = ['Website', 'Web app / SaaS', 'Mobile app', 'Desktop software', 'API / backend', 'AI feature', 'Not sure yet']
+const budgets = ['Under ₹50k', '₹50k – 1.5L', '₹1.5L – 5L', '₹5L +', "Let's discuss"]
+
+// Set VITE_WEB3FORMS_KEY in Vercel to receive the form by email. Without it, the form opens WhatsApp instead.
+const FORM_KEY = import.meta.env.VITE_WEB3FORMS_KEY
+
+function LocalTime() {
+  const fmt = () =>
+    new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', timeZone: profile.timezone }).format(new Date())
+  const [time, setTime] = useState(fmt)
+  useEffect(() => {
+    const id = setInterval(() => setTime(fmt()), 30000)
+    return () => clearInterval(id)
+  }, [])
+  const hour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: profile.timezone }).format(new Date()))
+  const awake = hour >= 9 && hour < 23
+  return (
+    <p className="local-time mono">
+      <i className={awake ? 'pulse-dot' : 'sleep-dot'} /> {time} in Ahmedabad ·{' '}
+      {awake ? 'usually replies within a few hours' : 'asleep, will reply in the morning'}
+    </p>
+  )
+}
 
 export default function Contact() {
+  const [form, setForm] = useState({ name: '', reach: '', type: '', budget: '', message: '' })
   const [status, setStatus] = useState(null)
   const [copied, setCopied] = useState(false)
-  const [form, setForm] = useState({ name: '', email: '', message: '' })
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    const onPrefill = (e) => setForm((f) => ({ ...f, type: e.detail.type ?? f.type, message: e.detail.brief }))
+    window.addEventListener('prefill-brief', onPrefill)
+    return () => window.removeEventListener('prefill-brief', onPrefill)
+  }, [])
+
+  const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target ? e.target.value : e }))
+
+  const briefText = () =>
+    `Hi Pragnesh, I'm ${form.name}.\nProject: ${form.type || '—'}\nBudget: ${form.budget || '—'}\nReach me at: ${form.reach}\n\n${form.message}`
+
+  const openWhatsApp = () =>
+    window.open(`https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(briefText())}`, '_blank', 'noopener')
+
+  const submit = async (e) => {
     e.preventDefault()
-    if (!form.name || !form.email || !form.message) return
+    if (!form.name || !form.reach || !form.message) {
+      setStatus('missing')
+      return
+    }
+    if (!FORM_KEY) {
+      openWhatsApp()
+      setStatus('whatsapp')
+      return
+    }
     setStatus('sending')
     try {
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
-          access_key: 'e2b0c3a1-5f8d-4a2b-b8c3-1f2e3d4c5b6a',
-          subject: "New Portfolio Message: Let's Build Together",
+          access_key: FORM_KEY,
+          subject: `New project enquiry: ${form.type || 'General'} (${form.budget || 'budget not set'})`,
           from_name: form.name,
-          ...form
-        })
+          ...form,
+        }),
       })
       const data = await res.json()
-      if (res.ok && data.success) {
-        setStatus('ok')
-        setForm({ name: '', email: '', message: '' })
-      } else {
-        setStatus('err')
-      }
+      if (!res.ok || !data.success) throw new Error()
+      setStatus('ok')
+      setForm({ name: '', reach: '', type: '', budget: '', message: '' })
     } catch {
       setStatus('err')
     }
-    setTimeout(() => setStatus(null), 6000)
   }
 
-  const copyEmail = () => {
-    navigator.clipboard.writeText('pkb110201@gmail.com')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(profile.email)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.location.href = `mailto:${profile.email}`
+    }
   }
 
   return (
-    <section id="contact" className="contact-section">
+    <section className="section contact" id="contact">
       <div className="container">
-        <Reveal direction="up" className="contact-editorial-header">
-          <span className="sec-label">START A CONVERSATION</span>
-          <h2 className="contact-big-title font-heading">
-            LET'S BUILD SOMETHING <span className="gradient-text">GREAT.</span>
-          </h2>
-          <p className="contact-sub-text">
-            Have an enterprise multi-tenant platform to architect, a high-throughput microservices system to scale, or an engineering team to lead? Let's connect and deliver robust distributed software.
+        <Reveal className="contact-head">
+          <p className="section-label mono">
+            <span>§ 09</span> Say hello
           </p>
-
-          <a
-            href="mailto:pkb110201@gmail.com"
-            className="contact-email-hero font-heading"
-            data-cursor="EMAIL ME"
-          >
-            pkb110201@gmail.com ↗
-          </a>
+          <h2 className="contact-title display">
+            Tell me what you <br />
+            want to <Underline delay={0.5}>build.</Underline>
+          </h2>
         </Reveal>
 
-        <div className="contact-two-col">
-          <Reveal direction="right" delay={0.2} className="contact-info-col">
-            <div className="contact-card card-spotlight">
-              <h3 className="card-heading">Direct Channels</h3>
-              <p className="card-p">Feel free to call, email directly, explore my GitHub repositories, or connect on LinkedIn.</p>
-
-              <div className="contact-links-stack">
-                <a href="tel:+917436061528" className="channel-btn" data-cursor="CALL">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  <span>+91-7436061528</span>
-                </a>
-
-                <button className="channel-btn" onClick={copyEmail} data-cursor="COPY">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                  <span>{copied ? 'Copied ✓ (pkb110201@gmail.com)' : 'pkb110201@gmail.com'}</span>
-                </button>
-
-                <a href="https://www.linkedin.com/in/pragnesh-kalotara-23870116a" target="_blank" rel="noopener noreferrer" className="channel-btn" data-cursor="LINKEDIN ↗">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-                  <span>LinkedIn Profile ↗</span>
-                </a>
-
-                <a href="https://github.com/rabari1102" target="_blank" rel="noopener noreferrer" className="channel-btn" data-cursor="GITHUB ↗">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                  <span>GitHub Repositories ↗</span>
-                </a>
+        <div className="contact-grid">
+          <Reveal className="brief" delay={0.1}>
+            <form onSubmit={submit} noValidate>
+              <div className="field-row">
+                <label className="field">
+                  <span className="mono">Your name</span>
+                  <input value={form.name} onChange={set('name')} autoComplete="name" placeholder="Priya Shah" />
+                </label>
+                <label className="field">
+                  <span className="mono">Email or WhatsApp</span>
+                  <input value={form.reach} onChange={set('reach')} autoComplete="email" placeholder="you@company.com" />
+                </label>
               </div>
 
-              <div className="education-box">
-                <div className="edu-header">
-                  <span className="edu-icon">🎓</span>
-                  <span className="edu-title">Education</span>
+              <div className="field">
+                <span className="mono">What is it?</span>
+                <div className="choice-row">
+                  {types.map((t) => (
+                    <button type="button" key={t} className={`choice is-sm ${form.type === t ? 'is-on' : ''}`} onClick={() => set('type')(t)} aria-pressed={form.type === t}>
+                      {t}
+                    </button>
+                  ))}
                 </div>
-                <div className="edu-deg">B.Tech — Instrumentation & Control Engineering</div>
-                <div className="edu-school">Shantilal Shah Government Engineering College, Bhavnagar (2018–2023, SPI: 7.00)</div>
               </div>
-            </div>
+
+              <div className="field">
+                <span className="mono">Rough budget</span>
+                <div className="choice-row">
+                  {budgets.map((b) => (
+                    <button type="button" key={b} className={`choice is-sm ${form.budget === b ? 'is-on' : ''}`} onClick={() => set('budget')(b)} aria-pressed={form.budget === b}>
+                      {b}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <label className="field">
+                <span className="mono">The idea, in your own words</span>
+                <textarea
+                  rows={5}
+                  value={form.message}
+                  onChange={set('message')}
+                  placeholder="We run 3 clinics and want patients to book appointments online and get reminders on WhatsApp…"
+                />
+              </label>
+
+              <div className="brief-actions">
+                <button type="submit" className="btn btn-accent" disabled={status === 'sending'}>
+                  {status === 'sending' ? 'Sending…' : FORM_KEY ? 'Send my brief' : 'Send on WhatsApp'} <Send size={16} />
+                </button>
+                <a className="btn btn-ghost" href={`mailto:${profile.email}?subject=${encodeURIComponent('Project enquiry')}&body=${encodeURIComponent(briefText())}`}>
+                  Email instead
+                </a>
+              </div>
+
+              <AnimatePresence>
+                {status && status !== 'sending' && (
+                  <motion.p className={`form-status is-${status}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                    {status === 'ok' && 'Got it! I will reply within a day, usually much sooner.'}
+                    {status === 'whatsapp' && 'WhatsApp opened with your brief. Just press send.'}
+                    {status === 'missing' && 'Just need your name, a way to reach you and a line about the idea.'}
+                    {status === 'err' && 'Something went wrong. Please use WhatsApp or email on the right.'}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+            </form>
           </Reveal>
 
-          <Reveal direction="left" delay={0.2} className="contact-form-col">
-            <div className="contact-card card-spotlight">
-              <h3 className="card-heading">Send a Message</h3>
-              <p className="card-p">Drop a line directly into my inbox for technical consulting, architecture reviews, or engineering leadership opportunities.</p>
-
-              <form onSubmit={handleSubmit} className="contact-form">
-                <div className="form-group">
-                  <label htmlFor="contact-name" className="form-label">Your Name</label>
-                  <input
-                    id="contact-name"
-                    type="text"
-                    className="form-input"
-                    placeholder="Jane Doe"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="contact-email" className="form-label">Your Email</label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    className="form-input"
-                    placeholder="jane@company.com"
-                    required
-                    value={form.email}
-                    onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="contact-message" className="form-label">Message / System Requirement</label>
-                  <textarea
-                    id="contact-message"
-                    className="form-textarea"
-                    placeholder="Tell me about your software architecture or engineering position..."
-                    required
-                    rows={4}
-                    value={form.message}
-                    onChange={(e) => setForm((p) => ({ ...p, message: e.target.value }))}
-                  />
-                </div>
-
-                <MagneticButton
-                  type="submit"
-                  className="btn-send-message"
-                  disabled={status === 'sending'}
-                  data-cursor="SEND"
-                >
-                  {status === 'sending' ? (
-                    <>Sending Message...</>
-                  ) : (
-                    <>
-                      Send Message →
-                    </>
-                  )}
-                </MagneticButton>
-
-                {status === 'ok' && (
-                  <div className="form-status status-ok">
-                    ✅ Message sent! I'll get back to you shortly.
-                  </div>
-                )}
-                {status === 'err' && (
-                  <div className="form-status status-err">
-                    ❌ Unable to send via form. <a href="mailto:pkb110201@gmail.com">Email directly</a>
-                  </div>
-                )}
-              </form>
+          <Reveal className="channels" delay={0.2}>
+            <LocalTime />
+            <button className="channel" onClick={copyEmail}>
+              <Mail size={20} />
+              <span>
+                <small className="mono">Email</small>
+                {profile.email}
+              </span>
+              {copied ? <Check size={18} /> : <Copy size={18} />}
+            </button>
+            <a className="channel" href={`https://wa.me/${profile.whatsapp}`} target="_blank" rel="noreferrer">
+              <WhatsappIcon width={20} height={20} />
+              <span>
+                <small className="mono">WhatsApp</small>
+                {profile.phone}
+              </span>
+            </a>
+            <a className="channel" href={profile.phoneHref}>
+              <Phone size={20} />
+              <span>
+                <small className="mono">Call</small>
+                {profile.phone}
+              </span>
+            </a>
+            <div className="channel-row">
+              <a className="channel is-small" href={profile.linkedin} target="_blank" rel="noreferrer">
+                <LinkedinIcon /> LinkedIn
+              </a>
+              <a className="channel is-small" href={profile.github} target="_blank" rel="noreferrer">
+                <GithubIcon /> GitHub
+              </a>
+              <a className="channel is-small" href={profile.resume} target="_blank" rel="noreferrer">
+                <FileText size={18} /> CV
+              </a>
             </div>
+            <p className="hand channels-note">
+              First call is free and there's no pressure. Worst case, you leave with a clearer plan.
+            </p>
           </Reveal>
         </div>
       </div>

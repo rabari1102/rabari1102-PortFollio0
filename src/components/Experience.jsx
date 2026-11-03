@@ -1,61 +1,74 @@
-import { experience } from '../data/experience'
+import { useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Minus, Plus } from 'lucide-react'
+import SectionHead from './ui/SectionHead'
 import Reveal from './ui/Reveal'
+import { experience } from '../data/experience'
+import { profile } from '../data/site'
 
 export default function Experience() {
+  const [open, setOpen] = useState(0)
+
   return (
-    <section id="experience" className="experience-section">
-      <div className="container">
-        <Reveal direction="up" className="sec-header-center">
-          <span className="sec-label">CAREER ROADMAP</span>
-          <h2 className="sec-title">Work Experience</h2>
-          <div className="sec-divider"></div>
-        </Reveal>
+    <section className="section experience" id="experience">
+      <div className="container exp-grid">
+        <div className="exp-intro">
+          <SectionHead
+            num="07"
+            label="Background"
+            title={
+              <>
+                Trained on <em>real</em> teams.
+              </>
+            }
+            intro={`${profile.yearsExperience} years in product companies, the last two as team lead. That is where I learned to ship on time, review code properly and keep clients in the loop. Now you get that, without the company around it.`}
+          />
+          <a href={profile.resume} target="_blank" rel="noreferrer" className="btn btn-ghost">
+            Download CV
+          </a>
+        </div>
 
-        <div className="timeline-container">
-          <div className="timeline-spine"></div>
-
-          {experience.map((item, idx) => {
-            const isLeft = idx % 2 === 0
+        <ol className="exp-list">
+          {experience.map((e, i) => {
+            const isOpen = open === i
             return (
-              <div key={item.company} className={`timeline-row ${isLeft ? 'row-left' : 'row-right'}`}>
-                {/* Timeline Center Node Dot */}
-                <div className={`timeline-node ${item.current ? 'is-current' : ''}`}>
-                  <div className="node-pulse"></div>
-                </div>
-
-                {/* Timeline Card Container */}
-                <div className="timeline-card-wrap">
-                  <Reveal direction={isLeft ? 'right' : 'left'} delay={idx * 0.15}>
-                    <article className="timeline-card card-spotlight">
-                      <div className="card-badge-row">
-                        {item.current && <span className="badge-current">Present Role</span>}
-                        {item.badges.map((b) => (
-                          <span key={b} className="badge-tech">{b}</span>
-                        ))}
-                      </div>
-
-                      <div className="card-period">{item.period} · {item.location}</div>
-                      <h3 className="card-role">{item.role}</h3>
-                      <div className="card-company">{item.company}</div>
-
-                      <ul className="card-highlights">
-                        {item.highlights.map((h, i) => (
-                          <li key={i}>{h}</li>
+              <Reveal as="li" key={e.company} className={`exp ${isOpen ? 'is-open' : ''}`} delay={i * 0.06}>
+                <button className="exp-head" onClick={() => setOpen(isOpen ? -1 : i)} aria-expanded={isOpen}>
+                  <span className="exp-period mono">{e.period}</span>
+                  <span className="exp-role">
+                    <strong className="display">{e.company}</strong>
+                    <span>{e.role}</span>
+                  </span>
+                  <span className="exp-toggle">{isOpen ? <Minus size={18} /> : <Plus size={18} />}</span>
+                </button>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      className="exp-body"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <ul>
+                        {e.highlights.map((h) => (
+                          <li key={h}>{h}</li>
                         ))}
                       </ul>
-
-                      <div className="card-tags">
-                        {item.technologies.map((t) => (
-                          <span key={t} className="tech-tag">{t}</span>
+                      <div className="chips">
+                        {e.technologies.map((t) => (
+                          <span key={t} className="chip">
+                            {t}
+                          </span>
                         ))}
                       </div>
-                    </article>
-                  </Reveal>
-                </div>
-              </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Reveal>
             )
           })}
-        </div>
+        </ol>
       </div>
     </section>
   )

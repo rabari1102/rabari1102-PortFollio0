@@ -1,253 +1,163 @@
-import { useState, useEffect, useRef } from 'react'
+import { lazy, Suspense } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import MagneticButton from './ui/MagneticButton'
+import { ArrowDownRight, ArrowUpRight, GripVertical } from 'lucide-react'
+import { heroFacts, profile } from '../data/site'
 
-const roles = [
-  'Team Lead & Full-Stack Developer',
-  'NestJS & Access Control Architect',
-  'Multi-Tenant SaaS Builder',
-  'IoT Telemetry Architect',
-  'AI-Augmented Developer'
-]
+// three.js is big; load the island after the text so the page paints instantly.
+const HeroScene = lazy(() => import('./HeroScene'))
+
+const rise = (delay) => ({
+  initial: { opacity: 0, y: 24 },
+  animate: { opacity: 1, y: 0 },
+  transition: { delay, duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+})
+
+const float = (delay, distance = 8) => ({
+  initial: { opacity: 0, y: 20, scale: 0.96 },
+  animate: { opacity: 1, y: [0, -distance, 0], scale: 1 },
+  transition: {
+    opacity: { delay, duration: 0.6 },
+    scale: { delay, duration: 0.6 },
+    y: { delay, duration: 6, repeat: Infinity, ease: 'easeInOut' },
+  },
+})
+
+function Ring({ pct }) {
+  const r = 9
+  const c = 2 * Math.PI * r
+  return (
+    <svg viewBox="0 0 24 24" className="ring" aria-hidden="true">
+      <defs>
+        <linearGradient id={`ring-${pct}`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#4338ff" />
+          <stop offset="60%" stopColor="#9b3dff" />
+          <stop offset="100%" stopColor="#ff5a1f" />
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="12" r={r} className="ring-bg" />
+      <circle
+        cx="12"
+        cy="12"
+        r={r}
+        className="ring-fg"
+        stroke={`url(#ring-${pct})`}
+        strokeDasharray={`${(pct / 100) * c} ${c}`}
+      />
+    </svg>
+  )
+}
 
 export default function Hero() {
-  const [roleIdx, setRoleIdx] = useState(0)
-  const [displayed, setDisplayed] = useState('')
-  const [deleting, setDeleting] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const heroRef = useRef(null)
-  const bgGradRef = useRef(null)
-
-  useEffect(() => {
-    const full = roles[roleIdx]
-    let timer
-
-    if (!deleting && displayed.length < full.length) {
-      timer = setTimeout(() => setDisplayed(full.slice(0, displayed.length + 1)), 55)
-    } else if (!deleting && displayed.length === full.length) {
-      timer = setTimeout(() => setDeleting(true), 2400)
-    } else if (deleting && displayed.length > 0) {
-      timer = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 35)
-    } else if (deleting && displayed.length === 0) {
-      setDeleting(false)
-      setRoleIdx((prev) => (prev + 1) % roles.length)
-    }
-
-    return () => clearTimeout(timer)
-  }, [displayed, deleting, roleIdx])
-
-  useEffect(() => {
-    const hero = heroRef.current
-    if (!hero) return
-
-    let currentX = window.innerWidth / 2
-    let currentY = window.innerHeight / 2
-    let targetX = currentX
-    let targetY = currentY
-    let rafId
-
-    const onMouseMove = (e) => {
-      const rect = hero.getBoundingClientRect()
-      targetX = e.clientX - rect.left
-      targetY = e.clientY - rect.top
-    }
-
-    const loop = () => {
-      currentX += (targetX - currentX) * 0.08
-      currentY += (targetY - currentY) * 0.08
-
-      if (bgGradRef.current) {
-        bgGradRef.current.style.transform = `translate3d(${currentX - 250}px, ${currentY - 250}px, 0)`
-      }
-      rafId = requestAnimationFrame(loop)
-    }
-
-    hero.addEventListener('mousemove', onMouseMove)
-    rafId = requestAnimationFrame(loop)
-
-    return () => {
-      hero.removeEventListener('mousemove', onMouseMove)
-      cancelAnimationFrame(rafId)
-    }
-  }, [])
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText('pkb110201@gmail.com')
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2200)
-  }
-
-  const navTo = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.12,
-        delayChildren: 0.1
-      }
-    }
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 35, filter: 'blur(8px)' },
-    visible: {
-      opacity: 1,
-      y: 0,
-      filter: 'blur(0px)',
-      transition: {
-        duration: 0.85,
-        ease: [0.16, 1, 0.3, 1]
-      }
-    }
-  }
-
-  const titleWordVariants = {
-    hidden: { opacity: 0, y: 50, rotateX: 45 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      rotateX: 0,
-      transition: {
-        duration: 0.9,
-        ease: [0.16, 1, 0.3, 1]
-      }
-    }
-  }
-
   return (
-    <section ref={heroRef} id="home" className="hero-section">
-      <div ref={bgGradRef} className="hero-interactive-grad" aria-hidden="true"></div>
+    <section className="hero" id="top">
+      <div className="hero-scene-wrap">
+        <div className="aurora" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+        </div>
+        <Suspense fallback={null}>
+          <HeroScene />
+        </Suspense>
+        <span className="hero-floor" aria-hidden="true" />
+      </div>
 
-      <div className="container">
-        <motion.div
-          className="hero-grid"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="hero-content">
-            <motion.div variants={itemVariants} className="hero-eyebrow-row">
-              <div className="hero-badge-emerald">
-                <span className="pulse-dot"></span>
-                AVAILABLE FOR OPPORTUNITIES · WORLDWIDE
-              </div>
-              <div className="hero-badge-violet">
-                <span className="ai-spark">🤖</span>
-                AI-AUGMENTED DEVELOPER
-              </div>
-            </motion.div>
+      <div className="container hero-inner">
+        <div className="hero-copy">
+          <motion.p className="eyebrow mono" {...rise(0)}>
+            <i className="pulse-dot" /> {profile.availability}
+          </motion.p>
 
-            <motion.h1 className="hero-main-title">
-              <motion.span variants={titleWordVariants} className="title-part-1">
-                PRAGNESH
-              </motion.span>
-              <br />
-              <motion.span variants={titleWordVariants} className="title-part-2">
-                KALOTARA
-              </motion.span>
-            </motion.h1>
+          <h1 className="hero-title">
+            <motion.span className="ht-line" {...rise(0.1)}>
+              Software,
+            </motion.span>
+            <motion.span className="ht-line" {...rise(0.22)}>
+              <em>grown</em> at home.
+            </motion.span>
+          </h1>
 
-            <motion.div variants={itemVariants} className="hero-typing-box">
-              <span className="typing-text">{displayed}</span>
-              <span className="typing-cursor">|</span>
-            </motion.div>
+          <motion.p className="hero-sub" {...rise(0.4)}>
+            Web apps, mobile apps and desktop software, designed and built by me from a quiet home studio in{' '}
+            {profile.city.split(',')[0]}. No office or sales team on your invoice, so you pay{' '}
+            <strong>40–60% less than an agency</strong> and talk directly to the person writing your code.
+          </motion.p>
 
-            <motion.p variants={itemVariants} className="hero-description">
-              Results-driven <strong className="text-highlight">Team Lead & Full-Stack Engineer</strong> with <strong className="text-highlight">3.7+ years of experience</strong> architecting multi-tenant SaaS platforms, sub-millisecond access governance engines, and IoT telemetry streams using <strong className="text-highlight">NestJS, React, TypeScript & PostgreSQL</strong>.
-            </motion.p>
-
-            <motion.div variants={itemVariants} className="hero-metric-strip">
-              <div className="metric-chip">👑 <strong>Team Lead</strong> @ Binstellar</div>
-              <div className="chip-sep">·</div>
-              <div className="metric-chip">🔒 <strong>BeSecure</strong> Authorizer</div>
-              <div className="chip-sep">·</div>
-              <div className="metric-chip">📡 <strong>5,000+</strong> IoT Devices</div>
-              <div className="chip-sep">·</div>
-              <div className="metric-chip">⚡ <strong>99.9%</strong> Uptime SLA</div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="hero-btn-group">
-              <MagneticButton
-                className="btn-hero-primary"
-                onClick={() => navTo('contact')}
-                data-cursor="HIRE ME"
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                Hire Me
-              </MagneticButton>
-
-              <a
-                href="https://drive.google.com/file/d/1_IHmO_vryoPm7FxL2Gb22nzxygXhOrw9/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-hero-secondary"
-                data-cursor="DOWNLOAD ↗"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Resume ↗
-              </a>
-
-              <button
-                className="btn-hero-ghost"
-                onClick={copyEmail}
-                data-cursor="COPY"
-              >
-                {copied ? 'Copied ✓' : 'Copy Email'}
-              </button>
-            </motion.div>
-          </div>
-
-          <motion.div variants={itemVariants} className="hero-terminal-wrapper">
-            <div className="terminal-card card-spotlight">
-              <div className="terminal-header">
-                <span className="term-dot dot-red"></span>
-                <span className="term-dot dot-yellow"></span>
-                <span className="term-dot dot-green"></span>
-                <span className="term-title">zsh — pragnesh@dev</span>
-              </div>
-              <div className="terminal-body">
-                <div className="term-line">
-                  <span className="term-prompt">➜</span>
-                  <span className="term-path">~</span>
-                  <span className="term-cmd">whoami</span>
-                </div>
-                <div className="term-output-cyan">pragnesh_kalotara</div>
-
-                <div className="term-line term-space">
-                  <span className="term-prompt">➜</span>
-                  <span className="term-path">~</span>
-                  <span className="term-cmd">cat profile.json</span>
-                </div>
-                <div className="term-json-block">
-                  <span className="term-brace">{'{'}</span>
-                  <div className="term-json-row"><span className="json-key">"current_role"</span>: <span className="json-str">"Team Lead & Full-Stack Dev @ Binstellar"</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"flagship_system"</span>: <span className="json-str">"BeSecure Multi-Tenant IAM Platform"</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"primary_stack"</span>: <span className="json-str">["NestJS", "React", "TypeScript", "Postgres"]</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"total_exp"</span>: <span className="json-str">"3.7+ years"</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"teams_led"</span>: <span className="json-str">"Binstellar & Qfact (6+ Devs)"</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"permission_check_speed"</span>: <span className="json-str">"&lt;1ms"</span>,</div>
-                  <div className="term-json-row"><span className="json-key">"available"</span>: <span className="json-bool">true</span></div>
-                  <span className="term-brace">{'}'}</span>
-                </div>
-
-                <div className="term-line term-space">
-                  <span className="term-prompt">➜</span>
-                  <span className="term-path">~</span>
-                  <span className="term-cmd">./get_in_touch.sh</span>
-                </div>
-                <div className="term-output-emerald">✅ System online. Ready to architect high-scale software!</div>
-                <div className="term-cursor-row">
-                  <span className="term-prompt">➜</span>
-                  <span className="term-path">~</span>
-                  <span className="term-blink">▋</span>
-                </div>
-              </div>
-            </div>
+          <motion.div className="hero-ctas" {...rise(0.5)}>
+            <Link to="/#estimate" className="btn btn-accent">
+              Estimate my project <ArrowDownRight size={18} />
+            </Link>
+            <Link to="/#work" className="btn btn-ghost">
+              See the work <ArrowUpRight size={18} />
+            </Link>
           </motion.div>
+
+          <motion.dl className="hero-facts" {...rise(0.65)}>
+            {heroFacts.map((f) => (
+              <div key={f.label}>
+                <dt className="display">{f.value}</dt>
+                <dd>{f.label}</dd>
+              </div>
+            ))}
+          </motion.dl>
+        </div>
+
+        <motion.div className="hero-note" {...rise(0.8)}>
+          <p>
+            A real house, a laptop on the porch, and everything I ship orbiting around it. That is the whole studio.
+          </p>
+          <Link to="/#why" className="pill">
+            <GripVertical size={14} /> Why it costs less
+          </Link>
+        </motion.div>
+
+        <motion.div className="hcard hcard-stats" {...float(1.1)}>
+          <div className="hcard-row">
+            <Ring pct={100} />
+            <span>
+              <small>Projects shipped</small>
+              <b>13</b>
+            </span>
+          </div>
+          <div className="hcard-row">
+            <Ring pct={59} />
+            <span>
+              <small>Saved vs agency</small>
+              <b>~59%</b>
+            </span>
+          </div>
+        </motion.div>
+
+        <motion.div className="hcard hcard-quote" {...float(1.3, 10)}>
+          <div className="hcard-art" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <small className="mono">Studio note</small>
+          <p>Every app starts at a kitchen table.</p>
+        </motion.div>
+
+        <motion.div className="hcard hcard-slot" {...float(1.5, 6)}>
+          <small className="mono">Next free slot</small>
+          <p>December · 2 projects</p>
+          <span className="slot-bar">
+            <i />
+          </span>
+        </motion.div>
+
+        <motion.div className="spin-badge" {...rise(1.6)} aria-hidden="true">
+          <svg viewBox="0 0 100 100">
+            <defs>
+              <path id="spin-path" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" />
+            </defs>
+            <text>
+              <textPath href="#spin-path">DRAG TO SPIN · DRAG TO SPIN ·</textPath>
+            </text>
+          </svg>
+          <span>↻</span>
         </motion.div>
       </div>
     </section>

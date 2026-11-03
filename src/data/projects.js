@@ -1,163 +1,447 @@
+// kind: 'freelance' = built for my own clients from home.
+//       'team'      = built while employed / leading a team.
+// platform decides which little device frame the cover draws: 'web' | 'phone' | 'desktop' | 'combo'.
+// Only put numbers here that you can back up in a client call.
+
+export const categories = [
+  { id: 'all', label: 'Everything' },
+  { id: 'saas', label: 'SaaS & web apps' },
+  { id: 'mobile', label: 'Mobile apps' },
+  { id: 'desktop', label: 'Desktop software' },
+  { id: 'website', label: 'Websites' },
+  { id: 'iot', label: 'IoT & real-time' },
+  { id: 'ai', label: 'AI' },
+]
+
 export const projects = [
   {
+    id: 'tripkoz',
+    kind: 'freelance',
+    title: 'TripKoz',
+    tagline: 'School bus & fleet tracking, with a driver app and a parent app',
+    sector: 'Transport · Education',
+    year: '2026',
+    platform: 'combo',
+    accent: '#E2552B',
+    categories: ['saas', 'mobile', 'iot'],
+    summary:
+      'A full SaaS for schools and fleet operators: plan routes and stops, assign drivers and vehicles, and let parents watch the bus arrive on a live map.',
+    problem:
+      'Schools ran transport on phone calls and WhatsApp groups. Parents never knew where the bus was, drivers had no checklist, and the office had no record of who boarded where.',
+    solution:
+      'I built the whole product end to end: a NestJS API with 30+ modules, a Next.js admin dashboard, and one native Android app that switches between Driver and Guardian mode based on the account role. Live GPS flows over Socket.io and subscriptions are billed through Razorpay.',
+    features: [
+      'Route, stop and pickup-point planning with vehicle and driver assignment',
+      'Driver mode: pre-trip safety checklist, stop-by-stop passenger manifest, turn-by-turn route, one-tap SOS',
+      'Guardian mode: bus on a live map, ETA to the stop, boarding alerts, trip history, absence reporting',
+      'Live location upload and broadcast with Socket.io and Redis',
+      'Inspections, maintenance logs, safety reports and notifications',
+      'Multi-organisation SaaS with plans, subscriptions and Razorpay billing',
+      'Demo-request funnel and solo-operator onboarding',
+    ],
+    stack: {
+      Web: ['Next.js 15', 'React 19', 'Tailwind CSS 4'],
+      Mobile: ['Kotlin', 'Jetpack Compose', 'Hilt', 'Retrofit', 'Google Maps SDK', 'Baseline Profiles'],
+      Backend: ['NestJS 11', 'TypeScript', 'Prisma 7', 'Socket.io', 'Razorpay'],
+      Data: ['PostgreSQL', 'Redis'],
+      Infra: ['Docker Compose', 'Render'],
+    },
+    numbers: [
+      { value: '689', label: 'automated backend tests' },
+      { value: '33', label: 'API modules' },
+      { value: '2-in-1', label: 'Android app, driver + parent' },
+    ],
+    note: 'Audited with typecheck, lint and 53 test suites all green before release.',
+  },
+  {
+    id: 'vidyalay',
+    kind: 'freelance',
+    title: 'Vidyalay',
+    tagline: 'School management system for admins, teachers and parents',
+    sector: 'Education',
+    year: '2026',
+    platform: 'web',
+    accent: '#2F5D50',
+    categories: ['saas', 'mobile'],
+    summary:
+      'One portal that runs a school: admissions, attendance, fees, exams, timetable, library, transport and parent communication.',
+    problem:
+      'The school juggled registers, spreadsheets and three separate apps. Fee reminders went out by hand and report cards took a week every term.',
+    solution:
+      'A typed Express + Prisma API that describes itself with OpenAPI, a React 19 admin portal, and an Android app for teachers and parents that is being built against the same API.',
+    features: [
+      'Students, guardians, staff and admissions with bulk Excel import and export',
+      'Daily attendance for students and staff, leave requests and approvals',
+      'Fee structures, online payments, receipts and dues tracking',
+      'Exams, marks entry, report cards, promotions and certificates',
+      'Timetable, homework, e-content, study material and a school calendar',
+      'Library, transport routes, gallery, circulars and in-app messaging',
+      'Audit log of every change, roles and device sessions',
+    ],
+    stack: {
+      Web: ['React 19', 'Tailwind CSS 4', 'Vite'],
+      Mobile: ['Kotlin', 'Jetpack Compose', 'multi-module'],
+      Backend: ['Node.js', 'Express', 'TypeScript', 'Prisma 7', 'OpenAPI'],
+      Data: ['PostgreSQL'],
+      Infra: ['Docker Compose'],
+    },
+    numbers: [
+      { value: '33', label: 'modules in one portal' },
+      { value: '150', label: 'documented API endpoints' },
+      { value: '1', label: 'login for the whole school' },
+    ],
+    note: 'Android app for teachers and parents is in development.',
+  },
+  {
+    id: 'pharmadesk',
+    kind: 'freelance',
+    title: 'PharmaDesk',
+    tagline: 'Desktop billing & stock software for Indian medical stores',
+    sector: 'Retail · Healthcare',
+    year: '2026',
+    platform: 'desktop',
+    accent: '#3A6EA5',
+    categories: ['desktop'],
+    summary:
+      'A Windows app a chemist can run at the counter: fast GST billing, batch-wise stock, expiry alerts and the records the drug inspector asks for.',
+    problem:
+      'Off-the-shelf pharmacy software was expensive, slow and locked the owner into yearly fees. Expired stock was found only when it was too late.',
+    solution:
+      'An Electron + React app that starts its own local Express API. The screen never talks to the database directly, and Admin and Cashier roles are enforced on the server. GST maths and FEFO allocation live in one shared package used by both sides.',
+    features: [
+      'Point-of-sale GST billing with keyboard-first flow',
+      'Batch-wise stock with FEFO (first expiry, first out) allocation',
+      'Purchases, suppliers and expiry alerts before stock goes bad',
+      'Schedule H / H1 register for regulated medicines',
+      'Daily, GST and stock reports',
+      'One-click backup and restore of the whole database',
+      'Admin and Cashier roles with JWT on a local-only API',
+    ],
+    stack: {
+      Desktop: ['Electron', 'electron-vite', 'React 18', 'TypeScript', 'Tailwind', 'Radix UI', 'TanStack Query'],
+      Backend: ['Express 5', 'Drizzle ORM', 'Zod'],
+      Data: ['PostgreSQL', 'Neon', 'PGlite for tests'],
+    },
+    numbers: [
+      { value: 'GST', label: 'compliant billing' },
+      { value: 'FEFO', label: 'stock allocation' },
+      { value: '0', label: 'yearly licence fee for the owner' },
+    ],
+  },
+  {
+    id: 'aarav-hospital',
+    kind: 'freelance',
+    title: 'Aarav Hospital',
+    tagline: "Hospital management for a children's hospital",
+    sector: 'Healthcare',
+    year: '2026',
+    platform: 'web',
+    accent: '#C2407A',
+    categories: ['saas'],
+    summary:
+      'Reception, OPD queue, doctor consultations, prescriptions, beds and the full child vaccination schedule, in one fast and simple app.',
+    problem:
+      'Paper OPD slips, doctors re-asking the same history, and vaccination dates tracked in a notebook. Parents missed doses and nobody noticed.',
+    solution:
+      'A React SPA on an Express + PostgreSQL API. Each doctor sees only their own patients. I also did a full stability and performance pass: added indexes, made every read a single round trip, and found the real bottleneck was a database hosted in Ohio for a hospital in India.',
+    features: [
+      'Reception registers the child, picks a doctor and sends them to the OPD queue',
+      'Doctor screen for vitals, symptoms, history, investigations, diagnosis, Rx, advice and follow-up',
+      'Printable prescriptions',
+      'Live bed board: vacant, occupied, cleaning, maintenance, with admit, shift and discharge',
+      'IAP immunisation schedule generated from date of birth, with overdue and upcoming doses',
+      'Appointments',
+    ],
+    stack: {
+      Web: ['React', 'Vite'],
+      Backend: ['Node.js', 'Express'],
+      Data: ['PostgreSQL', 'Neon'],
+    },
+    numbers: [
+      { value: '1', label: 'round trip per screen' },
+      { value: '6', label: 'new indexes from the perf pass' },
+      { value: 'IAP', label: 'vaccine schedule built in' },
+    ],
+  },
+  {
+    id: 'genzkrp',
+    kind: 'freelance',
+    title: 'GenzKRP',
+    tagline: 'Bulk automation for bank staff on the government Kisan Rin Portal',
+    sector: 'Banking · Agriculture',
+    year: '2026',
+    platform: 'desktop',
+    accent: '#B8860B',
+    categories: ['desktop', 'saas'],
+    summary:
+      'A paid Windows tool that lets bank branch staff upload, approve and download KCC crop loans and interest claims in bulk from Excel, instead of one at a time.',
+    problem:
+      'Branch staff were entering hundreds of Kisan Credit Card loans and subsidy claims by hand on a slow government portal, one record at a time.',
+    solution:
+      'A Java desktop app that signs in to the portal as the user and runs the work in bulk from Excel sheets, with maker and checker roles. I also built the business around it: a licensing API on Vercel checks every sign-in against a paid subscription, and an admin portal manages customers, payments and app updates.',
+    features: [
+      'Bulk upload, approve, delete, fetch and download of loans and claims from Excel',
+      'Maker (branch user) and checker (branch head) flows',
+      'Interest Subvention and Prompt Repayment Incentive claims',
+      'Subscription check on every sign-in, with a sign-in log',
+      'Admin portal: customers, payments, stop/resume, publish updates',
+      'Auto-update for installed copies',
+    ],
+    stack: {
+      Desktop: ['Java', 'FlatLaf', 'Apache POI', 'SQLite', 'JNA'],
+      Backend: ['Node.js', 'Express', 'Vercel'],
+      Web: ['React', 'Vite'],
+      Data: ['PostgreSQL', 'Neon'],
+    },
+    numbers: [
+      { value: 'Bulk', label: 'instead of one-by-one entry' },
+      { value: 'SaaS', label: 'licensed per user' },
+      { value: 'Auto', label: 'updates to every install' },
+    ],
+  },
+  {
+    id: 'allmarc',
+    kind: 'freelance',
+    title: 'Allmarc Industries',
+    tagline: '3D product website for a heavy engineering company',
+    sector: 'Oil & gas · Civil engineering',
+    year: '2026',
+    platform: 'site',
+    accent: '#5B5F97',
+    categories: ['website'],
+    summary:
+      'A fast, cinematic website with interactive 3D models of industrial equipment, generated into hundreds of SEO-ready static pages.',
+    problem:
+      'Their catalogue lived in PDFs. Buyers could not see the equipment, and the old site was slow and invisible on Google.',
+    solution:
+      'I wrote a small static site generator that turns content into 237 plain HTML pages, then layered Three.js 3D viewers, GSAP scroll animation and Lenis smooth scrolling on top. A tiny Node server handles Brotli/Gzip, video streaming and caching.',
+    features: [
+      '237 statically generated, SEO-optimised pages',
+      'Interactive Three.js viewers for plant modules, chambers and shoring systems',
+      'GSAP ScrollTrigger animation synced with Lenis smooth scroll',
+      'Instant client-side search across every page',
+      'Brotli / Gzip compression, HTTP 206 video streaming and ETag caching',
+    ],
+    stack: {
+      Web: ['Three.js', 'GSAP', 'Lenis', 'HTML/CSS'],
+      Build: ['Node.js', 'Cheerio', 'custom static generator'],
+      Infra: ['Vercel'],
+    },
+    numbers: [
+      { value: '237', label: 'static pages' },
+      { value: '3D', label: 'equipment viewers' },
+      { value: '0', label: 'framework runtime shipped' },
+    ],
+  },
+
+  // Built while employed
+  {
     id: 'besecure',
+    kind: 'team',
     title: 'BeSecure',
-    subtitle: 'Enterprise Multi-Tenant Security & Access Governance Platform',
-    category: 'FULL STACK',
-    topology: [
-      { step: '01. AUTH SESSION', detail: 'Authenticated Membership Context' },
-      { step: '02. ROUTE GUARD', detail: 'NestJS In-Process Snapshot Cache (<1ms)' },
-      { step: '03. ACCESS ENGINE', detail: 'Explicit Deny Precedence Rules' },
-      { step: '04. TENANT DB', detail: 'PostgreSQL Isolated Schema' }
+    tagline: 'Multi-tenant security & access governance platform',
+    sector: 'Enterprise B2B · Binstellar',
+    year: '2026',
+    platform: 'web',
+    accent: '#1F7A8C',
+    categories: ['saas'],
+    summary:
+      'An enterprise IAM platform: fine-grained permissions, explicit-deny rules and strict tenant isolation across 30+ backend modules.',
+    problem:
+      'Enterprise customers need granular permissions, protection against privilege escalation and zero data leakage between tenants.',
+    solution:
+      'As team lead I designed the access-control engine and the route guards, with in-process snapshot caching backed by database version probes, and built the React admin dashboards.',
+    features: [
+      'Access-control engine with discrete permission keys and explicit-deny precedence',
+      'Sub-millisecond permission checks with snapshot caching',
+      'Tenant context derived from authenticated membership across 30+ modules',
+      'Time-bound break-glass support access with full state-diff audit',
+      'Admin dashboards with PrimeReact and ApexCharts',
+      'Excel and PDF audit exports',
     ],
-    architecture: 'NestJS Microservices · Dynamic Access Control Engine · In-Process Snapshot Caching',
-    problem: 'Enterprise multi-tenant platforms require granular permission governance, anti-escalation safeguards, explicit Deny priority rules, and zero data leakage across tenant boundaries.',
-    role: 'Team Lead & Full-Stack Developer — Engineered the fine-grained Access Control Engine, sub-millisecond route guards, multi-tenant session isolation across 30+ modules, and React administrative security dashboards.',
-    outcome: 'Delivered sub-millisecond authorization evaluation, 100% strict multi-tenant data isolation, break-glass support delegation, and automated PDF/Excel diff audit exports.',
-    metrics: [
-      { label: 'Permission Check Latency', value: '<1ms' },
-      { label: 'Multi-Tenant Modules', value: '30+' },
-      { label: 'Access Policy Rules', value: 'Explicit Deny' }
+    stack: {
+      Web: ['React', 'Vite', 'Redux Toolkit', 'PrimeReact', 'Tailwind CSS'],
+      Backend: ['NestJS', 'TypeScript', 'TypeORM', 'SAML 2.0', 'OAuth 2.0'],
+      Data: ['PostgreSQL'],
+    },
+    numbers: [
+      { value: '<1ms', label: 'permission check' },
+      { value: '30+', label: 'tenant-isolated modules' },
+      { value: '100%', label: 'audited support access' },
     ],
-    tags: ['NestJS', 'React', 'TypeScript', 'PostgreSQL', 'TypeORM', 'Redux Toolkit', 'PrimeReact', 'Tailwind CSS v4', 'SAML 2.0', 'OAuth 2.0', 'RBAC'],
-    featured: true
   },
   {
-    id: 'hospital-system',
-    title: 'Hospital Management System',
-    subtitle: 'Modular Healthcare Platform & ACID Data Engine',
-    category: 'FULL STACK',
-    topology: [
-      { step: '01. CLIENT REST', detail: 'Granular Role-Based Tokens' },
-      { step: '02. NESTJS CORE', detail: 'Patient Intake & Billing Microservices' },
-      { step: '03. TYPEORM LAYER', detail: 'ACID Transaction Bounds' },
-      { step: '04. DOCKER STACK', detail: 'PostgreSQL Relational DB' }
-    ],
-    architecture: 'Modular NestJS Architecture · PostgreSQL Relational Model · Containerized Deployments',
-    problem: 'Healthcare institutions require modular service architecture for patient records, appointments, and billing with strict data integrity and transactional consistency.',
-    role: 'Architected modular NestJS backend with relational PostgreSQL data modeling, token authentication, and Docker containerization for staging and production.',
-    outcome: 'Reduced patient intake processing wait time by 20%, ensured 100% transactional ACID compliance, and standardized deployment environments with Docker.',
-    metrics: [
-      { label: 'Intake Wait Time', value: '-20%' },
-      { label: 'Data Integrity', value: '100% ACID' },
-      { label: 'Environment Control', value: 'Dockerized' }
-    ],
-    tags: ['NestJS', 'TypeScript', 'PostgreSQL', 'TypeORM', 'Docker', 'JWT', 'RBAC', 'REST APIs'],
-    featured: true
-  },
-  {
-    id: 'qfact-platform',
+    id: 'qfact',
+    kind: 'team',
     title: 'QFACT Platform',
-    subtitle: 'Modular Microservices SaaS & Enterprise Twilio Voice Ecosystem',
-    category: 'FULL STACK',
-    topology: [
-      { step: '01. INBOUND CALL', detail: 'Twilio Telecom Webhook Dispatch' },
-      { step: '02. QUEUE WORKER', detail: 'BullMQ Async Redis Queue' },
-      { step: '03. NESTJS API', detail: 'Ticket Routing & FCM Push' },
-      { step: '04. DATABASE', detail: 'MySQL Sequelize ORM' }
+    tagline: 'Microservices SaaS with a Twilio voice call centre',
+    sector: 'SaaS · Qfact',
+    year: '2025',
+    platform: 'web',
+    accent: '#7A4E9C',
+    categories: ['saas'],
+    summary:
+      'A multi-tenant workflow platform with background queues and inbound / outbound call handling that creates tickets automatically.',
+    problem:
+      'High-volume workflows and phone support needed async processing and automatic ticketing.',
+    solution:
+      'I led a team of 6 across backend, frontend and mobile, designed the NestJS microservices, BullMQ queues and the Twilio Voice integration.',
+    features: [
+      'NestJS microservices with BullMQ background workers',
+      'Twilio Voice inbound and outbound call management',
+      'Automatic ticket creation and real-time tracking',
+      'FCM push notifications',
+      'Secure media handling pipeline',
     ],
-    architecture: 'NestJS Microservices · BullMQ Queue Processing · Twilio Telecom Engine',
-    problem: 'Enterprise workflow systems required async queue processing for high-volume transactions and inbound/outbound automated call dispatch.',
-    role: 'Team Lead — Directed 6-engineer development team, architected high-performance RESTful APIs, BullMQ queue integrations, and end-to-end Twilio Voice call management.',
-    outcome: 'Increased request processing efficiency by 35%, accelerated API response speeds by 40%, and achieved 95% on-time sprint feature delivery.',
-    metrics: [
-      { label: 'API Response Boost', value: '+40%' },
-      { label: 'Request Efficiency', value: '+35%' },
-      { label: 'Engineering Team', value: '6 Devs' }
+    stack: {
+      Backend: ['NestJS', 'Node.js', 'TypeScript', 'BullMQ', 'Twilio Voice', 'FCM', 'Sequelize'],
+      Data: ['MySQL', 'Redis'],
+      Infra: ['Docker'],
+    },
+    numbers: [
+      { value: '+40%', label: 'faster API responses' },
+      { value: '95%', label: 'sprints delivered on time' },
+      { value: '6', label: 'developers led' },
     ],
-    tags: ['Node.js', 'NestJS', 'TypeScript', 'MySQL', 'Twilio Voice', 'BullMQ', 'FCM', 'Sequelize'],
-    featured: true
+  },
+  {
+    id: 'hms-enterprise',
+    kind: 'team',
+    title: 'Hospital Management System',
+    tagline: 'Modular healthcare backend with strict data integrity',
+    sector: 'Healthcare · Qfact',
+    year: '2025',
+    platform: 'web',
+    accent: '#3F7D58',
+    categories: ['saas'],
+    summary: 'Patient records, appointments and billing as modular NestJS services on PostgreSQL.',
+    problem: 'Hospitals need transactional consistency across intake, appointments and billing.',
+    solution: 'Modular NestJS services, relational PostgreSQL modelling, token auth and Docker for every environment.',
+    features: [
+      'Patient intake, appointments and billing modules',
+      'ACID transactions with TypeORM',
+      'Role-based tokens',
+      'Dockerised staging and production',
+    ],
+    stack: {
+      Backend: ['NestJS', 'TypeScript', 'TypeORM', 'JWT'],
+      Data: ['PostgreSQL'],
+      Infra: ['Docker'],
+    },
+    numbers: [
+      { value: '-20%', label: 'patient intake wait' },
+      { value: 'ACID', label: 'transactions' },
+      { value: 'Docker', label: 'every environment' },
+    ],
   },
   {
     id: 'telep-eco',
+    kind: 'team',
     title: 'Telep-Eco',
-    subtitle: 'Real-Time IoT Telemetry Monitoring Platform',
-    category: 'IOT',
-    topology: [
-      { step: '01. SENSOR STREAM', detail: '5,000+ Concurrent IoT Devices' },
-      { step: '02. MQTT BROKER', detail: 'EMQX Protocol Optimization' },
-      { step: '03. WEBSOCKET', detail: 'Real-Time Dashboard Dispatch' },
-      { step: '04. TIME-SERIES', detail: 'MongoDB Aggregation Engine' }
+    tagline: 'Real-time IoT telemetry for 5,000+ devices',
+    sector: 'IoT · Rapidise',
+    year: '2024',
+    platform: 'web',
+    accent: '#0E7C66',
+    categories: ['iot'],
+    summary: 'Ingests and monitors sensor streams from thousands of live devices with live dashboards.',
+    problem: 'Thousands of devices streaming at once, over unreliable networks, with little bandwidth to spare.',
+    solution: 'Optimised MQTT brokers, event-driven services, WebSocket push to dashboards and time-series storage in MongoDB.',
+    features: [
+      'MQTT ingestion from 5,000+ concurrent devices',
+      'WebSocket push to live dashboards',
+      'Time-series aggregation in MongoDB',
+      'Event-driven microservices',
     ],
-    architecture: 'MQTT Broker Protocol · Event-Driven Microservices · Time-Series Ingestion',
-    problem: 'Ingesting and monitoring sensor streams across 5,000+ active IoT devices in real time with minimal network bandwidth overhead.',
-    role: 'Led backend engineering, optimized MQTT protocol brokers, designed WebSocket push channels, and scaled time-series database storage.',
-    outcome: 'Reduced transmission overhead by 25%, sustained 99.9% system uptime, and achieved 35% higher device tracking efficiency.',
-    metrics: [
-      { label: 'Connected Devices', value: '5,000+' },
-      { label: 'Transmission Overhead', value: '-25%' },
-      { label: 'Tracking Efficiency', value: '+35%' }
+    stack: {
+      Backend: ['Node.js', 'MQTT', 'Socket.io'],
+      Data: ['MongoDB', 'AWS S3'],
+    },
+    numbers: [
+      { value: '5,000+', label: 'live devices' },
+      { value: '99.9%', label: 'uptime' },
+      { value: '-25%', label: 'transmission overhead' },
     ],
-    tags: ['Node.js', 'MQTT', 'MongoDB', 'Socket.io', 'AWS S3', 'Event-Driven'],
-    featured: true
   },
   {
     id: 'telep-ai',
+    kind: 'team',
     title: 'Telep-AI',
-    subtitle: 'AI Video Streaming & Real-Time Anomaly Warning Infrastructure',
-    category: 'AI',
-    topology: [
-      { step: '01. RTSP INPUT', detail: 'IP Camera Video Stream Decoding' },
-      { step: '02. GSTREAMER', detail: 'Computer Vision Inference' },
-      { step: '03. ELECTRON CORE', detail: 'Cross-Platform Native Runtime' },
-      { step: '04. ALERT DISPATCH', detail: 'Sub-100ms Warning Trigger' }
+    tagline: 'AI video analytics with real-time alerts',
+    sector: 'AI · Rapidise',
+    year: '2024',
+    platform: 'desktop',
+    accent: '#A44A3F',
+    categories: ['ai', 'desktop'],
+    summary: 'A cross-platform desktop app that reads IP camera streams and raises AI alerts in real time.',
+    problem: 'Camera streams needed AI anomaly detection with alerts in well under a second.',
+    solution: 'Designed the Electron app core and the RTSP + GStreamer video pipeline feeding the vision model.',
+    features: [
+      'RTSP camera ingestion and decoding',
+      'GStreamer / OpenCV inference pipeline',
+      'Cross-platform Electron runtime',
+      'Low-latency alert dispatch',
     ],
-    architecture: 'Electron Native App · RTSP Video Ingestion · GStreamer AI Inference Pipeline',
-    problem: 'Low-latency IP camera streaming required real-time AI anomaly detection with sub-second alert dispatch.',
-    role: 'Designed cross-platform Electron app core and video streaming pipelines.',
-    outcome: 'Accelerated AI warning alert response times by 50% and boosted video frame processing throughput by 40%.',
-    metrics: [
-      { label: 'Warning Latency', value: '-50%' },
-      { label: 'Inference Boost', value: '+40%' },
-      { label: 'Platform Support', value: 'Cross-Platform' }
+    stack: {
+      Desktop: ['Electron', 'Node.js'],
+      AI: ['GStreamer', 'OpenCV', 'RTSP'],
+      Data: ['SQLite'],
+    },
+    numbers: [
+      { value: '-50%', label: 'alert latency' },
+      { value: '+40%', label: 'frame throughput' },
+      { value: '3 OS', label: 'one codebase' },
     ],
-    tags: ['Electron.js', 'Node.js', 'SQLite', 'RTSP', 'GStreamer', 'OpenCV'],
-    featured: false
   },
   {
-    id: 'helpdesk-system',
-    title: 'Helpdesk Support System',
-    subtitle: 'Enterprise IT Incident & Ticket Governance Engine',
-    category: 'SAAS',
-    topology: [
-      { step: '01. INCIDENT REPORT', detail: 'Slack & MS Teams Webhooks' },
-      { step: '02. WEBSOCKET ROUTER', detail: 'Real-Time Notification Layer' },
-      { step: '03. ACCESS GUARD', detail: 'Dynamic RBAC Ticket Governance' },
-      { step: '04. STORAGE', detail: 'MongoDB Indexed Collections' }
+    id: 'helpdesk',
+    kind: 'team',
+    title: 'Helpdesk System',
+    tagline: 'IT ticketing with Slack and Teams integration',
+    sector: 'Internal tools · Rapidise',
+    year: '2024',
+    platform: 'web',
+    accent: '#8C6A1F',
+    categories: ['saas'],
+    summary: 'Role-based IT ticketing with real-time notifications and chat-bot integrations.',
+    problem: 'Ticket routing bottlenecks delayed IT incidents across distributed teams.',
+    solution: 'REST APIs, role-based access, WebSocket notifications and Slack / MS Teams webhooks.',
+    features: ['Role-based ticket governance', 'Real-time WebSocket notifications', 'Slack and MS Teams integration'],
+    stack: {
+      Backend: ['Node.js', 'TypeScript', 'WebSockets', 'Slack API', 'MS Teams'],
+      Data: ['MongoDB'],
+    },
+    numbers: [
+      { value: '-30%', label: 'response time' },
+      { value: '+25%', label: 'operational efficiency' },
+      { value: '2', label: 'chat integrations' },
     ],
-    architecture: 'Node.js Event Loop · WebSocket Dispatcher · Third-Party Bot Integrations',
-    problem: 'Support ticket routing bottlenecks delayed IT incident resolution across distributed enterprise teams.',
-    role: 'Engineered role-based access, REST APIs, real-time WebSocket notifications, and Slack/Teams integrations.',
-    outcome: 'Reduced ticket response time by 30% and elevated operational efficiency by 25%.',
-    metrics: [
-      { label: 'Response Time', value: '-30%' },
-      { label: 'Operational Gain', value: '+25%' },
-      { label: 'Integrations', value: 'Slack & Teams' }
-    ],
-    tags: ['Node.js', 'TypeScript', 'MongoDB', 'WebSockets', 'Slack API', 'MS Teams'],
-    featured: false
   },
   {
-    id: 'quotation-manager',
-    title: 'Quotation Manager (BAP-TOOL)',
-    subtitle: 'Automated Proposal & Manufacturing Quotation Engine',
-    category: 'SAAS',
-    topology: [
-      { step: '01. PRICING INPUT', detail: 'Multi-Stage Manufacturing Config' },
-      { step: '02. EXPRESS ENGINE', detail: 'Automated Cost Calculation' },
-      { step: '03. S3 PDF VAULT', detail: 'Secure PDF Document Rendering' },
-      { step: '04. TOKEN AUTH', detail: 'JWT Authorization Scope' }
+    id: 'bap-tool',
+    kind: 'team',
+    title: 'BAP-Tool',
+    tagline: 'Quotation engine for manufacturing',
+    sector: 'Manufacturing · Rapidise',
+    year: '2023',
+    platform: 'web',
+    accent: '#4D6A8A',
+    categories: ['saas'],
+    summary: 'Automated multi-stage pricing and PDF proposals for a manufacturer.',
+    problem: 'Manual pricing across manufacturing stages caused slow quotes and billing mistakes.',
+    solution: 'An Express pricing engine with token auth and PDF proposals stored on S3.',
+    features: ['Multi-stage cost calculation', 'PDF proposal generation on AWS S3', 'JWT authorisation'],
+    stack: {
+      Web: ['Angular'],
+      Backend: ['Node.js', 'Express', 'TypeScript', 'JWT'],
+      Data: ['MongoDB', 'AWS S3'],
+    },
+    numbers: [
+      { value: '+40%', label: 'faster proposals' },
+      { value: 'S3', label: 'document vault' },
+      { value: 'JWT', label: 'secured' },
     ],
-    architecture: 'Express.js Pipeline · AWS S3 Asset Storage · Token Authentication',
-    problem: 'Manual pricing calculations across multi-stage manufacturing resulted in quotation delays and billing discrepancies.',
-    role: 'Engineered quotation workflow engine with token authentication and automated AWS S3 document rendering.',
-    outcome: 'Increased proposal turnaround speed by 40% and improved security compliance scores.',
-    metrics: [
-      { label: 'Proposal Speed', value: '+40%' },
-      { label: 'Document Storage', value: 'AWS S3' },
-      { label: 'Security Scope', value: 'Token Auth' }
-    ],
-    tags: ['Node.js', 'Angular', 'TypeScript', 'MongoDB', 'AWS S3', 'JWT'],
-    featured: false
-  }
+  },
 ]
+
+export const getProject = (id) => projects.find((p) => p.id === id)
