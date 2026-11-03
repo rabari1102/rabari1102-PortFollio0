@@ -1,57 +1,84 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
+import { profile } from '../data/site'
+
+const links = [
+  { href: '/#work', label: 'Work' },
+  { href: '/#why', label: 'Why cheaper' },
+  { href: '/#services', label: 'Services' },
+  { href: '/#estimate', label: 'Estimate' },
+  { href: '/#process', label: 'Process' },
+  { href: '/#faq', label: 'FAQ' },
+]
 
 export default function Nav() {
-    const linksRef = useRef(null)
+  const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const location = useLocation()
 
-    useEffect(() => {
-        const sections = ['home', 'impact', 'experience', 'projects', 'skills', 'ai-mastery', 'ai', 'edu-contact']
-        const handleScroll = () => {
-            let cur = ''
-            sections.forEach(id => {
-                const el = document.getElementById(id)
-                if (el) { const r = el.getBoundingClientRect(); if (r.top <= 160 && r.bottom >= 160) cur = id }
-            })
-            document.querySelectorAll('.nav-links a').forEach(a =>
-                a.classList.toggle('active', a.getAttribute('href') === '#' + cur)
-            )
-        }
-        window.addEventListener('scroll', handleScroll)
-        return () => window.removeEventListener('scroll', handleScroll)
-    }, [])
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
-    return (
-        <nav>
-            <div className="nav-inner">
-                <span className="nav-logo">PK.DEV</span>
-                <ul className="nav-links" ref={linksRef}>
-                    <li><a href="#home" className="active">About</a></li>
-                    <li><a href="#experience">Experience</a></li>
-                    <li><a href="#projects">Projects</a></li>
-                    <li><a href="#ai-mastery">AI Workflow</a></li>
-                    <li><a href="#skills">Tech Stack</a></li>
-                    <li><a href="#edu-contact">Contact</a></li>
-                </ul>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <a href="https://github.com/pragneshkalotara" target="_blank" className="btn-icon-sm" aria-label="GitHub Profile" title="GitHub">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                        </svg>
-                    </a>
-                    <a href="https://www.linkedin.com/in/pragnesh-kalotara-23870116a" target="_blank" className="btn-icon-sm" aria-label="LinkedIn Profile" title="LinkedIn">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" /><circle cx="4" cy="4" r="2" />
-                        </svg>
-                    </a>
-                    <a href="mailto:pragneshkalotara110201@gmail.com" className="nav-contact" aria-label="Send Email">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <rect x="2" y="4" width="20" height="16" rx="2" />
-                            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                        </svg>
-                        Hire Me
-                    </a>
-                </div>
-            </div>
+  useEffect(() => setOpen(false), [location])
+
+  useEffect(() => {
+    document.body.style.overflow = open ? 'hidden' : ''
+  }, [open])
+
+  return (
+    <header className={`nav ${scrolled ? 'is-scrolled' : ''}`}>
+      <div className="nav-inner">
+        <Link to="/" className="logo" aria-label="Pragnesh Kalotara, home">
+          pragnesh<span>.</span>
+        </Link>
+
+        <nav className="nav-links" aria-label="Main">
+          {links.map((l) => (
+            <Link key={l.href} to={l.href}>
+              {l.label}
+            </Link>
+          ))}
         </nav>
-    )
+
+        <div className="nav-actions">
+          <Link to="/#contact" className="btn btn-ink btn-sm nav-cta">
+            Start a project
+          </Link>
+          <button className="icon-btn nav-burger" onClick={() => setOpen((o) => !o)} aria-label="Menu" aria-expanded={open}>
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="mobile-menu"
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {links.map((l, i) => (
+              <motion.div key={l.href} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.05 }}>
+                <Link to={l.href} className="mobile-link">
+                  <span className="mono">0{i + 1}</span> {l.label}
+                </Link>
+              </motion.div>
+            ))}
+            <Link to="/#contact" className="btn btn-accent mobile-cta">
+              Get a free quote
+            </Link>
+            <p className="mobile-note hand">{profile.availability} ✌︎</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </header>
+  )
 }

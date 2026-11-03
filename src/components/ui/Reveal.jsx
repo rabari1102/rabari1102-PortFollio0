@@ -1,52 +1,17 @@
 import { motion } from 'framer-motion'
 
-export default function Reveal({
-  children,
-  className = '',
-  direction = 'up',
-  delay = 0,
-  duration = 0.8,
-  distance = 35,
-  once = true
-}) {
-  const getVariants = () => {
-    let x = 0
-    let y = 0
-    if (direction === 'up') y = distance
-    if (direction === 'down') y = -distance
-    if (direction === 'left') x = distance
-    if (direction === 'right') x = -distance
-
-    return {
-      hidden: {
-        opacity: 0,
-        x,
-        y,
-        filter: 'blur(8px)'
-      },
-      visible: {
-        opacity: 1,
-        x: 0,
-        y: 0,
-        filter: 'blur(0px)',
-        transition: {
-          duration,
-          delay,
-          ease: [0.16, 1, 0.3, 1]
-        }
-      }
-    }
-  }
-
+export default function Reveal({ children, className = '', delay = 0, y = 24, as = 'div', ...rest }) {
+  const Tag = motion[as]
   return (
-    <motion.div
+    <Tag
       className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once, margin: '-60px' }}
-      variants={getVariants()}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-60px' }}
+      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      {...rest}
     >
       {children}
-    </motion.div>
+    </Tag>
   )
 }
