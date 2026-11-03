@@ -3722,3 +3722,34 @@ h3 em {
   color: var(--ink);
   font-weight: 600;
 }
+
+/* ── 404 ──────────────────────────────────────────────────── */
+.notfound {
+  min-height: 74vh;
+  display: grid;
+  place-items: center;
+  padding: 140px 0 90px;
+}
+.notfound-inner {
+  max-width: 560px;
+  text-align: center;
+}
+.notfound-code {
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: var(--accent-2);
+  margin-bottom: 14px;
+}
+.notfound h1 {
+  font-size: clamp(2.4rem, 7vw, 4rem);
+  line-height: 1.02;
+  margin-bottom: 18px;
+}
+.notfound-sub {
+  color: var(--ink-2);
+  font-size: 1.05rem;
+  margin-bottom: 30px;
+}
+.notfound .hero-ctas {
+  justify-content: center;
+}

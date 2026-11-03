@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowDownRight, ArrowUpRight, GripVertical } from 'lucide-react'
@@ -49,8 +49,20 @@ function Ring({ pct }) {
 }
 
 export default function Hero() {
+  // The three.js island is ~140 kB gzipped. On phones it sits below the fold as
+  // decoration, so only load it on wide screens where motion is welcome. The CSS
+  // aurora still gives the hero its colour everywhere.
+  const [showScene, setShowScene] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 961px) and (prefers-reduced-motion: no-preference)')
+    const sync = () => setShowScene(mq.matches)
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
+
   return (
-    <section className="hero" id="top">
+    <section className={`hero ${showScene ? '' : 'hero--flat'}`} id="top">
       <div className="hero-scene-wrap">
         <div className="aurora" aria-hidden="true">
           <i />
@@ -58,9 +70,11 @@ export default function Hero() {
           <i />
           <i />
         </div>
-        <Suspense fallback={null}>
-          <HeroScene />
-        </Suspense>
+        {showScene && (
+          <Suspense fallback={null}>
+            <HeroScene />
+          </Suspense>
+        )}
         <span className="hero-floor" aria-hidden="true" />
       </div>
 
