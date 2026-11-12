@@ -1,141 +1,50 @@
 # AUDIT.md — Portfolio / freelance site
 
-**Date:** 2026-11-03
-**Branch audited:** `freelance-redesign`
+**Last updated:** 2026-11-12 (full redesign, "Ember" theme)
 **Live reference:** https://thepragnesh.in/
-**Stack:** React 18 + Vite 6 + React Router 6 + Framer Motion 13 + three.js 0.170, deployed on Vercel. Fully client-rendered SPA. All content is data-driven from `src/data/*`.
+**Stack:** React 18 + Vite 6 + React Router 6 + Framer Motion 13, deployed on Vercel. Client-rendered SPA. All content is data-driven from `src/data/*`.
+
+The 2026-11-03 audit of the previous light "home studio" design is in git history. This file describes the site as it is now.
 
 ---
 
-## 0. The most important finding (read this first)
+## 1. What the redesign changed
 
-The master brief assumes the **old live site** — an engineering portfolio with a terminal, an "AI System Architect" chatbot, skill percentages (NestJS 98%…), a technical-insights blog, and projects named BeSecure / HMS / QFACT / Telep-Eco / Telep-AI / Helpdesk.
-
-**The repository is not that site.** The `freelance-redesign` branch (committed today) is already a substantially rebuilt, well-executed **freelance business site**. A large share of the brief's 24 phases is *already done here*, and several of the brief's own rules are already satisfied:
-
-| Brief asks for | State in this repo |
-| --- | --- |
-| Remove arbitrary skill percentages | ✅ Done — replaced by grouped `Toolbox` |
-| No fabricated testimonials | ✅ None invented; uses project outcomes instead |
-| Distinguish freelance vs team/employer work | ✅ `kind: 'freelance' \| 'team'` drives labels & copy |
-| Respect employer confidentiality | ✅ Team projects phrased without confidential detail |
-| Freelance services section | ✅ `Services` (6 services, starting prices) |
-| Case-study pages at `/work/<slug>` | ✅ 13 projects, each a real page |
-| Work process "idea → production" | ✅ `Process` |
-| FAQ, contact with project-type/budget fields | ✅ `Faq`, `Contact` |
-| Data-driven, maintainable content | ✅ `src/data/site.js`, `projects.js`, `services.js`, `experience.js` |
-| Build succeeds, no console errors | ✅ Verified below |
-
-So this is **not** a from-scratch rebuild. It is a polish-and-close-the-gaps job on an already-strong site.
-
-### The one strategic conflict that needs the owner's decision
-The brief (Phase 2) wants to **drop the "cheaper than an agency" angle** and reposition as a premium engineer ("reliable, scalable digital products"), on a dark editorial theme.
-
-This repo does the **opposite on purpose**: it is built around *"home studio, 40–60% less than an agency, AI does the boring parts,"* on a warm light theme, with a whole `WhyCheaper` cost-receipt section and an agency-vs-me `Estimator`.
-
-These are opposite brand strategies. Following the brief literally would tear out deliberate, recent, good work. **This decision is the owner's and blocks all P1 copy/section work.** It is raised back in chat rather than guessed.
-
----
-
-## 1. Method & evidence
-- Read every component, page and data file.
-- `npm run build` → success, 2241 modules, built in ~7.6s (output sizes in §4).
-- Ran `npm run dev`, loaded in a real browser.
-  - **Console errors: none** (`onlyErrors` filter returned nothing).
-  - **Desktop (1280):** hero renders, polished, premium.
-  - **Mobile (375):** no horizontal overflow (`scrollWidth === innerWidth === 375`), but see D1.
-
-Severity legend: **P0** critical · **P1** business/SEO/a11y · **P2** polish/perf · **Verify** needs owner.
-
----
-
-## 2. Confirmed defects & UX weaknesses
-
-### D1 — Three.js hero scene loads on mobile where it is purely decorative — **P2 (was flagged P1, corrected)**
-A first screenshot suggested the mobile hero showed only "Software," with a large blank band. **Re-tested and disproven:** on 375px the copy is `order:1` (above the scene), computed opacity of the sub-paragraph, CTAs and headline line 2 are all `1`, and the primary CTA sits at `top: 494px` — above the 812px fold. The earlier "blank" was a browser-pane screenshot capture artifact (stale paint), not a site defect. Content renders correctly on mobile.
-**Residual (genuine):** the three.js scene (141 kB gzip) still downloads on phones and reserves a ~380px decorative band *below* the CTAs. **Fix (perf, not bug):** skip loading the scene on small screens and under `prefers-reduced-motion`.
-
-### D2 — Social preview image missing — **P1**
-`index.html` declares `twitter:card = summary_large_image` and `og:*` tags but there is **no `og:image` and no `twitter:image`** (`grep` count = 0). Shares on WhatsApp/LinkedIn/X render a blank or stripped card. **Fix:** add a 1200×630 OG image and reference it (+ `og:image:width/height`, `twitter:image`).
-
-### D3 — No `robots.txt`, no `sitemap.xml`, no `public/` dir — **P1**
-Nothing tells crawlers what to index or lists the `/work/<slug>` pages. **Fix:** add `public/robots.txt` (+ sitemap ref) and a generated `public/sitemap.xml` covering `/` and all 13 project URLs.
-
-### D4 — Per-page metadata is client-side only — **P1**
-`index.html` carries a single static title/description for the whole SPA. Project pages set only `document.title` in a `useEffect`; they have **no unique description, canonical, or OG tags** in the initial HTML. Link unfurlers and some crawlers see the generic home metadata for every `/work/<slug>`. **Fix:** a lightweight per-route head manager (title + description + canonical + OG) — no framework migration required.
-
-### D5 — No real 404 — **P1→P2**
-`App.jsx` routes `*` → `Home`, and `ProjectPage` redirects unknown ids to `/#work`. Any unknown URL returns a 200 with the homepage, which is bad for crawlers and users. **Fix:** a proper `NotFound` route/page.
-
-### D6 — Contact form has no server endpoint — **P1 (owner input)**
-`Contact.jsx` posts directly to `api.web3forms.com` when `VITE_WEB3FORMS_KEY` is set, else opens WhatsApp. `vercel.json` rewrites `/api/*` but **there is no `api/` directory** — a dead rewrite. There is no server-side validation, spam protection, or rate limiting. For a solo site the client+web3forms path is acceptable **if** the key is configured; a Vercel serverless function would be the robust option. **Needs owner decision** (see owner checklist).
-
-### D7 — Hero CTA / headline rely on entrance animations for first paint — **P2**
-Hero copy uses `initial opacity:0`. With `reducedMotion="user"` Framer still resolves to visible, so this is acceptable, but first paint can briefly show empty text. Low risk; noted for the perf/a11y pass.
-
----
-
-## 3. Content / factual items to verify — **Verify**
-- **Public email mismatch:** site + JSON-LD use `pkb110201@gmail.com`; the account on file is `pragneshkalotara110201@gmail.com`. Confirm which is the real contact address.
-- **`yearsExperience: '3.8'`** and hero "3.8 yrs / 2 as team lead" — consistent with the dated experience (Jan 2023 → now), good. Keep it derived from dates, don't hardcode in new copy.
-- **Hero facts** ("13 products shipped", "40–60% lower") — ensure every public number is defensible on a client call (the data file already comments this).
-
----
-
-## 4. Performance (baseline)
-Production build output:
-
-| Asset | Raw | Gzip |
+| Area | Before | Now |
 | --- | --- | --- |
-| `index.html` | 3.41 kB | 1.46 kB |
-| CSS | 48.1 kB | 11.1 kB |
-| main JS | 392.9 kB | 128.5 kB |
-| **HeroScene (three.js)** | **537.5 kB** | **141.2 kB** |
+| Positioning | "Software, grown at home", led with *40–60% cheaper* | "I build the whole product. You hold the keys.", led with ownership and accountability. Price is still explained (the two receipts), but as a consequence, not the headline |
+| Trust | Spread across FAQ and process | A dedicated **"Don't trust me. Verify me."** section: five things a stranger can check alone, six ways their money is protected. Built only from promises the site already made |
+| Theme | White page, pastel aurora | Warm black + ember gradient, cream "paper" for receipts and quotes, plus a light theme with a toggle |
+| Hero | three.js low-poly island (537 kB, desktop only) | A small hand-written WebGL shader + CSS device stage, on every screen size |
+| Work | Card grid with filters | Client projects as a pinned, stacking deck; team projects as a hover list with a cursor-following preview. Client vs team work is labelled everywhere |
+| Estimator | Price range | Live itemised **draft quote** with the three milestone amounts worked out |
+| Fonts | Google Fonts (third-party request) | Self-hosted, Latin subsets only |
+| Motion | Fade-ins | Opening curtain, word-by-word headlines, magnetic buttons, cursor ring, spotlight cards, scroll-velocity marquee, scroll-drawn timeline, route wipe. All disabled under `prefers-reduced-motion` |
 
-- three.js is the single heaviest asset and more than doubles JS weight. It is already `lazy()`-loaded after text paint (good). On mobile it mostly reserves blank space (D1), so it is a candidate to **skip on small screens / reduced-motion** — a real win with no visual loss where it isn't seen.
-- Main bundle bundles Framer Motion + Router + lucide + all sections; route-level code-splitting for `ProjectPage` is a cheap follow-up.
-- Targets: LCP ≤2.5s, INP ≤200ms, CLS ≤0.1. Reserve the hero band to avoid CLS when collapsing it on mobile.
+## 2. Verified in this pass
 
----
+- `npm run build` succeeds. JS 427 kB (139 kB gzip), CSS 74 kB (16 kB gzip). three.js is gone, so total JS weight is under half of what desktop visitors downloaded before.
+- Loaded in a real browser at 1440×900, 1024×768 and 390×844, dark and light: no console errors, no horizontal overflow.
+- Automated accessibility scan (axe-core, WCAG 2.1 AA + best practice) on `/`, `/work/tripkoz` and the 404, both themes: **0 violations**.
+- Exercised: opening curtain, theme toggle (persists), mobile menu, estimator → "send draft" prefill, contact validation, FAQ and experience accordions, project pager, unknown URL → 404 with `noindex`, per-page title/canonical.
 
-## 5. Strengths to preserve (do not regress)
-- Clean, documented data layer — content edits never require touching components.
-- Honest positioning: no fake reviews, no self-rated percentages, clear AI-honesty ("does / doesn't"), freelance-vs-team labelling.
-- Real case-study depth, interactive estimator, cost receipt, process, payment split, FAQ.
-- Accessible touches already present: `aria-label`s, `aria-expanded` on the burger, `aria-pressed` on choices, `MotionConfig reducedMotion="user"`, body-scroll lock on mobile menu.
+## 3. Factual tightening
 
----
+- "2 as team lead" → **"team lead since 2025"** (the dates say March 2025, so "two years" was rounded up).
+- "led teams of 6" → **"led a team of 6"**.
+- The fake-looking "Quote #4471" on the agency receipt is gone; both receipts say *Illustrative*.
+- New copy makes two promises that were only implied before. Keep them only if you will honour them:
+  - the free first call is a **video** call, and
+  - you will **walk the client through a shipped product** on that call.
 
-## 6. Gaps vs the brief that are enhancements, not defects (owner decides scope)
-- No `/insights` blog (Phase 11). Absent entirely; only build it if there is real content to publish — do **not** fabricate articles.
-- No separate `/about`, `/services`, `/experience` routes — the site is single-page with anchors + project pages. Works well; splitting into routes is optional and mainly an SEO/landing-page play.
-- No AI chat assistant (Phase 10). The redesign intentionally reframed "AI" as an honesty section + an AI *service*, not a chatbot. Optional.
-- No CMS / lead dashboard (Phases 13–14). **Not justified** for a solo portfolio; the data-file approach is the right call. Recommend not building these.
+## 4. Still open (needs the owner)
 
----
+1. **Real proof beats drawn proof.** The project covers are drawn mock-ups. Real screenshots, live links, a photo and client quotes are the biggest remaining trust gap. The data files have slots for all four; see README.
+2. **Contact form backend.** Without `VITE_WEB3FORMS_KEY` the form falls back to WhatsApp. That works, but email delivery needs the key set in Vercel. `vercel.json` still rewrites `/api/*` although there is no `api/` directory.
+3. **Public email.** The site uses `pkb110201@gmail.com`. Confirm it is the inbox you actually watch.
+4. **Availability line.** "Taking 2 new projects for December" is in `src/data/site.js`. Update it when it stops being true; stale scarcity reads as a sales trick.
+5. **`dist/` is committed.** Vercel builds from source (`vercel.json`), so the tracked `dist/` is redundant and has to be rebuilt by hand to stay in sync. Consider removing it from git and adding it to `.gitignore`.
 
-## 6.5 Implemented in this pass (2026-11-03)
-Direction-independent P1/P2 fixes shipped on `freelance-redesign` (build verified, live-tested):
-- **D3** `public/robots.txt` + **auto-generated `public/sitemap.xml`** (14 URLs: home + 13 projects) via `scripts/gen-sitemap.mjs`, wired into `npm run build` so it never drifts.
-- **D4** `src/components/Seo.jsx` — per-route `<head>` manager (title, description, canonical, OG, Twitter, robots). Wired into Home and every `/work/<slug>` page. Verified: each project now emits its own canonical + description + OG.
-- **D5** Real `NotFound` page + route; unknown URLs and unknown project ids render it (was: silently serving the homepage). Carries `noindex, follow`.
-- **D1/perf** three.js hero scene now loads only at ≥961px and when motion is allowed; phones and reduced-motion users skip the 141 kB download. Verified canvas loads at 1024px, skipped on mobile.
+## 5. Not recommended
 
-**Still open — needs the owner (see §0 and owner checklist):** D2 `og.png` image (content depends on the positioning decision), D6 contact backend path, and all copy/section rework.
-
-## 7. Prioritised fix plan
-**P0 / P1 — do now, independent of the positioning decision:**
-1. Fix mobile hero blank-band (D1).
-2. Add `og:image` / `twitter:image` + 1200×630 card (D2).
-3. Add `robots.txt` + `sitemap.xml` via `public/` (D3).
-4. Per-route head manager for title/description/canonical/OG (D4).
-5. Real 404 page (D5).
-6. Skip three.js hero scene on mobile / reduced-motion (D1+perf).
-
-**P1 — needs owner input first:**
-7. Positioning decision (premium vs cheaper-than-agency) → then any copy/section rework.
-8. Contact backend path (web3forms key vs Vercel function) (D6).
-
-**P2 — polish:** route code-splitting, accessibility sweep (focus-visible, contrast on the faded ghost buttons), Lighthouse pass.
-
-**Not recommended:** CMS, lead dashboard, fabricated blog content.
+Invented testimonials, client logos without permission, "100% satisfaction" badges, countdown timers, a blog with no real articles, a CMS for a one-person site.

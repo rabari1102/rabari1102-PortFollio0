@@ -153,6 +153,10 @@ export const payment = [
 
 export const faqs = [
   {
+    q: 'How do I know you are not a scam?',
+    a: 'Do not take my word for it. Check my LinkedIn and GitHub, get on a free video call, and ask to see a product I have shipped. Then start small: you never pay 100% upfront, and the code sits in your own GitHub from day one, so you can walk away at any milestone with everything you have paid for.',
+  },
+  {
     q: 'If it is cheaper, is it lower quality?',
     a: 'No. The price is lower because there is no office, no sales team and no layers of managers, not because corners are cut. You get a developer who has led teams and built enterprise systems, writing and reviewing every line.',
   },

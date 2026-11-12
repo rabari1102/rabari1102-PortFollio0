@@ -1,0 +1,930 @@
+/* ─────────────────────────────────────────────────────────────
+   "Ember": a warm black studio lit by one molten orange-to-saffron
+   light. Cream type, paper documents, and a light theme that flips
+   the same tokens to cream paper and ink.
+
+   Everything is driven by the custom properties below. Change a
+   colour here and the whole site, the WebGL backdrop included, follows.
+   ───────────────────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces */
+  --bg: #0c0b0a;
+  --bg-2: #110f0d;
+  --surface: #171412;
+  --surface-2: #1f1b18;
+
+  /* Type */
+  --text: #f4efe6;
+  --text-2: #b9b0a3;
+  --text-3: #8b8377;
+
+  /* Lines */
+  --line: rgba(244, 239, 230, 0.09);
+  --line-2: rgba(244, 239, 230, 0.2);
+
+  /* The ember light */
+  --accent: #ff7a3d;
+  --accent-2: #ffb655;
+  --ember-1: #ff4a2b;
+  --ember-2: #ff8a2a;
+  --ember-3: #ffcf6b;
+  --grad: linear-gradient(100deg, #ff5a36 0%, #ff8d28 48%, #ffc650 100%);
+  --on-accent: #1b0d04;
+  --glow: rgba(255, 122, 61, 0.13);
+
+  /* Signals */
+  --ok: #5fe3a6;
+  --danger: #ff7b6b;
+
+  /* Paper: receipts and quotes are always "printed", in both themes */
+  --paper: #f3ecdf;
+  --paper-2: #e7dece;
+  --paper-ink: #1c1814;
+  --paper-ink-2: #5d5448;
+  --paper-line: rgba(28, 24, 20, 0.18);
+  --stamp-red: #c2331c;
+  --stamp-green: #1c7a4d;
+
+  /* Drawn product mocks */
+  --mock-bg: #1c1815;
+  --mock-chip: rgba(244, 239, 230, 0.06);
+  --mock-dim: rgba(244, 239, 230, 0.13);
+  --mock-strong: rgba(244, 239, 230, 0.78);
+  --mock-line: rgba(244, 239, 230, 0.13);
+  --mock-frame: #050505;
+  --cover-bg: #100e0c;
+  /* How far a project's accent colour is pushed towards white so it stays readable on black. */
+  --tint: #ffffff;
+  --tint-amt: 42%;
+
+  --shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
+  --shadow-sm: 0 16px 40px -20px rgba(0, 0, 0, 0.7);
+
+  --f-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --f-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --f-body: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --radius: 22px;
+  --radius-lg: 30px;
+  --gutter: clamp(18px, 4vw, 44px);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg: #f6f1e8;
+  --bg-2: #efe8db;
+  --surface: #fffaf1;
+  --surface-2: #ffffff;
+
+  --text: #17130f;
+  --text-2: #4d463d;
+  --text-3: #6e665b;
+
+  --line: rgba(23, 19, 15, 0.1);
+  --line-2: rgba(23, 19, 15, 0.24);
+
+  --accent: #b5320b;
+  --accent-2: #b8600a;
+  --ember-1: #ff7a4d;
+  --ember-2: #ffab52;
+  --ember-3: #ffe0a0;
+  --glow: rgba(226, 85, 43, 0.1);
+
+  --ok: #0e8a55;
+  --danger: #c0321f;
+
+  --paper: #fffdf8;
+  --paper-2: #f1e9da;
+
+  --mock-bg: #fffdf8;
+  --mock-chip: rgba(23, 19, 15, 0.05);
+  --mock-dim: rgba(23, 19, 15, 0.12);
+  --mock-strong: rgba(23, 19, 15, 0.8);
+  --mock-line: rgba(23, 19, 15, 0.1);
+  --mock-frame: #17130f;
+  --cover-bg: #ece4d6;
+  --tint: #000000;
+  --tint-amt: 26%;
+
+  --shadow: 0 40px 80px -44px rgba(70, 40, 10, 0.45);
+  --shadow-sm: 0 16px 36px -22px rgba(70, 40, 10, 0.4);
+  color-scheme: light;
+}
+
+/* ── Base ─────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+  transition:
+    background-color 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+ul,
+ol,
+dl,
+dd,
+figure,
+blockquote,
+fieldset {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 400;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.3s var(--ease);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Serif-italic accent words: the one decorative voice on the site. */
+em {
+  font-family: var(--f-serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.mono {
+  font-family: var(--f-mono);
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.container {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  line-height: 1;
+  letter-spacing: -0.005em;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  transition:
+    transform 0.35s var(--ease),
+    color 0.35s var(--ease),
+    border-color 0.35s,
+    box-shadow 0.35s;
+}
+
+.btn svg {
+  flex-shrink: 0;
+  transition: transform 0.4s var(--ease);
+}
+
+.btn:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-sm {
+  padding: 10px 16px;
+  font-size: 0.88rem;
+}
+
+.btn-lg {
+  padding: 18px 28px;
+  font-size: 1.04rem;
+}
+
+/* Primary: molten gradient, with a band of light that crosses it on hover. */
+.btn-primary {
+  background: var(--grad);
+  color: var(--on-accent);
+  box-shadow:
+    0 12px 34px -12px rgba(255, 110, 50, 0.65),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.8s var(--ease);
+}
+
+.btn-primary:hover::before {
+  transform: translateX(120%);
+}
+
+.btn-primary:hover {
+  box-shadow:
+    0 18px 44px -12px rgba(255, 110, 50, 0.85),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* Ghost: an outline that fills from the bottom. */
+.btn-ghost {
+  border-color: var(--line-2);
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 40%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.btn-ghost::before,
+.btn-ink::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  background: var(--text);
+  border-radius: inherit;
+  transform: translateY(102%);
+  transition: transform 0.5s var(--ease);
+}
+
+.btn-ghost:hover {
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.btn-ghost:hover::before,
+.btn-ink:hover::before {
+  transform: translateY(0);
+}
+
+/* Ink: for buttons that sit on paper. */
+.btn-ink {
+  background: var(--paper-ink);
+  color: var(--paper);
+  width: 100%;
+}
+
+.btn-ink::before {
+  background: var(--grad);
+}
+
+.btn-ink:hover {
+  color: var(--on-accent);
+}
+
+.magnetic {
+  display: inline-block;
+}
+
+/* A text link with a round arrow that rolls on hover. */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 0.96rem;
+  white-space: nowrap;
+}
+
+.round-arrow {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  transition:
+    background-color 0.35s,
+    color 0.35s,
+    border-color 0.35s,
+    transform 0.5s var(--ease);
+}
+
+.link-arrow:hover .round-arrow,
+a:hover > .round-arrow {
+  background: var(--grad);
+  color: var(--on-accent);
+  border-color: transparent;
+  transform: rotate(45deg);
+}
+
+/* ── Small bits ───────────────────────────────────────────── */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  font-family: var(--f-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--text-2);
+  background: color-mix(in srgb, var(--text) 3%, transparent);
+  white-space: nowrap;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  transition:
+    background-color 0.25s,
+    border-color 0.25s;
+}
+
+.icon-btn:hover {
+  background: color-mix(in srgb, var(--text) 8%, transparent);
+  border-color: var(--line-2);
+}
+
+.icon-btn > span {
+  display: grid;
+}
+
+.pulse-dot,
+.sleep-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ok);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
+  animation: pulse 2s ease-out infinite;
+}
+
+.sleep-dot {
+  background: var(--text-3);
+}
+
+@keyframes pulse {
+  to {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+.tick {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ok) 16%, transparent);
+  color: var(--ok);
+}
+
+.fineprint {
+  margin-top: 22px;
+  font-size: 0.86rem;
+  color: var(--text-3);
+  max-width: 72ch;
+}
+
+.fineprint.is-center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.dots {
+  flex: 1;
+  min-width: 14px;
+  border-bottom: 1px dotted currentColor;
+  opacity: 0.35;
+  transform: translateY(-4px);
+}
+
+.countup {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Paper ────────────────────────────────────────────────── */
+
+.paper {
+  position: relative;
+  background-color: var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 27px, rgba(28, 24, 20, 0.035) 27px 28px),
+    radial-gradient(120% 80% at 0% 0%, rgba(255, 255, 255, 0.5), transparent 60%);
+  color: var(--paper-ink);
+}
+
+/* ── Sections ─────────────────────────────────────────────── */
+
+.section {
+  position: relative;
+  padding: clamp(84px, 12vw, 168px) 0;
+}
+
+.section-head {
+  max-width: 880px;
+  margin-bottom: clamp(40px, 6vw, 76px);
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-2);
+  margin-bottom: 22px;
+}
+
+.sl-num {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.sl-rule {
+  width: 36px;
+  height: 1px;
+  background: var(--line-2);
+}
+
+.section-title,
+.contact-title {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: clamp(2.3rem, 5.4vw, 4.6rem);
+  line-height: 0.98;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.section-intro {
+  margin-top: 26px;
+  max-width: 62ch;
+  font-size: clamp(1.02rem, 1.3vw, 1.18rem);
+  color: var(--text-2);
+  text-wrap: pretty;
+}
+
+.group-label {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 16px;
+  color: var(--text-3);
+  font-weight: 400;
+  margin-bottom: 26px;
+}
+
+.group-label b {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.group-label .rule {
+  flex: 0 1 80px;
+  height: 1px;
+  background: var(--line-2);
+}
+
+.group-label.is-team {
+  margin-top: clamp(70px, 9vw, 120px);
+}
+
+/* ── Kinetic headlines ────────────────────────────────────── */
+
+.k-line {
+  display: block;
+}
+
+/* Each word is a little window; the word slides up into it. The padding (cancelled by the
+   negative margin) leaves room for descenders and the italic overhang inside the mask. */
+.k-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.1em 0.12em 0.2em;
+  margin: -0.1em -0.12em -0.2em;
+}
+
+.k-in {
+  display: inline-block;
+  transform-origin: 0% 100%;
+  will-change: transform;
+}
+
+.k-in em,
+.grad-text {
+  font-size: 1.08em;
+  line-height: 0.9;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* Stops the italic's right edge being cut off by background-clip. */
+  padding-right: 0.08em;
+  margin-right: -0.08em;
+}
+
+/* ── Spotlight: a glow that follows the pointer over cards ── */
+
+[data-spot] {
+  position: relative;
+}
+
+[data-spot]::before,
+[data-spot]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+
+/* soft fill */
+[data-spot]::after {
+  background: radial-gradient(460px circle at var(--mx, 50%) var(--my, 50%), var(--glow), transparent 62%);
+}
+
+/* lit edge */
+[data-spot]::before {
+  padding: 1px;
+  background: radial-gradient(280px circle at var(--mx, 50%) var(--my, 50%), var(--accent), transparent 70%);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  z-index: 1;
+}
+
+[data-spot].is-lit::before,
+[data-spot].is-lit::after {
+  opacity: 1;
+}
+
+/* ── Fixed furniture: grain, progress, cursor, curtain ───── */
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.055;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* On cream the white grain is invisible, so flip it to dark specks. */
+:root[data-theme='light'] .grain {
+  filter: invert(1);
+  opacity: 0.07;
+}
+
+.scroll-progress,
+.route-wipe {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad);
+  transform-origin: 0 50%;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.route {
+  min-height: 100vh;
+}
+
+.cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.cursor.is-on {
+  opacity: 1;
+}
+
+.cursor-ring {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1.5px solid var(--accent);
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.4s var(--ease),
+    height 0.4s var(--ease),
+    background-color 0.3s,
+    border-color 0.3s,
+    opacity 0.3s;
+}
+
+.cursor.is-hover .cursor-ring {
+  width: 58px;
+  height: 58px;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.cursor.is-label .cursor-ring {
+  width: 88px;
+  height: 88px;
+  background: var(--grad);
+  border-color: transparent;
+  box-shadow: 0 14px 40px -10px rgba(255, 110, 50, 0.7);
+}
+
+.cursor.is-text .cursor-ring {
+  opacity: 0;
+}
+
+.cursor.is-down .cursor-ring {
+  width: 26px;
+  height: 26px;
+}
+
+.cursor-label {
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  color: var(--on-accent);
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.25s,
+    transform 0.35s var(--ease);
+}
+
+.cursor.is-label .cursor-label {
+  opacity: 1;
+  transform: none;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.preloader-mark {
+  display: flex;
+  align-items: baseline;
+  overflow: hidden;
+  padding: 0.12em 0.04em 0.2em;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(3.2rem, 14vw, 10rem);
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.preloader-mark span {
+  display: inline-block;
+}
+
+.preloader-mark i {
+  width: 0.16em;
+  height: 0.16em;
+  margin-left: 0.05em;
+  border-radius: 50%;
+  background: var(--grad);
+}
+
+.preloader-foot {
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  color: var(--text-2);
+}
+
+.preloader-count {
+  font-size: 1.1rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.preloader-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  background: var(--grad);
+  transform-origin: 0 50%;
+}
+
+/* WhatsApp shortcut */
+.fab {
+  position: fixed;
+  right: clamp(14px, 2.4vw, 28px);
+  bottom: clamp(14px, 2.4vw, 28px);
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  height: 54px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: #128c4a;
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow:
+    0 18px 40px -14px rgba(18, 140, 74, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.fab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1.5px solid #25d366;
+  animation: fab-ring 2.6s ease-out infinite;
+}
+
+@keyframes fab-ring {
+  to {
+    transform: scale(1.25, 1.6);
+    opacity: 0;
+  }
+}
+
+.fab span {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition:
+    max-width 0.5s var(--ease),
+    opacity 0.3s,
+    margin 0.5s var(--ease);
+}
+
+@media (hover: hover) {
+  .fab:hover span,
+  .fab:focus-visible span {
+    max-width: 180px;
+    margin-left: 10px;
+    opacity: 1;
+  }
+}
+
+/* ── Motion preferences ───────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

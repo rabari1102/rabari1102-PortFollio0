@@ -2,6 +2,10 @@
 //       'team'      = built while employed / leading a team.
 // platform decides which little device frame the cover draws: 'web' | 'phone' | 'desktop' | 'combo'.
 // Only put numbers here that you can back up in a client call.
+//
+// Two optional fields make a project far more convincing. Add them whenever you can:
+//   image:   '/shots/tripkoz.jpg'   a real screenshot in /public (replaces the drawn cover)
+//   liveUrl: 'https://…'            a link the visitor can open and click around
 
 export const categories = [
   { id: 'all', label: 'Everything' },

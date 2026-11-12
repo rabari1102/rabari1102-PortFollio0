@@ -1,47 +1,113 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import SectionHead from './ui/SectionHead'
+import Reveal from './ui/Reveal'
+import Scramble from './fx/Scramble'
 import ProjectCover from './ProjectCover'
-import { categories, projects } from '../data/projects'
+import { projects } from '../data/projects'
+import { useFinePointer, useMediaQuery } from '../lib/hooks'
 
-const platformLabel = { site: 'Website', web: 'Web app', desktop: 'Desktop app', phone: 'Mobile app', combo: 'Web + Android' }
+export const platformLabel = { site: 'Website', web: 'Web app', desktop: 'Desktop app', phone: 'Mobile app', combo: 'Web + Android' }
+const pad = (n) => String(n).padStart(2, '0')
 
-function Tilt({ children, className }) {
-  // A small lean towards the pointer, only on devices with a real mouse.
-  const onMove = (e) => {
-    if (!window.matchMedia('(hover: hover)').matches) return
-    const r = e.currentTarget.getBoundingClientRect()
-    const x = (e.clientX - r.left) / r.width - 0.5
-    const y = (e.clientY - r.top) / r.height - 0.5
-    e.currentTarget.style.setProperty('--rx', `${(-y * 4).toFixed(2)}deg`)
-    e.currentTarget.style.setProperty('--ry', `${(x * 5).toFixed(2)}deg`)
-  }
-  const onLeave = (e) => {
-    e.currentTarget.style.setProperty('--rx', '0deg')
-    e.currentTarget.style.setProperty('--ry', '0deg')
-  }
+// One client project as a big "case file" card. On tall desktop screens the cards pin near the
+// top and stack: each new one slides over the last, which shrinks back a little like a deck.
+function CaseCard({ project, i, total, progress, stacked }) {
+  const scale = useTransform(progress, [i / total, 1], [1, 1 - (total - 1 - i) * 0.032])
+  const dim = useTransform(progress, [(i + 0.35) / total, (i + 1) / total], [0, 0.5])
+  const numbers = project.numbers.slice(0, 3)
+  const stack = Object.values(project.stack).flat().slice(0, 4)
+  const to = `/work/${project.id}`
+
   return (
-    <div className={className} onPointerMove={onMove} onPointerLeave={onLeave}>
-      {children}
+    <div className="case-slot" style={{ '--i': i }}>
+      <motion.article className="case" style={{ '--c': project.accent, scale: stacked ? scale : 1 }} data-spot>
+        <div className="case-info">
+          <p className="case-meta mono">
+            <span className="case-idx">
+              {pad(i + 1)} <i>/ {pad(total)}</i>
+            </span>
+            <span>{project.sector}</span>
+            <span>{platformLabel[project.platform]}</span>
+          </p>
+          <h3 className="case-title">
+            <Link to={to}>{project.title}</Link>
+          </h3>
+          <p className="case-tagline">{project.tagline}</p>
+          <dl className="case-numbers">
+            {numbers.map((n) => (
+              <div key={n.label}>
+                <dt>{n.value}</dt>
+                <dd>{n.label}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="case-foot">
+            <div className="chips">
+              {stack.map((t) => (
+                <span key={t} className="chip">
+                  {t}
+                </span>
+              ))}
+            </div>
+            <Link to={to} className="link-arrow" aria-label={`Read the ${project.title} case study`}>
+              Read the case study
+              <span className="round-arrow">
+                <ArrowUpRight size={17} />
+              </span>
+            </Link>
+          </div>
+        </div>
+        <Link to={to} className="case-cover" data-cursor="View" tabIndex={-1} aria-hidden="true">
+          <ProjectCover project={project} />
+        </Link>
+        {/* Cards fade back as the next one covers them; the last card is never covered. */}
+        {stacked && i < total - 1 && <motion.span className="case-dim" style={{ opacity: dim }} aria-hidden="true" />}
+      </motion.article>
     </div>
   )
 }
 
-const cardMotion = {
-  layout: true,
-  initial: { opacity: 0, y: 30 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, scale: 0.96 },
-  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+// The cover that follows the cursor while it hovers the team list.
+function HoverPreview({ project, x, y }) {
+  return (
+    <motion.div className="team-preview" style={{ x, y }} aria-hidden="true">
+      <AnimatePresence>
+        {project && (
+          <motion.div
+            key={project.id}
+            className="team-preview-card"
+            initial={{ opacity: 0, scale: 0.86, rotate: -5 }}
+            animate={{ opacity: 1, scale: 1, rotate: -2 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <ProjectCover project={project} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  )
 }
 
 export default function Work() {
-  const [filter, setFilter] = useState('all')
-  const match = (p) => filter === 'all' || p.categories.includes(filter)
-  const freelance = projects.filter((p) => p.kind === 'freelance' && match(p))
-  const team = projects.filter((p) => p.kind === 'team' && match(p))
+  const freelance = projects.filter((p) => p.kind === 'freelance')
+  const team = projects.filter((p) => p.kind === 'team')
+
+  const stackRef = useRef(null)
+  const stacked = useMediaQuery('(min-width: 1180px) and (min-height: 760px)')
+  const { scrollYProgress } = useScroll({ target: stackRef, offset: ['start start', 'end end'] })
+
+  const fine = useFinePointer()
+  const [hover, setHover] = useState(null)
+  const mx = useSpring(useMotionValue(0), { stiffness: 260, damping: 26 })
+  const my = useSpring(useMotionValue(0), { stiffness: 260, damping: 26 })
+  const onListMove = (e) => {
+    mx.set(e.clientX)
+    my.set(e.clientY)
+  }
 
   return (
     <section className="section work" id="work">
@@ -49,112 +115,56 @@ export default function Work() {
         <SectionHead
           num="01"
           label="Selected work"
-          title={
-            <>
-              Things I've <em>actually</em> shipped.
-            </>
-          }
-          intro="Six products built for my own clients, from a children's hospital to a bank automation tool, plus seven systems I built or led while working in teams. Click any of them for the full story."
+          title={"Things I've *actually* shipped."}
+          intro="Six products I built on my own for clients, from a children's hospital to a bank automation tool. Then seven systems I built or led inside product companies. The two are kept apart on purpose, so you always know which is which."
         />
 
-        <div className="filters" role="tablist" aria-label="Filter projects">
-          {categories.map((c) => {
-            const count = c.id === 'all' ? projects.length : projects.filter((p) => p.categories.includes(c.id)).length
-            return (
-              <button
-                key={c.id}
-                role="tab"
-                aria-selected={filter === c.id}
-                className={`filter ${filter === c.id ? 'is-on' : ''}`}
-                onClick={() => setFilter(c.id)}
+        <h3 className="group-label mono">
+          <b>Client work</b>
+          <span className="rule" aria-hidden="true" />
+          <Scramble text="designed, built and shipped solo" />
+        </h3>
+      </div>
+
+      <div className="container case-stack" ref={stackRef}>
+        {freelance.map((p, i) => (
+          <CaseCard key={p.id} project={p} i={i} total={freelance.length} progress={scrollYProgress} stacked={stacked} />
+        ))}
+      </div>
+
+      <div className="container">
+        <h3 className="group-label mono is-team">
+          <b>Inside teams</b>
+          <span className="rule" aria-hidden="true" />
+          <Scramble text="as engineer or team lead · 2023–2026" />
+        </h3>
+
+        <ul className="team-list" onPointerMove={fine ? onListMove : undefined} onPointerLeave={() => setHover(null)}>
+          {team.map((p, i) => (
+            <Reveal as="li" key={p.id} delay={i * 0.04} y={18}>
+              <Link
+                to={`/work/${p.id}`}
+                className="team-row"
+                style={{ '--c': p.accent }}
+                onPointerEnter={() => fine && setHover(p)}
+                onFocus={() => setHover(null)}
               >
-                {filter === c.id && <motion.span layoutId="filter-pill" className="filter-pill" />}
-                <span className="filter-label">
-                  {c.label} <sup>{count}</sup>
+                <span className="team-idx mono">{pad(i + 1)}</span>
+                <span className="team-title">{p.title}</span>
+                <span className="team-tag">{p.tagline}</span>
+                <span className="team-sector mono">{p.sector}</span>
+                <span className="team-year mono">{p.year}</span>
+                <span className="round-arrow">
+                  <ArrowUpRight size={17} />
                 </span>
-              </button>
-            )
-          })}
-        </div>
-
-        {freelance.length > 0 && (
-          <>
-            <h3 className="work-group mono">
-              <span>For my clients</span> <i /> built from home
-            </h3>
-            <motion.div layout className="work-grid">
-              <AnimatePresence mode="popLayout">
-                {freelance.map((p) => (
-                  <motion.div key={p.id} {...cardMotion}>
-                    <Tilt className="tilt">
-                      <Link to={`/work/${p.id}`} className="work-card" style={{ '--c': p.accent }}>
-                        <ProjectCover project={p} />
-                        <div className="work-card-body">
-                          <div className="work-card-top mono">
-                            <span>{p.sector}</span>
-                            <span>{platformLabel[p.platform]}</span>
-                          </div>
-                          <h4 className="display">{p.title}</h4>
-                          <p>{p.tagline}</p>
-                          <div className="work-card-foot">
-                            <div className="chips">
-                              {Object.values(p.stack)
-                                .flat()
-                                .slice(0, 4)
-                                .map((t) => (
-                                  <span key={t} className="chip">
-                                    {t}
-                                  </span>
-                                ))}
-                            </div>
-                            <span className="round-arrow" aria-hidden="true">
-                              <ArrowUpRight size={18} />
-                            </span>
-                          </div>
-                        </div>
-                      </Link>
-                    </Tilt>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </>
-        )}
-
-        {team.length > 0 && (
-          <>
-            <h3 className="work-group mono">
-              <span>While leading teams</span> <i /> enterprise · 2023–2026
-            </h3>
-            <motion.div layout className="team-grid">
-              <AnimatePresence mode="popLayout">
-                {team.map((p) => (
-                  <motion.div key={p.id} {...cardMotion}>
-                    <Link to={`/work/${p.id}`} className="team-card" style={{ '--c': p.accent }}>
-                      <span className="team-swatch" />
-                      <div className="team-card-top mono">
-                        <span>{p.sector}</span>
-                        <span>{p.year}</span>
-                      </div>
-                      <h4 className="display">{p.title}</h4>
-                      <p>{p.tagline}</p>
-                      <div className="team-numbers">
-                        {p.numbers.slice(0, 2).map((n) => (
-                          <span key={n.label}>
-                            <b className="display">{n.value}</b> {n.label}
-                          </span>
-                        ))}
-                      </div>
-                      <ArrowUpRight className="team-arrow" size={18} />
-                    </Link>
-                  </motion.div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          </>
-        )}
-
-        {freelance.length + team.length === 0 && <p className="empty hand">Nothing here yet. Want to be the first?</p>}
+              </Link>
+            </Reveal>
+          ))}
+        </ul>
+        {fine && <HoverPreview project={hover} x={mx} y={my} />}
+        <p className="fineprint">
+          Team projects were built for employers and their customers. I describe my own part in them and leave the confidential details out.
+        </p>
       </div>
     </section>
   )
