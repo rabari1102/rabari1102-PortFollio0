@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Check, Copy, FileText, Mail, Phone, Send } from 'lucide-react'
+import { ArrowUpRight, Check, Copy, FileText, Mail, Phone, Send } from 'lucide-react'
 import Reveal from './ui/Reveal'
-import { Underline } from './ui/Scribbles'
+import Kinetic from './fx/Kinetic'
+import Scramble from './fx/Scramble'
+import Magnetic from './fx/Magnetic'
 import { GithubIcon, LinkedinIcon, WhatsappIcon } from './ui/Icons'
 import { profile } from '../data/site'
+import { useClock } from '../lib/hooks'
 
 const types = ['Website', 'Web app / SaaS', 'Mobile app', 'Desktop software', 'API / backend', 'AI feature', 'Not sure yet']
 const budgets = ['Under ₹50k', '₹50k – 1.5L', '₹1.5L – 5L', '₹5L +', "Let's discuss"]
@@ -13,19 +16,14 @@ const budgets = ['Under ₹50k', '₹50k – 1.5L', '₹1.5L – 5L', '₹5L +',
 const FORM_KEY = import.meta.env.VITE_WEB3FORMS_KEY
 
 function LocalTime() {
-  const fmt = () =>
-    new Intl.DateTimeFormat('en-IN', { hour: 'numeric', minute: '2-digit', timeZone: profile.timezone }).format(new Date())
-  const [time, setTime] = useState(fmt)
-  useEffect(() => {
-    const id = setInterval(() => setTime(fmt()), 30000)
-    return () => clearInterval(id)
-  }, [])
-  const hour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hour12: false, timeZone: profile.timezone }).format(new Date()))
+  const { time, hour } = useClock(profile.timezone)
   const awake = hour >= 9 && hour < 23
   return (
     <p className="local-time mono">
-      <i className={awake ? 'pulse-dot' : 'sleep-dot'} /> {time} in Ahmedabad ·{' '}
-      {awake ? 'usually replies within a few hours' : 'asleep, will reply in the morning'}
+      <i className={awake ? 'pulse-dot' : 'sleep-dot'} />
+      <span>
+        {time} in Ahmedabad · {awake ? 'usually replies within a few hours' : 'asleep, will reply in the morning'}
+      </span>
     </p>
   )
 }
@@ -46,8 +44,7 @@ export default function Contact() {
   const briefText = () =>
     `Hi Pragnesh, I'm ${form.name}.\nProject: ${form.type || '—'}\nBudget: ${form.budget || '—'}\nReach me at: ${form.reach}\n\n${form.message}`
 
-  const openWhatsApp = () =>
-    window.open(`https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(briefText())}`, '_blank', 'noopener')
+  const openWhatsApp = () => window.open(`https://wa.me/${profile.whatsapp}?text=${encodeURIComponent(briefText())}`, '_blank', 'noopener')
 
   const submit = async (e) => {
     e.preventDefault()
@@ -93,19 +90,22 @@ export default function Contact() {
 
   return (
     <section className="section contact" id="contact">
+      <span className="contact-glow" aria-hidden="true" />
       <div className="container">
-        <Reveal className="contact-head">
+        <header className="contact-head">
           <p className="section-label mono">
-            <span>§ 09</span> Say hello
+            <span className="sl-num">10</span>
+            <span className="sl-rule" aria-hidden="true" />
+            <Scramble text="Say hello" />
           </p>
-          <h2 className="contact-title display">
-            Tell me what you <br />
-            want to <Underline delay={0.5}>build.</Underline>
-          </h2>
-        </Reveal>
+          <Kinetic text={'Tell me what you\nwant to *build.*'} className="contact-title" />
+          <Reveal as="p" className="section-intro" delay={0.2}>
+            The first call is free and there is no pressure. Worst case, you leave with a clearer plan and a rough number.
+          </Reveal>
+        </header>
 
         <div className="contact-grid">
-          <Reveal className="brief" delay={0.1}>
+          <Reveal className="brief" delay={0.1} data-spot>
             <form onSubmit={submit} noValidate>
               <div className="field-row">
                 <label className="field">
@@ -119,10 +119,18 @@ export default function Contact() {
               </div>
 
               <div className="field">
-                <span className="mono">What is it?</span>
-                <div className="choice-row">
+                <span className="mono" id="lbl-type">
+                  What is it?
+                </span>
+                <div className="choice-row" role="group" aria-labelledby="lbl-type">
                   {types.map((t) => (
-                    <button type="button" key={t} className={`choice is-sm ${form.type === t ? 'is-on' : ''}`} onClick={() => set('type')(t)} aria-pressed={form.type === t}>
+                    <button
+                      type="button"
+                      key={t}
+                      className={`choice is-sm ${form.type === t ? 'is-on' : ''}`}
+                      onClick={() => set('type')(t)}
+                      aria-pressed={form.type === t}
+                    >
                       {t}
                     </button>
                   ))}
@@ -130,10 +138,18 @@ export default function Contact() {
               </div>
 
               <div className="field">
-                <span className="mono">Rough budget</span>
-                <div className="choice-row">
+                <span className="mono" id="lbl-budget">
+                  Rough budget
+                </span>
+                <div className="choice-row" role="group" aria-labelledby="lbl-budget">
                   {budgets.map((b) => (
-                    <button type="button" key={b} className={`choice is-sm ${form.budget === b ? 'is-on' : ''}`} onClick={() => set('budget')(b)} aria-pressed={form.budget === b}>
+                    <button
+                      type="button"
+                      key={b}
+                      className={`choice is-sm ${form.budget === b ? 'is-on' : ''}`}
+                      onClick={() => set('budget')(b)}
+                      aria-pressed={form.budget === b}
+                    >
                       {b}
                     </button>
                   ))}
@@ -151,50 +167,74 @@ export default function Contact() {
               </label>
 
               <div className="brief-actions">
-                <button type="submit" className="btn btn-accent" disabled={status === 'sending'}>
-                  {status === 'sending' ? 'Sending…' : FORM_KEY ? 'Send my brief' : 'Send on WhatsApp'} <Send size={16} />
-                </button>
-                <a className="btn btn-ghost" href={`mailto:${profile.email}?subject=${encodeURIComponent('Project enquiry')}&body=${encodeURIComponent(briefText())}`}>
+                <Magnetic strength={0.2}>
+                  <button type="submit" className="btn btn-primary btn-lg" disabled={status === 'sending'}>
+                    {status === 'sending' ? 'Sending…' : FORM_KEY ? 'Send my brief' : 'Send on WhatsApp'} <Send size={17} />
+                  </button>
+                </Magnetic>
+                <a
+                  className="btn btn-ghost btn-lg"
+                  href={`mailto:${profile.email}?subject=${encodeURIComponent('Project enquiry')}&body=${encodeURIComponent(briefText())}`}
+                >
                   Email instead
                 </a>
               </div>
 
-              <AnimatePresence>
-                {status && status !== 'sending' && (
-                  <motion.p className={`form-status is-${status}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                    {status === 'ok' && 'Got it! I will reply within a day, usually much sooner.'}
-                    {status === 'whatsapp' && 'WhatsApp opened with your brief. Just press send.'}
-                    {status === 'missing' && 'Just need your name, a way to reach you and a line about the idea.'}
-                    {status === 'err' && 'Something went wrong. Please use WhatsApp or email on the right.'}
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              <div aria-live="polite">
+                <AnimatePresence>
+                  {status && status !== 'sending' && (
+                    <motion.p className={`form-status is-${status}`} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                      {status === 'ok' && 'Got it! I will reply within a day, usually much sooner.'}
+                      {status === 'whatsapp' && 'WhatsApp opened with your brief. Just press send.'}
+                      {status === 'missing' && 'Just need your name, a way to reach you and a line about the idea.'}
+                      {status === 'err' && 'Something went wrong. Please use WhatsApp or email on the right.'}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </div>
             </form>
           </Reveal>
 
           <Reveal className="channels" delay={0.2}>
+            {profile.photo && (
+              <div className="me">
+                <img src={profile.photo} alt={`${profile.name}`} width="64" height="64" loading="lazy" />
+                <p>
+                  <strong>{profile.name}</strong>
+                  <span>The person who reads this, and replies.</span>
+                </p>
+              </div>
+            )}
             <LocalTime />
-            <button className="channel" onClick={copyEmail}>
-              <Mail size={20} />
-              <span>
-                <small className="mono">Email</small>
+            <button className="channel" onClick={copyEmail} data-spot>
+              <span className="channel-icon">
+                <Mail size={19} />
+              </span>
+              <span className="channel-text">
+                <small className="mono">Email · click to copy</small>
                 {profile.email}
               </span>
               {copied ? <Check size={18} /> : <Copy size={18} />}
             </button>
-            <a className="channel" href={`https://wa.me/${profile.whatsapp}`} target="_blank" rel="noreferrer">
-              <WhatsappIcon width={20} height={20} />
-              <span>
+            <a className="channel" href={`https://wa.me/${profile.whatsapp}`} target="_blank" rel="noreferrer" data-spot>
+              <span className="channel-icon">
+                <WhatsappIcon width={19} height={19} />
+              </span>
+              <span className="channel-text">
                 <small className="mono">WhatsApp</small>
                 {profile.phone}
               </span>
+              <ArrowUpRight size={18} />
             </a>
-            <a className="channel" href={profile.phoneHref}>
-              <Phone size={20} />
-              <span>
+            <a className="channel" href={profile.phoneHref} data-spot>
+              <span className="channel-icon">
+                <Phone size={19} />
+              </span>
+              <span className="channel-text">
                 <small className="mono">Call</small>
                 {profile.phone}
               </span>
+              <ArrowUpRight size={18} />
             </a>
             <div className="channel-row">
               <a className="channel is-small" href={profile.linkedin} target="_blank" rel="noreferrer">
@@ -207,9 +247,6 @@ export default function Contact() {
                 <FileText size={18} /> CV
               </a>
             </div>
-            <p className="hand channels-note">
-              First call is free and there's no pressure. Worst case, you leave with a clearer plan.
-            </p>
           </Reveal>
         </div>
       </div>

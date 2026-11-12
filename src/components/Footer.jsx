@@ -5,14 +5,13 @@ import { ArrowUp } from 'lucide-react'
 import { profile } from '../data/site'
 
 const NAME = 'pragnesh'
-const lastName = profile.name.split(' ').slice(1).join(' ')
 
 const drop = {
   hidden: { y: '110%', rotate: 8 },
   show: (i) => ({ y: '0%', rotate: 0, transition: { delay: i * 0.06, type: 'spring', stiffness: 150, damping: 17 } }),
 }
 
-// The name is drawn twice: a hairline outline, and a gradient copy on top that only shows
+// The name is drawn twice: a hairline outline, and an ember copy on top that only shows
 // through a spotlight. The spotlight follows the cursor, or drifts on its own when nobody is pointing.
 function FooterName() {
   const ref = useRef(null)
@@ -28,9 +27,7 @@ function FooterName() {
     <span className={cls} aria-hidden="true">
       {NAME.split('').map((ch, i) => (
         <motion.span key={i} className="fname-ch" variants={drop} custom={i}>
-          <span className="fname-in" style={{ '--i': i, '--n': NAME.length }}>
-            {ch}
-          </span>
+          {ch}
         </motion.span>
       ))}
     </span>
@@ -51,24 +48,38 @@ function FooterName() {
         {layer('fname-outline')}
         {layer('fname-fill')}
       </Link>
-      <motion.span
-        className="fname-tag mono"
-        variants={{
-          hidden: { opacity: 0, scale: 0.5, rotate: -40 },
-          show: { opacity: 1, scale: 1, rotate: -9, transition: { delay: 0.75, type: 'spring', stiffness: 220, damping: 13 } },
-        }}
-      >
-        {lastName} <i>✦</i> {profile.city.split(',')[0]}
-      </motion.span>
-      <motion.span
-        className="fname-hand hand"
-        variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0, transition: { delay: 1.1, duration: 0.6 } } }}
-      >
-        a real human made this, promise ↑
-      </motion.span>
     </motion.div>
   )
 }
+
+const cols = [
+  {
+    title: 'Site',
+    links: [
+      { to: '/#work', label: 'Work' },
+      { to: '/#verify', label: 'Verify me' },
+      { to: '/#pricing', label: 'Pricing' },
+      { to: '/#estimate', label: 'Estimate' },
+      { to: '/#faq', label: 'FAQ' },
+    ],
+  },
+  {
+    title: 'Check me',
+    links: [
+      { href: profile.linkedin, label: 'LinkedIn' },
+      { href: profile.github, label: 'GitHub' },
+      { href: profile.resume, label: 'CV' },
+    ],
+  },
+  {
+    title: 'Reach me',
+    links: [
+      { href: `mailto:${profile.email}`, label: profile.email, same: true },
+      { href: `https://wa.me/${profile.whatsapp}`, label: 'WhatsApp' },
+      { href: profile.phoneHref, label: profile.phone, same: true },
+    ],
+  },
+]
 
 export default function Footer() {
   return (
@@ -76,22 +87,42 @@ export default function Footer() {
       <div className="container">
         <div className="footer-top">
           <p className="footer-line">
-            Built at home in Ahmedabad with React, a lot of chai
+            One senior engineer in {profile.city.split(',')[0]}.
             <br />
-            and a little help from AI. Like everything else here.
+            Fixed quotes, weekly demos, and the code is <em>yours.</em>
           </p>
-          <button className="btn btn-ghost btn-sm" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-            Back to top <ArrowUp size={16} />
-          </button>
+          <div className="footer-cols">
+            {cols.map((c) => (
+              <div key={c.title}>
+                <p className="mono">{c.title}</p>
+                <ul>
+                  {c.links.map((l) => (
+                    <li key={l.label}>
+                      {l.to ? (
+                        <Link to={l.to}>{l.label}</Link>
+                      ) : (
+                        <a href={l.href} {...(l.same ? {} : { target: '_blank', rel: 'noreferrer' })}>
+                          {l.label}
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
         </div>
+
         <FooterName />
+
         <div className="footer-bottom mono">
-          <span>© {new Date().getFullYear()} {profile.name}</span>
           <span>
-            <a href={profile.github} target="_blank" rel="noreferrer">GitHub</a> ·{' '}
-            <a href={profile.linkedin} target="_blank" rel="noreferrer">LinkedIn</a> ·{' '}
-            <a href={`mailto:${profile.email}`}>Email</a>
+            © {new Date().getFullYear()} {profile.name} · {profile.city}
           </span>
+          <span>Built at home with React, a lot of chai and a little help from AI.</span>
+          <button className="footer-up" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            Back to top <ArrowUp size={15} />
+          </button>
         </div>
       </div>
     </footer>

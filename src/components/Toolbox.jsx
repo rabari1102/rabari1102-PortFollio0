@@ -7,13 +7,9 @@ export default function Toolbox() {
     <section className="section toolbox" id="stack">
       <div className="container">
         <SectionHead
-          num="06"
+          num="07"
           label="Toolbox"
-          title={
-            <>
-              The right tool, <em>not</em> the trendy one.
-            </>
-          }
+          title={'The right tool, *not* the trendy one.'}
           intro="I pick the stack for your budget and your team, not my CV. Everything here has gone to production."
         />
         <div className="tool-grid">
@@ -21,12 +17,15 @@ export default function Toolbox() {
             <motion.div
               key={g.group}
               className={`tool-group ${g.group.startsWith('AI') ? 'is-ai' : ''}`}
-              initial={{ opacity: 0, y: 24 }}
+              data-spot
+              initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: (gi % 4) * 0.07, duration: 0.6 }}
+              viewport={{ once: true, margin: '0px 0px -40px 0px' }}
+              transition={{ delay: (gi % 4) * 0.07, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <h3 className="mono">{g.group}</h3>
+              <h3 className="mono">
+                <span>{String(gi + 1).padStart(2, '0')}</span> {g.group}
+              </h3>
               <div className="chips">
                 {g.items.map((t) => (
                   <span key={t} className="chip">

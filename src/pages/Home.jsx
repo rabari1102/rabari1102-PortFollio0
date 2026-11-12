@@ -2,6 +2,7 @@ import Seo from '../components/Seo'
 import Hero from '../components/Hero'
 import Marquee from '../components/Marquee'
 import Work from '../components/Work'
+import Verify from '../components/Verify'
 import WhyCheaper from '../components/WhyCheaper'
 import Services from '../components/Services'
 import Estimator from '../components/Estimator'
@@ -13,15 +14,16 @@ import Contact from '../components/Contact'
 
 export default function Home() {
   return (
-    <main>
+    <main id="main">
       <Seo
         title="Pragnesh Kalotara · Freelance web, mobile & desktop developer"
-        description="Freelance full-stack developer in Ahmedabad. I build web apps, SaaS, Android apps and desktop software from a home studio, AI-assisted, so you pay far less than an agency."
+        description="Freelance full-stack developer in Ahmedabad. Web apps, SaaS, Android apps and desktop software from one senior engineer: fixed written quote, pay in three milestones, and the code is yours from day one."
         path="/"
       />
       <Hero />
       <Marquee />
       <Work />
+      <Verify />
       <WhyCheaper />
       <Services />
       <Estimator />
