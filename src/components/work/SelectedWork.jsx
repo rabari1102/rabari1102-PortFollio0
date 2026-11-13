@@ -19,7 +19,7 @@ export default function SelectedWork() {
   const team = projects.length - client
 
   return (
-    <section className="section work" id="work">
+    <section className="section work" id="work" data-hud="Selected work">
       <div className="container">
         <SectionHead
           num="01"

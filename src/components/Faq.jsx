@@ -8,7 +8,7 @@ import { faqs } from '../data/services'
 export default function Faq() {
   const [open, setOpen] = useState(0)
   return (
-    <section className="section faq" id="faq">
+    <section className="section faq" id="faq" data-hud="Questions">
       <div className="container faq-grid">
         <SectionHead
           label="Questions"

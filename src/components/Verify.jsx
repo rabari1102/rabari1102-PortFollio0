@@ -76,7 +76,7 @@ function Check({ item, i }) {
 
 export default function Verify({ num }) {
   return (
-    <section className="section verify" id="verify">
+    <section className="section verify" id="verify" data-hud="Verify me">
       <div className="container">
         <div className="verify-seal" aria-hidden="true">
           <svg viewBox="0 0 100 100">

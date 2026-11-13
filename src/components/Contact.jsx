@@ -147,7 +147,7 @@ export default function Contact({ num, title = 'Have an idea worth building?\nLe
     ) : null
 
   return (
-    <section className="section contact" id="contact">
+    <section className="section contact" id="contact" data-hud="Contact">
       <span className="contact-glow" aria-hidden="true" />
       <div className="container">
         {showHead && (

@@ -9,7 +9,7 @@ export const serviceIcons = { web: LayoutDashboard, mobile: Smartphone, desktop:
 // Home page: each service as the problem it solves, linking to the full description and price.
 export default function ServicesTeaser({ num }) {
   return (
-    <section className="section services" id="services">
+    <section className="section services" id="services" data-hud="Services">
       <div className="container">
         <SectionHead
           num={num}

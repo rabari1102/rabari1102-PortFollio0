@@ -249,3 +249,50 @@ test.describe('with reduced motion', () => {
     await expect(page.locator('.cursor')).toHaveCount(0)
   })
 })
+
+test('the command palette opens from the keyboard, filters, and jumps to a project', async ({ page }) => {
+  await page.goto('/')
+  await ready(page)
+  await page.keyboard.press('Control+k')
+  const palette = page.getByRole('dialog', { name: 'Quick navigation' })
+  await expect(palette).toBeVisible()
+  const field = palette.getByRole('combobox')
+  await expect(field).toBeFocused()
+  await expect(page.locator('.route')).toHaveAttribute('inert', '')
+
+  await field.fill('pharma')
+  await expect(palette.getByRole('option')).toHaveCount(1)
+  await page.keyboard.press('Enter')
+  await expect(palette).toBeHidden()
+  await expect(page).toHaveURL(/\/work\/pharmadesk$/)
+  await expect(page.locator('h1')).toHaveAttribute('aria-label', 'PharmaDesk')
+
+  // The header button opens it too, and Escape closes it and returns focus.
+  const button = page.getByRole('button', { name: 'Search' })
+  await button.click()
+  await expect(palette).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(palette).toBeHidden()
+  await expect(button).toBeFocused()
+})
+
+test('moving between pages plays the curtain and lands on the new page', async ({ page }) => {
+  await page.goto('/')
+  await ready(page)
+  await page.getByRole('navigation', { name: 'Main' }).getByRole('link', { name: 'About' }).click()
+  await expect(page.locator('.curtain')).toBeVisible()
+  await expect(page.locator('h1')).toHaveAttribute('aria-label', /Backend at the core/)
+  await expect(page.locator('.curtain')).toHaveCount(0)
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+})
+
+test('the home page shows the live links and the instrument frame on a wide screen', async ({ page }) => {
+  await page.goto('/')
+  await ready(page)
+  const live = page.locator('.tile.is-live a')
+  await expect(live).toHaveCount(4)
+  await expect(live.first()).toHaveAttribute('href', /^https:\/\//)
+  await expect(page.locator('.hud-read')).toBeVisible()
+  await page.locator('#verify').scrollIntoViewIfNeeded()
+  await expect(page.locator('.hud-label')).toHaveText('Verify me')
+})

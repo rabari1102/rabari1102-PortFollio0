@@ -10,7 +10,7 @@ export default function Process({ num }) {
   const progress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 })
 
   return (
-    <section className="section process" id="process">
+    <section className="section process" id="process" data-hud="Process">
       <div className="container process-grid">
         <div className="process-intro">
           <SectionHead

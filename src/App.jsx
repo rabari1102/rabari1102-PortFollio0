@@ -1,12 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom'
-import { MotionConfig, motion } from 'framer-motion'
+import { MotionConfig } from 'framer-motion'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Seo from './components/Seo'
 import Island from './components/ui/Island'
 import WhatsAppFab from './components/WhatsAppFab'
+import Curtain, { COVER_MS, REVEAL_MS } from './components/fx/Curtain'
 import Cursor from './components/fx/Cursor'
+import Hud from './components/fx/Hud'
 import ScrollProgress from './components/fx/ScrollProgress'
 import { useSpotlight } from './components/fx/spotlight'
 import Home from './pages/Home'
@@ -16,6 +18,7 @@ import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import ProjectPage from './pages/ProjectPage'
 import NotFound from './pages/NotFound'
+import { getProject } from './data/projects'
 
 // Sections that used to live on the one-page home and now have a page of their own.
 // Old links such as thepragnesh.in/#estimate keep working.
@@ -28,9 +31,9 @@ const MOVED = {
 }
 
 // Scroll to the #hash after navigation (e.g. "/services#estimate"), otherwise to the top.
-function ScrollManager() {
+function ScrollManager({ location }) {
   // `key` changes on every navigation, so clicking the same link twice scrolls again.
-  const { pathname, hash, key } = useLocation()
+  const { pathname, hash, key } = location
   const navigate = useNavigate()
   const first = useRef(true)
 
@@ -53,13 +56,64 @@ function ScrollManager() {
   return null
 }
 
+// Downloaded the first time it is opened, so it costs nothing on a normal visit.
+const CommandPalette = lazy(() => import('./components/CommandPalette'))
+
+const NAMES = { '/': 'Home', '/work': 'Work', '/services': 'Services', '/about': 'About', '/contact': 'Contact' }
+const nameOf = (pathname) => NAMES[pathname] || getProject(pathname.replace('/work/', ''))?.title || 'Not found'
+
 export default function App() {
   const location = useLocation()
-  // The page the visitor lands on is already painted, so it must not fade in from nothing.
-  // Only pages reached by clicking a link get the entrance.
-  const landed = useRef(location.pathname)
-  const isLanding = landed.current === location.pathname
-  if (!isLanding) landed.current = null
+
+  // Page changes go through a curtain: cover the old page, swap, lift off the new one.
+  // `shown` is the page currently rendered; it lags `location` by the length of the cover.
+  // Visitors who ask for reduced motion, and same-page #anchor jumps, swap at once.
+  const [shown, setShown] = useState(location)
+  const [phase, setPhase] = useState(null) // null | 'cover' | 'reveal'
+  useEffect(() => {
+    if (location.pathname === shown.pathname) {
+      if (location.key !== shown.key) setShown(location)
+      return
+    }
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShown(location)
+      return
+    }
+    setPhase('cover')
+    const swap = setTimeout(() => {
+      setShown(location)
+      setPhase('reveal')
+    }, COVER_MS)
+    const done = setTimeout(() => setPhase(null), COVER_MS + REVEAL_MS)
+    return () => {
+      clearTimeout(swap)
+      clearTimeout(done)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location])
+
+  // Ctrl / ⌘ + K, or the search button in the header, opens the command palette.
+  const [palette, setPalette] = useState(false)
+  const [paletteLoaded, setPaletteLoaded] = useState(false)
+  useEffect(() => {
+    if (palette) setPaletteLoaded(true)
+  }, [palette])
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setPalette((o) => !o)
+      }
+    }
+    const onOpen = () => setPalette(true)
+    window.addEventListener('keydown', onKey)
+    window.addEventListener('open-palette', onOpen)
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      window.removeEventListener('open-palette', onOpen)
+    }
+  }, [])
+
   useSpotlight()
 
   return (
@@ -70,16 +124,11 @@ export default function App() {
       </a>
       <ScrollProgress />
       <Cursor />
-      <ScrollManager />
+      <Hud />
+      <ScrollManager location={shown} />
       <Nav />
-      <motion.div
-        key={location.pathname}
-        className="route"
-        initial={isLanding ? false : { opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <Routes location={location}>
+      <div className="route">
+        <Routes location={shown}>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<WorkPage />} />
           <Route path="/work/:id" element={<ProjectPage />} />
@@ -88,21 +137,17 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </motion.div>
-      {!isLanding && (
-        <motion.span
-          key={`wipe-${location.pathname}`}
-          className="route-wipe"
-          aria-hidden="true"
-          initial={{ scaleX: 0, opacity: 1 }}
-          animate={{ scaleX: 1, opacity: 0 }}
-          transition={{ scaleX: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }, opacity: { delay: 0.5, duration: 0.3 } }}
-        />
-      )}
+      </div>
+      {phase && <Curtain key={phase} phase={phase} label={nameOf(location.pathname)} />}
       <Island>
         <Footer />
       </Island>
       <WhatsAppFab />
+      {paletteLoaded && (
+        <Suspense fallback={null}>
+          <CommandPalette open={palette} onClose={() => setPalette(false)} />
+        </Suspense>
+      )}
       <div className="grain" aria-hidden="true" />
     </MotionConfig>
   )

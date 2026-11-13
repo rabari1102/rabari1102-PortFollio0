@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ArrowUpRight, Moon, Sun } from 'lucide-react'
+import { ArrowUpRight, Moon, Search, Sun } from 'lucide-react'
 import { profile } from '../data/site'
 import { useClock, useMounted, useTheme } from '../lib/hooks'
 
@@ -127,6 +127,16 @@ export default function Nav() {
               <i className="signal-dot" /> {clock.time} IST
             </span>
           )}
+          <button
+            className="nav-search"
+            onClick={() => window.dispatchEvent(new Event('open-palette'))}
+            title="Search and quick navigation"
+            aria-keyshortcuts="Control+K Meta+K"
+          >
+            <Search size={16} />
+            <span>Search</span>
+            <kbd aria-hidden="true">Ctrl K</kbd>
+          </button>
           <ThemeToggle />
           <Link to="/contact" className="btn btn-primary btn-sm nav-cta">
             Discuss a project <ArrowUpRight size={16} />

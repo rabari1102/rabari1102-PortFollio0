@@ -11,7 +11,7 @@ export default function Experience() {
   const [open, setOpen] = useState(0)
 
   return (
-    <section className="section experience" id="experience">
+    <section className="section experience" id="experience" data-hud="Experience">
       <div className="container exp-grid">
         <div className="exp-intro">
           <SectionHead

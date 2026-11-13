@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
 import { ArrowUpRight, Check, KeyRound } from 'lucide-react'
@@ -8,7 +8,7 @@ import Magnetic from './fx/Magnetic'
 import { DesktopMock, PhoneMock, WebMock, seeded } from './Mocks'
 import { hero, heroPromises, profile } from '../data/site'
 import { payment } from '../data/services'
-import { useFinePointer } from '../lib/hooks'
+import { useFinePointer, useMediaQuery } from '../lib/hooks'
 
 // Everything in the hero enters with CSS alone (the "in" and "pop" classes plus a --d delay),
 // so the headline is on screen as soon as the HTML is, before any JavaScript has run.
@@ -93,13 +93,57 @@ export default function Hero() {
     py.set((e.clientY - r.top) / r.height - 0.5)
   }
 
+  // The headline is set in a variable font. Each letter gets heavier the closer the pointer is,
+  // so the type swells under the cursor like a signal passing through it. Mouse and wide screens
+  // only, never under reduced motion; the letters rest at the normal weight otherwise.
+  const roomy = useMediaQuery('(min-width: 1000px) and (prefers-reduced-motion: no-preference)')
+  useEffect(() => {
+    if (!fine || !roomy) return
+    const title = ref.current.querySelector('.hero-title')
+    const chars = [...title.querySelectorAll('.k-ch')]
+    let raf = 0
+    let mx = -9999
+    let my = -9999
+    const REST = 600
+    const RADIUS = 260
+
+    const paint = () => {
+      raf = 0
+      for (const ch of chars) {
+        const r = ch.getBoundingClientRect()
+        const d = Math.hypot(mx - (r.left + r.width / 2), my - (r.top + r.height / 2))
+        const pull = Math.max(0, 1 - d / RADIUS)
+        // 600 at rest, up to 860 right under the pointer, a touch lighter just outside it.
+        ch.style.fontVariationSettings = `'wght' ${Math.round(REST - 120 * Math.sin(Math.min(1, d / RADIUS) * Math.PI) * (d < RADIUS ? 0.35 : 0) + 260 * pull * pull)}`
+      }
+    }
+    const onPointer = (e) => {
+      mx = e.clientX
+      my = e.clientY
+      if (!raf) raf = requestAnimationFrame(paint)
+    }
+    const reset = () => {
+      mx = my = -9999
+      if (!raf) raf = requestAnimationFrame(paint)
+    }
+    const hero = ref.current
+    hero.addEventListener('pointermove', onPointer, { passive: true })
+    hero.addEventListener('pointerleave', reset)
+    return () => {
+      cancelAnimationFrame(raf)
+      hero.removeEventListener('pointermove', onPointer)
+      hero.removeEventListener('pointerleave', reset)
+      chars.forEach((ch) => (ch.style.fontVariationSettings = ''))
+    }
+  }, [fine, roomy])
+
   // As the hero scrolls away the backdrop fades and the stage drifts down a little.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const bgOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0])
   const stageY = useTransform(scrollYProgress, [0, 1], [0, 80])
 
   return (
-    <section className="hero" ref={ref} onPointerMove={onMove}>
+    <section className="hero" ref={ref} onPointerMove={onMove} data-hud="Intro">
       <motion.div className="hero-bg" style={{ opacity: bgOpacity }} aria-hidden="true">
         <div className="glow-fallback">
           <i />
@@ -120,7 +164,7 @@ export default function Hero() {
             <span>{profile.city}</span>
           </p>
 
-          <Kinetic as="h1" mode="css" className="hero-title" text={hero.title} />
+          <Kinetic as="h1" mode="css" className="hero-title" text={hero.title} letters />
 
           <p className="hero-sub in" style={d(380)}>
             {hero.sub}

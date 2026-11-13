@@ -5,7 +5,7 @@ import Kinetic from '../fx/Kinetic'
 // with the HTML and never waits for JavaScript. That keeps the largest-contentful-paint fast.
 export default function PageHead({ crumbs = [], label, title, intro, children }) {
   return (
-    <header className="page-head">
+    <header className="page-head" data-hud="Top">
       <span className="page-glow" aria-hidden="true" />
       <div className="container">
         {crumbs.length > 0 && (
