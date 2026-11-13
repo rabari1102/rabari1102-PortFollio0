@@ -1,61 +1,51 @@
 import { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'framer-motion'
-import { ArrowDown, ArrowDownRight, ArrowUpRight, Check, KeyRound } from 'lucide-react'
+import { ArrowUpRight, Check, KeyRound } from 'lucide-react'
 import ShaderCanvas from './fx/ShaderCanvas'
 import Kinetic from './fx/Kinetic'
 import Magnetic from './fx/Magnetic'
 import { DesktopMock, PhoneMock, WebMock, seeded } from './Mocks'
-import { heroFacts, heroPromises, profile } from '../data/site'
+import { hero, heroPromises, profile } from '../data/site'
 import { payment } from '../data/services'
 import { useFinePointer } from '../lib/hooks'
-import { useIntroDone } from '../lib/intro'
 
-const EASE = [0.22, 1, 0.36, 1]
+// Everything in the hero enters with CSS alone (the "in" and "pop" classes plus a --d delay),
+// so the headline is on screen as soon as the HTML is, before any JavaScript has run.
+const d = (ms) => ({ '--d': `${ms}ms` })
 
-const rise = (ready, delay, y = 26) => ({
-  initial: { opacity: 0, y },
-  animate: ready ? { opacity: 1, y: 0 } : { opacity: 0, y },
-  transition: { delay, duration: 0.9, ease: EASE },
-})
-
-// The three windows floating beside the headline: a web dashboard, a desktop billing app and a phone.
-// The whole stage leans towards the pointer, and each layer sits at a different depth.
-function Stage({ ready, rx, ry }) {
-  const enter = (delay, from) => ({
-    initial: { opacity: 0, ...from },
-    animate: ready ? { opacity: 1, x: 0, y: 0, scale: 1 } : { opacity: 0, ...from },
-    transition: { delay, duration: 1.1, ease: EASE },
-  })
+// The three windows floating beside the headline: a web dashboard, a desktop billing app and a
+// phone. The whole stage leans a few degrees towards the pointer; each layer sits at its own depth.
+function Stage({ rx, ry }) {
   return (
     <div className="stage-wrap" aria-hidden="true">
       <motion.div className="stage" style={{ rotateX: rx, rotateY: ry }}>
         <div className="stage-layer is-web">
-          <motion.div {...enter(0.35, { y: 60, scale: 0.94 })}>
+          <div className="pop" style={d(260)}>
             <div className="floaty mock-box" style={{ '--fd': '0s' }}>
               <WebMock label="tripkoz.app" rnd={seeded('hero-web')} />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="stage-layer is-desktop">
-          <motion.div {...enter(0.5, { x: -50, y: 40 })}>
+          <div className="pop" style={d(400)}>
             <div className="floaty mock-box" style={{ '--fd': '-2.2s' }}>
               <DesktopMock title="PharmaDesk" rnd={seeded('hero-desk')} />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="stage-layer is-phone">
-          <motion.div {...enter(0.62, { x: 50, y: 50 })}>
+          <div className="pop" style={d(520)}>
             <div className="floaty mock-box" style={{ '--fd': '-4s' }}>
               <PhoneMock />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="stage-layer is-milestone">
-          <motion.div {...enter(0.85, { y: 30, scale: 0.9 })}>
+          <div className="pop" style={d(700)}>
             <div className="floaty hcard" style={{ '--fd': '-1s' }}>
               <small className="mono">How you pay</small>
               <div className="hcard-split">
@@ -67,11 +57,11 @@ function Stage({ ready, rx, ry }) {
               </div>
               <p>Three milestones. Never all upfront.</p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="stage-layer is-keys">
-          <motion.div {...enter(0.98, { y: 30, scale: 0.9 })}>
+          <div className="pop" style={d(820)}>
             <div className="floaty hcard is-row" style={{ '--fd': '-3s' }}>
               <span className="hcard-icon">
                 <KeyRound size={16} />
@@ -81,7 +71,7 @@ function Stage({ ready, rx, ry }) {
                 Code · servers · domain
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </motion.div>
     </div>
@@ -89,15 +79,13 @@ function Stage({ ready, rx, ry }) {
 }
 
 export default function Hero() {
-  const ready = useIntroDone()
   const fine = useFinePointer()
   const ref = useRef(null)
 
-  // Pointer → a few degrees of lean on the device stage.
   const px = useMotionValue(0)
   const py = useMotionValue(0)
-  const ry = useSpring(useTransform(px, [-0.5, 0.5], [-9, 9]), { stiffness: 70, damping: 16 })
-  const rx = useSpring(useTransform(py, [-0.5, 0.5], [7, -7]), { stiffness: 70, damping: 16 })
+  const ry = useSpring(useTransform(px, [-0.5, 0.5], [-8, 8]), { stiffness: 70, damping: 16 })
+  const rx = useSpring(useTransform(py, [-0.5, 0.5], [6, -6]), { stiffness: 70, damping: 16 })
   const onMove = (e) => {
     if (!fine) return
     const r = ref.current.getBoundingClientRect()
@@ -105,46 +93,53 @@ export default function Hero() {
     py.set((e.clientY - r.top) / r.height - 0.5)
   }
 
-  // As the hero scrolls away, the copy drifts up a touch faster and the backdrop fades.
+  // As the hero scrolls away the backdrop fades and the stage drifts down a little.
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start start', 'end start'] })
   const bgOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0])
-  const stageY = useTransform(scrollYProgress, [0, 1], [0, 90])
+  const stageY = useTransform(scrollYProgress, [0, 1], [0, 80])
 
   return (
-    <section className="hero" id="top" ref={ref} onPointerMove={onMove}>
+    <section className="hero" ref={ref} onPointerMove={onMove}>
       <motion.div className="hero-bg" style={{ opacity: bgOpacity }} aria-hidden="true">
-        <div className="ember-fallback" />
+        <div className="glow-fallback">
+          <i />
+          <i />
+        </div>
         <ShaderCanvas />
         <div className="hero-gridlines" />
       </motion.div>
 
       <div className="container hero-inner">
         <div className="hero-copy">
-          <motion.p className="status-chip mono" {...rise(ready, 0)}>
-            <i className="pulse-dot" /> {profile.availability}
-          </motion.p>
+          <p className="hero-eyebrow mono in" style={d(0)}>
+            <span className="signal-dot" aria-hidden="true" />
+            <span>{profile.name}</span>
+            <span className="sep" aria-hidden="true" />
+            <span>{profile.role}</span>
+            <span className="sep" aria-hidden="true" />
+            <span>{profile.city}</span>
+          </p>
 
-          <Kinetic as="h1" className="hero-title" text={'I build the\nwhole product.\nYou hold the *keys.*'} play={ready} delay={0.12} stagger={0.07} />
+          <Kinetic as="h1" mode="css" className="hero-title" text={hero.title} />
 
-          <motion.p className="hero-sub" {...rise(ready, 0.62)}>
-            Web apps, Android apps and desktop software, designed, built and shipped by one senior engineer in {profile.city.split(',')[0]}. No sales team and
-            no hand-offs: you talk to the person who writes your code, and you see it working every week.
-          </motion.p>
+          <p className="hero-sub in" style={d(380)}>
+            {hero.sub}
+          </p>
 
-          <motion.div className="hero-ctas" {...rise(ready, 0.74)}>
+          <div className="hero-ctas in" style={d(470)}>
             <Magnetic>
-              <Link to="/#estimate" className="btn btn-primary btn-lg">
-                Estimate my project <ArrowDownRight size={19} />
+              <Link to="/work" className="btn btn-primary btn-lg">
+                Explore my work <ArrowUpRight size={19} />
               </Link>
             </Magnetic>
             <Magnetic strength={0.2}>
-              <Link to="/#work" className="btn btn-ghost btn-lg">
-                See the work <ArrowUpRight size={19} />
+              <Link to="/contact" className="btn btn-ghost btn-lg">
+                Discuss a project
               </Link>
             </Magnetic>
-          </motion.div>
+          </div>
 
-          <motion.ul className="hero-promises" {...rise(ready, 0.86)}>
+          <ul className="hero-promises in" style={d(560)}>
             {heroPromises.map((p) => (
               <li key={p}>
                 <span className="tick">
@@ -153,30 +148,11 @@ export default function Hero() {
                 {p}
               </li>
             ))}
-          </motion.ul>
+          </ul>
         </div>
 
         <motion.div className="hero-visual" style={{ y: stageY }}>
-          <Stage ready={ready} rx={rx} ry={ry} />
-        </motion.div>
-      </div>
-
-      <div className="container">
-        <motion.div className="hero-foot" {...rise(ready, 0.98)}>
-          <dl className="hero-facts">
-            {heroFacts.map((f) => (
-              <div key={f.label}>
-                <dt>{f.value}</dt>
-                <dd>{f.label}</dd>
-              </div>
-            ))}
-          </dl>
-          <Link to="/#work" className="hero-scroll mono" aria-label="Scroll to the work">
-            <span>Scroll</span>
-            <i>
-              <ArrowDown size={15} />
-            </i>
-          </Link>
+          <Stage rx={rx} ry={ry} />
         </motion.div>
       </div>
     </section>

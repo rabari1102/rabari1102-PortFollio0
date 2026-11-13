@@ -11,7 +11,6 @@ export default function Faq() {
     <section className="section faq" id="faq">
       <div className="container faq-grid">
         <SectionHead
-          num="09"
           label="Questions"
           title={'Fair *questions.*'}
           intro="The things clients usually ask on the first call, including the awkward ones. If yours is not here, just ask."

@@ -1,8 +1,21 @@
 // Prices are starting points in INR. Change them here and the whole site follows.
+// problem      the situation the client is in, in their words
+// blurb        what gets built
+// deliverables what they actually receive
+// audience     who usually asks for this
 export const services = [
   {
     id: 'web',
     title: 'Web apps & SaaS',
+    problem: 'Your team runs on spreadsheets, WhatsApp groups and three tools that do not talk to each other.',
+    deliverables: [
+      'Admin dashboard and user portal',
+      'Logins, roles and permissions',
+      'Online payments and subscriptions',
+      'Reports and exports',
+      'Deployed in your own cloud account',
+    ],
+    audience: 'Schools, clinics, operators and founders launching a SaaS product',
     blurb: 'Dashboards, portals, booking systems, CRMs, multi-tenant SaaS with subscriptions and payments.',
     stack: ['React', 'Next.js', 'NestJS', 'PostgreSQL', 'Razorpay / Stripe'],
     from: 60000,
@@ -12,6 +25,14 @@ export const services = [
   {
     id: 'mobile',
     title: 'Mobile apps',
+    problem: 'Your customers, drivers or field staff need it in their pocket, not on a desktop.',
+    deliverables: [
+      'Native Android app, or one app for Android and iOS',
+      'Push notifications, maps and live location',
+      'The API and admin panel behind it',
+      'Play Store release under your account',
+    ],
+    audience: 'Businesses with customers, parents or staff on the move',
     blurb: 'Native Android apps with Kotlin & Compose, or one cross-platform app for Android and iOS.',
     stack: ['Kotlin', 'Jetpack Compose', 'React Native', 'Firebase / FCM', 'Google Maps'],
     from: 80000,
@@ -21,6 +42,9 @@ export const services = [
   {
     id: 'desktop',
     title: 'Desktop software',
+    problem: 'The counter cannot stop when the internet does, and off-the-shelf software charges a licence fee every year.',
+    deliverables: ['Windows app with a one-click installer', 'Billing, stock and reports', 'Works offline, with automatic updates', 'Backup and restore'],
+    audience: 'Shops, pharmacies, clinics and offices',
     blurb: 'Windows apps for shops, clinics and offices: billing, stock, automation. Works offline, installs in a click.',
     stack: ['Electron', 'Java', 'SQLite / PostgreSQL', 'Auto-update'],
     from: 50000,
@@ -30,6 +54,14 @@ export const services = [
   {
     id: 'website',
     title: 'Business websites',
+    problem: 'Your catalogue lives in PDFs, the old site is slow, and Google cannot find you.',
+    deliverables: [
+      'Fast pages that search engines can read',
+      'Product or service catalogue',
+      '3D or animated showcases where they earn their place',
+      'A way to edit the content yourself',
+    ],
+    audience: 'Companies that win customers through their website',
     blurb: 'Fast, good-looking sites that rank on Google: from a 5-page company site to 3D product showcases.',
     stack: ['Next.js', 'Three.js', 'GSAP', 'SEO', 'CMS'],
     from: 15000,
@@ -39,6 +71,15 @@ export const services = [
   {
     id: 'backend',
     title: 'APIs & backend',
+    problem: 'The app in front looks fine. The engine behind it is slow, fragile or missing.',
+    deliverables: [
+      'Documented APIs',
+      'Authentication, roles and tenant isolation',
+      'Background jobs and queues',
+      'Real-time updates',
+      'Integrations: payments, voice, chat, IoT devices',
+    ],
+    audience: 'Teams that need a backend built, or an existing one audited and rescued',
     blurb: 'The engine behind your app: APIs, auth, roles, queues, real-time, third-party integrations.',
     stack: ['Node.js', 'NestJS', 'Redis', 'BullMQ', 'Socket.io / MQTT'],
     from: 40000,
@@ -48,6 +89,14 @@ export const services = [
   {
     id: 'ai',
     title: 'AI features & automation',
+    problem: 'Your staff repeat the same clicks and copy-paste hundreds of times a day.',
+    deliverables: [
+      'Bulk automation of repetitive portal and data-entry work',
+      'Chat and search over your own documents',
+      'Document reading and extraction',
+      'Scripts that connect the tools you already use',
+    ],
+    audience: 'Operations teams with repetitive, rule-based work',
     blurb: 'Chatbots on your own data, document reading, smart search, and scripts that kill repetitive work.',
     stack: ['OpenAI', 'Gemini', 'Claude', 'RAG', 'Python / Node'],
     from: 25000,

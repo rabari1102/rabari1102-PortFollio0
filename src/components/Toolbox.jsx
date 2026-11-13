@@ -2,13 +2,13 @@ import { motion } from 'framer-motion'
 import SectionHead from './ui/SectionHead'
 import { toolbox } from '../data/services'
 
-export default function Toolbox() {
+export default function Toolbox({ num }) {
   return (
     <section className="section toolbox" id="stack">
       <div className="container">
         <SectionHead
-          num="07"
-          label="Toolbox"
+          num={num}
+          label="Technical expertise"
           title={'The right tool, *not* the trendy one.'}
           intro="I pick the stack for your budget and your team, not my CV. Everything here has gone to production."
         />
@@ -17,7 +17,7 @@ export default function Toolbox() {
             <motion.div
               key={g.group}
               className={`tool-group ${g.group.startsWith('AI') ? 'is-ai' : ''}`}
-              data-spot
+              data-rv
               initial={{ opacity: 0, y: 28 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '0px 0px -40px 0px' }}

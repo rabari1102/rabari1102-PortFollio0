@@ -13,3 +13,11 @@ node_modules/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Build output (Vercel builds from source)
+dist/
+dist-ssr/
+
+# Test output
+test-results/
+playwright-report/

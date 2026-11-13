@@ -13,7 +13,7 @@ const hrefs = {
   github: profile.github,
   resume: profile.resume,
   phone: `https://wa.me/${profile.whatsapp}`,
-  call: '/#contact',
+  call: '/contact',
 }
 
 // A checkbox that draws itself: the ring closes, then the tick is written in.
@@ -74,7 +74,7 @@ function Check({ item, i }) {
   )
 }
 
-export default function Verify() {
+export default function Verify({ num }) {
   return (
     <section className="section verify" id="verify">
       <div className="container">
@@ -92,7 +92,7 @@ export default function Verify() {
           </span>
         </div>
         <SectionHead
-          num="02"
+          num={num}
           label="Before you hire me"
           title={"Don't trust me.\n*Verify* me."}
           intro="Hiring a stranger from the internet is a leap of faith, and it should not be. Here is everything you can check on your own, and exactly how your money is protected if you do go ahead."
@@ -162,7 +162,7 @@ export default function Verify() {
             <p>
               You will not find a wall of five-star quotes here. I would rather you <em>check facts</em> than read praise.
             </p>
-            <Link to="/#contact" className="link-arrow">
+            <Link to="/contact" className="link-arrow">
               Ask me for a live walkthrough
               <span className="round-arrow">
                 <ArrowUpRight size={17} />

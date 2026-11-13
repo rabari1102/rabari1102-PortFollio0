@@ -1,0 +1,5 @@
+# Content files are hand-formatted so each entry stays readable on one line.
+src/data/
+dist/
+dist-ssr/
+public/

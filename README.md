@@ -1,14 +1,30 @@
 # Pragnesh Kalotara · Freelance portfolio
 
-Freelance site for web, mobile and desktop software, built to answer one question a stranger always has: _"is this person real, and is my money safe?"_
+thepragnesh.in: web, mobile, desktop and backend software from one senior engineer.
 
-React 18 + Vite + Framer Motion + React Router. No 3D library: the glowing hero backdrop is a small hand-written WebGL shader. Deployed on Vercel.
+React 18 + Vite + React Router + Framer Motion. Every page is prerendered to real HTML at build time, so it is fast, readable without JavaScript and has its own metadata. Deployed on Vercel.
 
 ```bash
 npm install
-npm run dev
-npm run build
+npm run dev        # develop at localhost:5173
+npm run build      # sitemap → build → prerender 18 pages + 404 into dist/
+npm run preview    # serve dist/ the way production does (clean URLs, real 404) at localhost:4173
+npm test           # 25 unit tests
+npm run test:e2e   # 67 browser tests (run `npm run build` first)
 ```
+
+## Pages
+
+| URL | File |
+| --- | --- |
+| `/` | `src/pages/Home.jsx` |
+| `/work` | `src/pages/WorkPage.jsx` |
+| `/work/<id>` | `src/pages/ProjectPage.jsx` |
+| `/services` | `src/pages/ServicesPage.jsx` |
+| `/about` | `src/pages/AboutPage.jsx` |
+| `/contact` | `src/pages/ContactPage.jsx` |
+
+To add a page: add the route in `src/App.jsx` and its title and description in `src/seo/routes.js`. The sitemap, the prerender step and the `<head>` all follow from that one file.
 
 ## Where to change things
 
@@ -16,30 +32,29 @@ All content lives in `src/data`, so you rarely need to touch a component.
 
 | File | What it holds |
 | --- | --- |
-| `src/data/site.js` | Name, email, phone, WhatsApp, links, availability line, hero numbers, the "Verify me" checklist, the client-protection promises, testimonials |
-| `src/data/projects.js` | Every project: story, features, stack, numbers, accent colour, cover style |
-| `src/data/services.js` | Services and starting prices, the agency-vs-me receipt, estimator maths, process, payment split, FAQ, toolbox |
+| `src/data/site.js` | Name, contact details, links, hero headline, credibility figures, biography, the "Verify me" checklist, testimonials |
+| `src/data/projects.js` | Every project, and which four are featured on the home page |
+| `src/data/services.js` | Services and prices, the receipts, estimator maths, process, payment split, FAQ, toolbox |
 | `src/data/experience.js` | Job history |
-
-Each project gets its own page at `/work/<id>`.
+| `src/seo/routes.js` | Page titles, descriptions and structured data |
 
 ## Four things that make the site more trustworthy (only you can add them)
 
-The site never shows anything invented, so these stay hidden until you fill them in:
+Nothing on the site is invented, so these stay hidden until you fill them in:
 
-1. **Your photo** – put a file in `public/` and set `profile.photo` in `src/data/site.js` (e.g. `'/pragnesh.jpg'`). It appears in the contact section.
-2. **Real screenshots** – add `image: '/shots/tripkoz.jpg'` to a project in `src/data/projects.js`. It replaces the drawn cover.
-3. **Live links** – add `liveUrl: 'https://…'` to a project. A "Open the live product" button appears on its page.
-4. **Client quotes** – add real ones to `testimonials` in `src/data/site.js` (name, role, and ideally a link). The quote wall appears by itself. Never make these up.
+1. **Your photo:** put a file in `public/` and set `profile.photo` in `src/data/site.js`.
+2. **Real screenshots:** add `image: '/shots/tripkoz.jpg'` to a project. It replaces the drawn cover.
+3. **Live links:** add `liveUrl: 'https://…'` to a project.
+4. **Client quotes:** add real ones to `testimonials` in `src/data/site.js`.
 
-## Look and feel
+## Design
 
-- Colours, fonts and radii are CSS variables at the top of `src/styles/base.css`. There is a dark theme (default) and a light theme; the toggle in the nav remembers the visitor's choice.
-- Styles are split by area: `base.css` (tokens, buttons, shared bits), `layout.css` (nav, hero, product mocks, footer), `sections.css` (home page sections), `project.css` (case-study page, 404).
-- Animation pieces live in `src/components/fx`: the WebGL backdrop, the cursor ring, magnetic buttons, word-by-word headlines, the opening curtain. All of them switch off for visitors who ask their device for reduced motion.
-- Fonts are self-hosted from `node_modules` (`src/styles/fonts.css`), so there is no request to Google Fonts.
+The design system is called Midnight Signal: see `docs/design-system.md`. Colours, fonts, sizes and radii are CSS variables at the top of `src/styles/base.css`. There is a dark theme and a light theme; the site follows the visitor's system setting until they use the toggle.
 
 ## Contact form
 
-Set `VITE_WEB3FORMS_KEY` in Vercel (free key from web3forms.com) to receive the form by email.
-Without it, the form opens WhatsApp with the brief already written.
+Set `VITE_WEB3FORMS_KEY` in Vercel (free key from web3forms.com) to receive the form by email. Without it, the form opens WhatsApp with the brief already written.
+
+## Reports
+
+`docs/portfolio-audit.md` · `docs/design-system.md` · `docs/seo-audit.md` · `docs/performance-report.md` · `docs/qa-report.md`
