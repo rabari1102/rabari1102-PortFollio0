@@ -115,7 +115,7 @@ export default function WhyCheaper() {
   const saved = Math.round((1 - mine / agency) * 100)
 
   return (
-    <section className="section why" id="pricing" data-hud="Pricing">
+    <section className="section why" id="pricing">
       <div className="container">
         <SectionHead
           label="Pricing, explained"

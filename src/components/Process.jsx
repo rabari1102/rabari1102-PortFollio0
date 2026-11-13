@@ -1,63 +1,87 @@
-import { useRef } from 'react'
-import { motion, useScroll, useSpring } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import SectionHead from './ui/SectionHead'
-import Reveal from './ui/Reveal'
 import { payment, process } from '../data/services'
 
+const pad = (n) => String(n).padStart(2, '0')
+
+// How a project runs, as a strip of panels.
+// On a phone, with JavaScript off, or with reduced motion it is an ordinary vertical list.
+// On wide screens the section pins and the strip travels sideways as the page is scrolled
+// (the CSS switches the layout; this effect only moves the strip).
 export default function Process({ num }) {
-  const ref = useRef(null)
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 55%'] })
-  const progress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 })
+  const wrap = useRef(null)
+  const track = useRef(null)
+  const bar = useRef(null)
+
+  useEffect(() => {
+    const el = wrap.current
+    const tr = track.current
+    if (!el || !tr) return
+    let raf = 0
+    const update = () => {
+      raf = 0
+      // The CSS decides whether the strip is pinned; when it is not, leave it alone.
+      if (getComputedStyle(tr).display !== 'flex') {
+        tr.style.transform = ''
+        return
+      }
+      const r = el.getBoundingClientRect()
+      const travel = r.height - window.innerHeight
+      const p = travel > 0 ? Math.min(1, Math.max(0, -r.top / travel)) : 0
+      const max = Math.max(0, tr.scrollWidth - tr.parentElement.clientWidth)
+      tr.style.transform = `translate3d(${-p * max}px, 0, 0)`
+      if (bar.current) bar.current.style.transform = `scaleX(${p})`
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update)
+    }
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
 
   return (
-    <section className="section process" id="process" data-hud="Process">
-      <div className="container process-grid">
-        <div className="process-intro">
-          <SectionHead
-            num={num}
-            label="How I work"
-            title={'From a chat to a *launched* app.'}
-            intro="No surprises, no disappearing for a month. You see working software every single week."
-          />
-
-          <Reveal className="payment">
-            <p className="mono payment-label">How you pay</p>
-            <div className="payment-bar">
-              {payment.map((m, i) => (
-                <motion.div
-                  key={m.label}
-                  className="payment-seg"
-                  data-rv
-                  style={{ flexGrow: m.pct }}
-                  initial={{ clipPath: 'inset(0 100% 0 0)' }}
-                  whileInView={{ clipPath: 'inset(0 0% 0 0)' }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.25 + i * 0.28, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  <strong>{m.pct}%</strong>
-                  <span>{m.label}</span>
-                </motion.div>
-              ))}
-            </div>
-            <p className="payment-note">No full payment upfront, ever.</p>
-          </Reveal>
+    <section className="process" id="process" ref={wrap} style={{ '--n': process.length + 1 }}>
+      <div className="proc-pin">
+        <div className="container">
+          <SectionHead num={num} label="Process" title={'From first call to launch,\n*no* *surprises.*'} />
         </div>
 
-        <ol className="steps" ref={ref}>
-          <span className="steps-line" aria-hidden="true">
-            <motion.i style={{ scaleY: progress }} />
-          </span>
-          {process.map((p, i) => (
-            <Reveal as="li" key={p.step} className="step" y={30}>
-              <span className="step-dot">{i + 1}</span>
-              <div className="step-body" data-spot>
-                <p className="step-time mono">{p.time}</p>
-                <h3>{p.step}</h3>
-                <p>{p.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </ol>
+        <div className="proc-window">
+          <ol className="proc-track" ref={track}>
+            {process.map((s, i) => (
+              <li className="proc-step" key={s.step}>
+                <p className="proc-n" aria-hidden="true">
+                  {pad(i + 1)}
+                </p>
+                <p className="proc-time mono">{s.time}</p>
+                <h3>{s.step}</h3>
+                <p className="proc-text">{s.text}</p>
+              </li>
+            ))}
+            <li className="proc-step is-pay">
+              <p className="proc-time mono">How you pay</p>
+              <h3>Three milestones, never all upfront</h3>
+              <ul className="proc-pay">
+                {payment.map((m) => (
+                  <li key={m.label} style={{ '--w': m.pct }}>
+                    <b>{m.pct}%</b>
+                    <span>{m.label}</span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          </ol>
+        </div>
+
+        <div className="container proc-progress" aria-hidden="true">
+          <span ref={bar} />
+        </div>
       </div>
     </section>
   )

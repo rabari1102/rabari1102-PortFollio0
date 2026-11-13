@@ -20,7 +20,10 @@ test('the main navigation reaches every page and marks the current one', async (
     await expect(page).toHaveTitle(/Pragnesh Kalotara/)
   }
 
-  await page.getByRole('link', { name: 'Pragnesh Kalotara, home' }).first().click()
+  await page
+    .getByRole('link', { name: /Pragnesh Kalotara, home/ })
+    .first()
+    .click()
   await expect(page).toHaveURL('/')
   expect(errors, errors.join('\n')).toEqual([])
 })
@@ -28,7 +31,7 @@ test('the main navigation reaches every page and marks the current one', async (
 test('the hero buttons go where they say', async ({ page }) => {
   await page.goto('/')
   await ready(page)
-  await page.getByRole('link', { name: 'Explore my work' }).click()
+  await page.getByRole('link', { name: 'See all the work' }).click()
   await expect(page).toHaveURL('/work')
   await page.goBack()
   await page.locator('.hero').getByRole('link', { name: 'Discuss a project' }).click()
@@ -107,8 +110,9 @@ test('the theme switch works, is remembered, and follows the system until used',
 test('the work page filter narrows the list', async ({ page }) => {
   await page.goto('/work')
   await ready(page)
-  const cards = page.locator('.pcard')
-  const rows = page.locator('.team-row')
+  // Two indexes: client work first, then projects built inside teams.
+  const cards = page.locator('.index').nth(0).locator('.irow')
+  const rows = page.locator('.index').nth(1).locator('.irow')
   await expect(cards).toHaveCount(9)
   await expect(rows).toHaveCount(7)
 
@@ -216,7 +220,7 @@ test.describe('without JavaScript', () => {
   test('the pages are still readable from top to bottom', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('h1')).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Explore my work' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'See all the work' })).toBeVisible()
 
     // Nothing that normally fades in on scroll is left invisible.
     const hidden = await page.locator('[data-rv]').evaluateAll((els) => els.filter((el) => getComputedStyle(el).opacity !== '1').length)
@@ -286,13 +290,30 @@ test('moving between pages plays the curtain and lands on the new page', async (
   expect(await page.evaluate(() => window.scrollY)).toBe(0)
 })
 
-test('the home page shows the live links and the instrument frame on a wide screen', async ({ page }) => {
+test('the home page shows the selected work, the live links and the process strip', async ({ page }) => {
   await page.goto('/')
   await ready(page)
-  const live = page.locator('.tile.is-live a')
-  await expect(live).toHaveCount(4)
+  await expect(page.locator('.show')).toHaveCount(4)
+  const live = page.locator('.show .tlink.is-live')
   await expect(live.first()).toHaveAttribute('href', /^https:\/\//)
-  await expect(page.locator('.hud-read')).toBeVisible()
-  await page.locator('#verify').scrollIntoViewIfNeeded()
-  await expect(page.locator('.hud-label')).toHaveText('Verify me')
+
+  // On a wide screen the process section pins and its strip travels sideways with the scroll.
+  const track = page.locator('.proc-track')
+  await page.locator('#process').scrollIntoViewIfNeeded()
+  await page.evaluate(() => {
+    const el = document.getElementById('process')
+    window.scrollTo(0, el.offsetTop + el.offsetHeight - window.innerHeight - 10)
+  })
+  await expect.poll(() => track.evaluate((el) => new DOMMatrix(getComputedStyle(el).transform).m41)).toBeLessThan(-300)
+  await expect(page.getByText('Three milestones, never all upfront')).toBeInViewport()
+})
+
+test('the statement inks in as it is scrolled', async ({ page }) => {
+  await page.goto('/')
+  await ready(page)
+  const off = page.locator('.mf-w.is-off')
+  await expect.poll(() => off.count()).toBeGreaterThan(10)
+  await page.locator('.mf-side').scrollIntoViewIfNeeded()
+  await page.mouse.wheel(0, 400)
+  await expect.poll(() => off.count()).toBe(0)
 })

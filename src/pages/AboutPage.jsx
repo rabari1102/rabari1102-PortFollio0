@@ -7,7 +7,6 @@ import { AboutFacts } from '../components/AboutTeaser'
 import { AiHonesty } from '../components/WhyCheaper'
 import Experience from '../components/Experience'
 import Toolbox from '../components/Toolbox'
-import CtaBand from '../components/CtaBand'
 import Island from '../components/ui/Island'
 import { LinkedinIcon, GithubIcon } from '../components/ui/Icons'
 import { about, profile } from '../data/site'
@@ -73,9 +72,6 @@ export default function AboutPage() {
       </Island>
       <Island>
         <Toolbox />
-      </Island>
-      <Island>
-        <CtaBand />
       </Island>
     </main>
   )

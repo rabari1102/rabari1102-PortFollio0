@@ -8,7 +8,6 @@ import Island from './components/ui/Island'
 import WhatsAppFab from './components/WhatsAppFab'
 import Curtain, { COVER_MS, REVEAL_MS } from './components/fx/Curtain'
 import Cursor from './components/fx/Cursor'
-import Hud from './components/fx/Hud'
 import ScrollProgress from './components/fx/ScrollProgress'
 import { useSpotlight } from './components/fx/spotlight'
 import Home from './pages/Home'
@@ -124,7 +123,6 @@ export default function App() {
       </a>
       <ScrollProgress />
       <Cursor />
-      <Hud />
       <ScrollManager location={shown} />
       <Nav />
       <div className="route">
@@ -148,6 +146,13 @@ export default function App() {
           <CommandPalette open={palette} onClose={() => setPalette(false)} />
         </Suspense>
       )}
+      <div className="gridlines" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
       <div className="grain" aria-hidden="true" />
     </MotionConfig>
   )

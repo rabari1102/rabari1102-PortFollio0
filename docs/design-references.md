@@ -13,6 +13,12 @@ The working environment could not open awwwards.com or the portfolio sites thems
 
 The table marks which is which. Nothing below copies a layout, asset or line of code from any of these sites; each entry is a *pattern*, rebuilt from scratch for this site.
 
+## Update: the full redesign (Ink & Signal)
+
+The first pass added effects to the existing layout. That was not what was asked for, so the site was then rebuilt with a new layout, type system and palette (see `docs/design-system.md`).
+
+Awwwards was tried again for this pass. The host was added to the environment's allowed list, but awwwards.com resets connections from this machine, so the gallery still could not be viewed. The redesign therefore draws on the same pattern list below, weighted differently: the type-led black-and-white direction (9), the Swiss grid with visible lines (6), the project index with a floating preview (2), pinned media beside scrolling text, a statement that fills in on scroll, a sideways process strip, and a page-wide wordmark footer. These are widely used editorial patterns, rebuilt from scratch here; nothing was copied from any site.
+
 ## References
 
 | # | Reference | What it is known for | Source of the claim | Used here as |

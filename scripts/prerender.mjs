@@ -27,7 +27,12 @@ if (!template.includes('<!--seo-->') || !template.includes('<div id="root"></div
 // The body font is needed for the very first paint, so ask for it early.
 const assets = await readdir(resolve(dist, 'assets'))
 const bodyFont = assets.find((f) => /^geist-latin-wght-normal-.+\.woff2$/.test(f))
-const preload = bodyFont ? `\n    <link rel="preload" href="/assets/${bodyFont}" as="font" type="font/woff2" crossorigin />` : ''
+const headFont = assets.find((f) => /^instrument-serif-latin-400-normal-.+\.woff2$/.test(f))
+// Both the body font and the headline serif are needed for the very first paint.
+const preload = [bodyFont, headFont]
+  .filter(Boolean)
+  .map((f) => `\n    <link rel="preload" href="/assets/${f}" as="font" type="font/woff2" crossorigin />`)
+  .join('')
 
 function page(url) {
   const head = headHtml(metaFor(url)) + preload

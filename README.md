@@ -10,7 +10,7 @@ npm run dev        # develop at localhost:5173
 npm run build      # sitemap → build → prerender every page + 404 into dist/
 npm run preview    # serve dist/ the way production does (clean URLs, real 404) at localhost:4173
 npm test           # 25 unit tests
-npm run test:e2e   # 67 browser tests (run `npm run build` first)
+npm run test:e2e   # 74 browser tests (run `npm run build` first)
 ```
 
 ## Pages
@@ -49,7 +49,7 @@ Nothing on the site is invented, so these stay hidden until you fill them in:
 
 ## Design
 
-The design system is called Midnight Signal: see `docs/design-system.md`. Colours, fonts, sizes and radii are CSS variables at the top of `src/styles/base.css`. There is a dark theme and a light theme; the site follows the visitor's system setting until they use the toggle.
+The design system is called Ink & Signal: see `docs/design-system.md`. Colours, fonts, sizes and radii are CSS variables at the top of `src/styles/base.css`; the page layout is in `src/styles/edition.css`. There is a dark theme and a light theme; the site follows the visitor's system setting until they use the toggle.
 
 ## Contact form
 

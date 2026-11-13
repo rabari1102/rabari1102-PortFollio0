@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, Moon, Search, Sun } from 'lucide-react'
 import { profile } from '../data/site'
+import { projects } from '../data/projects'
 import { useClock, useMounted, useTheme } from '../lib/hooks'
 
 const links = [
@@ -104,9 +105,12 @@ export default function Nav() {
   return (
     <header ref={header} className={`nav ${scrolled ? 'is-scrolled' : ''} ${hidden && !open ? 'is-hidden' : ''} ${open ? 'is-open' : ''}`}>
       <div className="nav-inner">
-        <Link to="/" className="logo" aria-label={`${profile.name}, home`}>
-          pragnesh
-          <i />
+        <Link to="/" className="logo">
+          <span className="logo-name">
+            {profile.name}
+            <span className="sr-only">, home</span>
+          </span>
+          <span className="logo-role mono">Full-stack developer</span>
         </Link>
 
         <nav className="nav-links" aria-label="Main">
@@ -114,8 +118,12 @@ export default function Nav() {
             const active = isActive(pathname, l.to)
             return (
               <Link key={l.to} to={l.to} className={active ? 'is-active' : ''} aria-current={active ? 'page' : undefined}>
-                {active && <motion.span layoutId="nav-pill" className="nav-pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
                 <span>{l.label}</span>
+                {l.to === '/work' && (
+                  <sup className="mono" aria-hidden="true">
+                    {projects.length}
+                  </sup>
+                )}
               </Link>
             )
           })}
@@ -138,8 +146,8 @@ export default function Nav() {
             <kbd aria-hidden="true">Ctrl K</kbd>
           </button>
           <ThemeToggle />
-          <Link to="/contact" className="btn btn-primary btn-sm nav-cta">
-            Discuss a project <ArrowUpRight size={16} />
+          <Link to="/contact" className="nav-cta">
+            <i className="signal-dot" aria-hidden="true" /> Start a project
           </Link>
           <button
             ref={burger}
@@ -149,8 +157,13 @@ export default function Nav() {
             aria-expanded={open}
             aria-controls="mobile-menu"
           >
-            <span />
-            <span />
+            <span className="burger-word mono" aria-hidden="true">
+              {open ? 'Close' : 'Menu'}
+            </span>
+            <span className="burger-bars" aria-hidden="true">
+              <span />
+              <span />
+            </span>
           </button>
         </div>
       </div>

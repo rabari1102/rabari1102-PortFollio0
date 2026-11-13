@@ -4,7 +4,7 @@ import { toolbox } from '../data/services'
 
 export default function Toolbox({ num }) {
   return (
-    <section className="section toolbox" id="stack" data-hud="Expertise">
+    <section className="section toolbox" id="stack">
       <div className="container">
         <SectionHead
           num={num}

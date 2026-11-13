@@ -41,7 +41,7 @@ export default function Estimator() {
   ]
 
   return (
-    <section className="section estimate" id="estimate" data-hud="Estimate">
+    <section className="section estimate" id="estimate">
       <div className="container">
         <SectionHead
           label="Rough estimate"

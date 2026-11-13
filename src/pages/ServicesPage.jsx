@@ -6,7 +6,6 @@ import WhyCheaper from '../components/WhyCheaper'
 import Estimator from '../components/Estimator'
 import Process from '../components/Process'
 import Faq from '../components/Faq'
-import CtaBand from '../components/CtaBand'
 import Island from '../components/ui/Island'
 
 export default function ServicesPage() {
@@ -46,9 +45,6 @@ export default function ServicesPage() {
       </Island>
       <Island>
         <Faq />
-      </Island>
-      <Island>
-        <CtaBand estimate={false} />
       </Island>
     </main>
   )
