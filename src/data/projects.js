@@ -449,3 +449,15 @@ export const projects = [
 ]
 
 export const getProject = (id) => projects.find((p) => p.id === id)
+
+// The projects shown large on the home page, in this order. Everything else lives on /work.
+export const featuredIds = ['tripkoz', 'vidyalay', 'pharmadesk', 'aarav-hospital']
+export const featured = featuredIds.map(getProject).filter(Boolean)
+
+// Up to `n` other projects that share a category with this one, client work first.
+export function relatedProjects(project, n = 3) {
+  return projects
+    .filter((p) => p.id !== project.id && p.categories.some((c) => project.categories.includes(c)))
+    .sort((a, b) => Number(b.kind === 'freelance') - Number(a.kind === 'freelance'))
+    .slice(0, n)
+}

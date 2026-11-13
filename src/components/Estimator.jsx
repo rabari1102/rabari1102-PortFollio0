@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Send } from 'lucide-react'
 import SectionHead from './ui/SectionHead'
@@ -6,43 +7,29 @@ import Reveal from './ui/Reveal'
 import Magnetic from './fx/Magnetic'
 import CountUp, { inr } from './ui/CountUp'
 import { estimator, payment } from '../data/services'
-
-// Round to something a human would quote.
-const nice = (n) => Math.round(n / 5000) * 5000
+import { estimate, milestones } from '../lib/estimate'
+import { setPendingBrief } from '../lib/brief'
 
 export default function Estimator() {
+  const navigate = useNavigate()
   const [type, setType] = useState('web')
   const [size, setSize] = useState('m')
   const [extras, setExtras] = useState(['auth', 'admin'])
 
-  const t = estimator.types.find((x) => x.id === type)
-  const s = estimator.sizes.find((x) => x.id === size)
-  const available = estimator.extras.filter((e) => !e.only || e.only === type)
-  const chosen = available.filter((e) => extras.includes(e.id))
-
-  const result = useMemo(() => {
-    const base = t.base * s.mult
-    const mid = base + chosen.reduce((a, e) => a + e.cost, 0)
-    const weeks = t.weeks * (0.6 + s.mult * 0.45) + chosen.reduce((a, e) => a + e.weeks, 0)
-    return {
-      base,
-      mid,
-      low: nice(mid * 0.85),
-      high: nice(mid * 1.2),
-      agency: nice(mid * estimator.agencyMultiplier),
-      weeksLow: Math.max(1, Math.round(weeks * 0.85)),
-      weeksHigh: Math.max(2, Math.round(weeks * 1.25)),
-    }
-  }, [t, s, chosen])
+  const result = useMemo(() => estimate(estimator, { type, size, extras }), [type, size, extras])
+  const { type: t, size: s, available, chosen } = result
 
   const toggle = (id) => setExtras((xs) => (xs.includes(id) ? xs.filter((x) => x !== id) : [...xs, id]))
 
+  // Hand the draft to the contact form: on this page if there is one, otherwise on /contact.
   const sendToContact = () => {
     const brief = `Estimate from the website:\n- Type: ${t.label}\n- Size: ${s.label} (${s.hint})\n- Extras: ${
       chosen.map((e) => e.label).join(', ') || 'none'
     }\n- Range shown: ${inr(result.low)} – ${inr(result.high)}, ${result.weeksLow}–${result.weeksHigh} weeks\n\nAbout my project:\n`
-    window.dispatchEvent(new CustomEvent('prefill-brief', { detail: { brief, type: t.label } }))
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })
+    setPendingBrief({ brief, type: t.label })
+    const here = document.getElementById('contact')
+    if (here) here.scrollIntoView({ behavior: 'smooth' })
+    else navigate('/contact#contact')
   }
 
   const myShare = (result.high / result.agency) * 100
@@ -57,7 +44,6 @@ export default function Estimator() {
     <section className="section estimate" id="estimate">
       <div className="container">
         <SectionHead
-          num="05"
           label="Rough estimate"
           title={'What would *yours* cost?'}
           intro="Three quick choices and you get an itemised draft, the same shape as the written quote I send after a call. It is deliberately rough: the real one is fixed."
@@ -129,25 +115,14 @@ export default function Estimator() {
               <div className="est-bar-row">
                 <span className="mono">Typical agency</span>
                 <div className="est-bar">
-                  <motion.i
-                    className="is-agency"
-                    initial={{ width: 0 }}
-                    whileInView={{ width: '100%' }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                  />
+                  <i className="is-agency" />
                 </div>
                 <span className="mono">{inr(result.agency)}</span>
               </div>
               <div className="est-bar-row is-me">
                 <span className="mono">Me</span>
                 <div className="est-bar">
-                  <motion.i
-                    className="is-me"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${myShare}%` }}
-                    transition={{ type: 'spring', stiffness: 110, damping: 20 }}
-                  />
+                  <motion.i className="is-me" initial={false} animate={{ width: `${myShare}%` }} transition={{ type: 'spring', stiffness: 110, damping: 20 }} />
                 </div>
                 <span className="mono">{inr(result.high)}</span>
               </div>
@@ -169,7 +144,7 @@ export default function Estimator() {
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.25 }}
                   >
                     <span className="est-line">
                       <span>{l.label}</span>
@@ -184,7 +159,7 @@ export default function Estimator() {
             <div className="est-total">
               <p className="mono">Ballpark</p>
               <p className="est-price">
-                <CountUp to={result.low} duration={0.6} /> <i>–</i> <CountUp to={result.high} duration={0.6} />
+                <CountUp to={result.low} duration={0.5} /> <i>–</i> <CountUp to={result.high} duration={0.5} />
               </p>
               <p className="est-weeks mono">
                 about {result.weeksLow}–{result.weeksHigh} weeks
@@ -194,11 +169,11 @@ export default function Estimator() {
             <div className="est-milestones">
               <p className="mono">Paid in three parts</p>
               <ol>
-                {payment.map((m) => (
+                {milestones(payment, result.mid).map((m) => (
                   <li key={m.label}>
                     <b>{m.pct}%</b>
                     <span>{m.label}</span>
-                    <em className="mono">≈ {inr(nice((result.mid * m.pct) / 100))}</em>
+                    <em className="mono">≈ {inr(m.amount)}</em>
                   </li>
                 ))}
               </ol>

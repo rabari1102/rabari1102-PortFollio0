@@ -19,6 +19,7 @@ function Receipt({ title, sub, rows, total, stamp, variant }) {
           {rows.map((r, i) => (
             <motion.li
               key={r.item}
+              data-rv
               initial={{ opacity: 0, x: -10 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -38,6 +39,7 @@ function Receipt({ title, sub, rows, total, stamp, variant }) {
           </strong>
         </div>
         <motion.div
+          data-rv
           className="receipt-stamp"
           initial={{ opacity: 0, scale: 2, rotate: variant === 'agency' ? -22 : 16 }}
           whileInView={{ opacity: 1, scale: 1, rotate: variant === 'agency' ? -9 : 7 }}
@@ -69,6 +71,44 @@ const reasons = [
   },
 ]
 
+// "What AI does / what I never let it do". Shown on /about.
+export function AiHonesty() {
+  return (
+    <Reveal className="ai-honesty">
+      <div className="ai-col">
+        <h3>
+          What AI does <em>in my workflow</em>
+        </h3>
+        <ul>
+          {aiHonesty.does.map((d) => (
+            <li key={d}>
+              <span className="ai-mark">
+                <Check size={14} strokeWidth={3} />
+              </span>
+              {d}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="ai-col is-never">
+        <h3>
+          What I never let it <em>do</em>
+        </h3>
+        <ul>
+          {aiHonesty.doesnt.map((d) => (
+            <li key={d}>
+              <span className="ai-mark">
+                <X size={14} strokeWidth={3} />
+              </span>
+              {d}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Reveal>
+  )
+}
+
 export default function WhyCheaper() {
   const agency = sum(receipt.agency)
   const mine = sum(receipt.mine)
@@ -78,8 +118,7 @@ export default function WhyCheaper() {
     <section className="section why" id="pricing">
       <div className="container">
         <SectionHead
-          num="03"
-          label="Why it costs less"
+          label="Pricing, explained"
           title={'Same app.\n*Different* receipt.'}
           intro="A low price from a stranger should make you suspicious, so here is where it comes from. This is roughly how the money is spent on a typical medium-size app. Most of an agency quote pays for the agency. Mine pays for the code."
         />
@@ -107,39 +146,6 @@ export default function WhyCheaper() {
             </Reveal>
           ))}
         </div>
-
-        <Reveal className="ai-honesty">
-          <div className="ai-col">
-            <h3>
-              What AI does <em>in my workflow</em>
-            </h3>
-            <ul>
-              {aiHonesty.does.map((d) => (
-                <li key={d}>
-                  <span className="ai-mark">
-                    <Check size={14} strokeWidth={3} />
-                  </span>
-                  {d}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="ai-col is-never">
-            <h3>
-              What I never let it <em>do</em>
-            </h3>
-            <ul>
-              {aiHonesty.doesnt.map((d) => (
-                <li key={d}>
-                  <span className="ai-mark">
-                    <X size={14} strokeWidth={3} />
-                  </span>
-                  {d}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
       </div>
     </section>
   )

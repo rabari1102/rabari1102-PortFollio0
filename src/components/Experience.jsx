@@ -15,8 +15,7 @@ export default function Experience() {
       <div className="container exp-grid">
         <div className="exp-intro">
           <SectionHead
-            num="08"
-            label="Background"
+            label="Experience"
             title={'Trained on *real* teams.'}
             intro={`${profile.yearsExperience} years in product companies, team lead since 2025. That is where I learned to ship on time, review code properly and keep clients in the loop. Now you get that, without the company around it.`}
           />

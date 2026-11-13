@@ -2,8 +2,10 @@
 export const profile = {
   name: 'Pragnesh Kalotara',
   short: 'Pragnesh',
+  role: 'Freelance full-stack developer',
   city: 'Ahmedabad, India',
   timezone: 'Asia/Kolkata',
+  languages: 'English, Hindi and Gujarati',
   yearsExperience: '3.8',
   email: 'pkb110201@gmail.com',
   phone: '+91 74360 61528',
@@ -13,7 +15,8 @@ export const profile = {
   github: 'https://github.com/rabari1102',
   linkedin: 'https://www.linkedin.com/in/pragnesh-kalotara-23870116a',
   resume: 'https://drive.google.com/file/d/1_IHmO_vryoPm7FxL2Gb22nzxygXhOrw9/view?usp=sharing',
-  // Shown in the nav and hero. Keep it honest, update it when your calendar fills up.
+  // Shown as a quiet note beside the contact form, and only while `available` is true.
+  // Keep it honest: update it when your calendar fills up, or set `available` to false to hide it.
   availability: 'Taking 2 new projects for December',
   available: true,
   // Optional: a real photo of you (put the file in /public and set e.g. '/pragnesh.jpg').
@@ -21,11 +24,37 @@ export const profile = {
   photo: '',
 }
 
+// The hero. Wrap the accent words in *asterisks*; "\n" starts a new line on wide screens.
+export const hero = {
+  title: 'I turn ambitious\nideas into\n*real* *products.*',
+  sub: 'Web applications, Android apps, desktop software and the backends behind them. I design, build and launch the whole product myself, so one person is accountable from the first call to the day it goes live.',
+}
+
+// The credibility strip under the hero. Every number here comes from the project and
+// experience data below it in this folder. Only keep figures you can back up on a call.
 export const heroFacts = [
-  { value: '13', label: 'products shipped across web, mobile & desktop' },
+  { value: '13', label: 'products shipped across web, mobile and desktop' },
   { value: '3.8 yrs', label: 'building production software, team lead since 2025' },
-  { value: '30 / 40 / 30', label: 'paid in three milestones, never all upfront' },
+  { value: '6', label: 'developers led across backend, frontend and mobile' },
+  { value: '5,000+', label: 'live IoT devices on a platform I architected' },
 ]
+
+// The short biography. Plain facts only: who, what, how. Used on the home page and /about.
+export const about = {
+  lead: 'I am Pragnesh, a full-stack developer in Ahmedabad who builds the whole product, not one slice of it.',
+  paragraphs: [
+    'I have spent 3.8 years building production software inside product companies, as a team lead since 2025, and I build complete products for my own clients.',
+    'My core is backend engineering: APIs, access control, real-time systems and the data behind them, mostly in Node.js, NestJS and PostgreSQL. Around that core I build the parts people actually touch: React and Next.js web apps, native Android apps in Kotlin, and Windows desktop software.',
+    'Most of what I build is operations software, the system a school, a clinic, a pharmacy or a bank branch runs on every day. It has to be fast, hard to break and easy for non-technical staff to use.',
+    'I work in the open. You get a fixed written quote, a live link every week and the code in your own GitHub from day one. I use AI tools to get through boilerplate faster, and I read every line before it ships.',
+  ],
+  facts: [
+    { k: 'Based in', v: 'Ahmedabad, India (IST, UTC+5:30)' },
+    { k: 'Works with', v: 'Clients in India and abroad' },
+    { k: 'Languages', v: 'English, Hindi, Gujarati' },
+    { k: 'Invoices in', v: 'INR, USD or EUR' },
+  ],
+}
 
 // The three promises under the hero buttons. Each one is repeated, with detail, further down the page.
 export const heroPromises = ['Fixed quote, in writing', 'Pay in 3 milestones', 'Code in your GitHub from day one']

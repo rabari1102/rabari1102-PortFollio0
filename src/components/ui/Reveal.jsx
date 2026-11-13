@@ -1,19 +1,23 @@
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useAnimationControls } from 'framer-motion'
+import { useScrollReveal } from '../../lib/reveal'
 
 const EASE = [0.22, 1, 0.36, 1]
 
-// Fade-and-rise when scrolled into view. `blur` adds a soft focus pull for hero-ish moments.
-export default function Reveal({ children, className = '', delay = 0, y = 28, as = 'div', blur = false, ...rest }) {
+// Fade-and-rise when scrolled into view. Rendered visible; see lib/reveal.js for why.
+export default function Reveal({ children, className = '', delay = 0, y = 24, as = 'div', ...rest }) {
+  const ref = useRef(null)
+  const controls = useAnimationControls()
   const Tag = motion[as]
+
+  useScrollReveal(ref, controls, {
+    hidden: { opacity: 0, y },
+    shown: { opacity: 1, y: 0, transition: { duration: 0.5, delay, ease: EASE } },
+    margin: '0px 0px -60px 0px',
+  })
+
   return (
-    <Tag
-      className={className}
-      initial={{ opacity: 0, y, ...(blur ? { filter: 'blur(10px)' } : {}) }}
-      whileInView={{ opacity: 1, y: 0, ...(blur ? { filter: 'blur(0px)' } : {}) }}
-      viewport={{ once: true, margin: '0px 0px -60px 0px' }}
-      transition={{ duration: 0.8, delay, ease: EASE }}
-      {...rest}
-    >
+    <Tag ref={ref} className={className} initial={false} animate={controls} {...rest}>
       {children}
     </Tag>
   )

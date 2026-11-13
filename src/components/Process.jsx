@@ -4,7 +4,7 @@ import SectionHead from './ui/SectionHead'
 import Reveal from './ui/Reveal'
 import { payment, process } from '../data/services'
 
-export default function Process() {
+export default function Process({ num }) {
   const ref = useRef(null)
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 70%', 'end 55%'] })
   const progress = useSpring(scrollYProgress, { stiffness: 80, damping: 22 })
@@ -14,8 +14,8 @@ export default function Process() {
       <div className="container process-grid">
         <div className="process-intro">
           <SectionHead
-            num="06"
-            label="How it works"
+            num={num}
+            label="How I work"
             title={'From a chat to a *launched* app.'}
             intro="No surprises, no disappearing for a month. You see working software every single week."
           />
@@ -27,6 +27,7 @@ export default function Process() {
                 <motion.div
                   key={m.label}
                   className="payment-seg"
+                  data-rv
                   style={{ flexGrow: m.pct }}
                   initial={{ clipPath: 'inset(0 100% 0 0)' }}
                   whileInView={{ clipPath: 'inset(0 0% 0 0)' }}

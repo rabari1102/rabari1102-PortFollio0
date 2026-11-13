@@ -1,117 +1,171 @@
 /* ─────────────────────────────────────────────────────────────
-   "Ember": a warm black studio lit by one molten orange-to-saffron
-   light. Cream type, paper documents, and a light theme that flips
-   the same tokens to cream paper and ink.
+   MIDNIGHT SIGNAL
+   A deep midnight-blue studio with one violet light and a thin
+   cyan signal. Crisp borders, large type, restrained glow.
+   The light theme flips the same tokens to warm paper and ink.
 
-   Everything is driven by the custom properties below. Change a
-   colour here and the whole site, the WebGL backdrop included, follows.
+   Every colour, font and radius on the site is one of the custom
+   properties below. Components never hard-code a colour: change a
+   value here and the whole site, the WebGL backdrop included,
+   follows. See docs/design-system.md.
    ───────────────────────────────────────────────────────────── */
 
 :root {
   /* Surfaces */
-  --bg: #0c0b0a;
-  --bg-2: #110f0d;
-  --surface: #171412;
-  --surface-2: #1f1b18;
+  --bg: #090e1a; /* main background */
+  --bg-2: #0c1322; /* alternate band */
+  --surface: #151d30; /* cards, navigation */
+  --surface-2: #1c2640; /* raised / hover */
 
   /* Type */
-  --text: #f4efe6;
-  --text-2: #b9b0a3;
-  --text-3: #8b8377;
+  --text: #f5f7fc; /* headings, primary copy */
+  --text-2: #afbbd0; /* supporting copy */
+  --text-3: #9da9c1; /* low-emphasis labels */
 
   /* Lines */
-  --line: rgba(244, 239, 230, 0.09);
-  --line-2: rgba(244, 239, 230, 0.2);
+  --line: rgba(49, 59, 81, 0.72); /* #313b51, subtle separators */
+  --line-2: #3b4661; /* card and control outlines */
+  --line-3: #65718f; /* form-field boundaries (3:1 against the background) */
 
-  /* The ember light */
-  --accent: #ff7a3d;
-  --accent-2: #ffb655;
-  --ember-1: #ff4a2b;
-  --ember-2: #ff8a2a;
-  --ember-3: #ffcf6b;
-  --grad: linear-gradient(100deg, #ff5a36 0%, #ff8d28 48%, #ffc650 100%);
-  --on-accent: #1b0d04;
-  --glow: rgba(255, 122, 61, 0.13);
+  /* The violet light.
+     #8b5cf6 is the brand accent. White text on it measures 4.2:1, just short of AA, so anything
+     that carries text is filled with the slightly deeper --grad; the lighter --accent (7:1 on the
+     background) is the one used for text and icons. */
+  --accent: #a78bfa; /* accent text, icons, links */
+  --accent-strong: #8b5cf6; /* glows, focus rings, borders, non-text fills */
+  --accent-deep: #7c3aed;
+  --accent-soft: rgba(139, 92, 246, 0.14); /* tinted backgrounds */
+  --on-accent: #ffffff;
+  --grad: linear-gradient(120deg, #6d3ae6 0%, #7c3aed 45%, #8452f2 100%); /* filled buttons and badges */
+  --grad-text: linear-gradient(100deg, #a78bfa 0%, #c4b5fd 48%, #67e8f9 100%); /* accent words */
+  --glow: rgba(139, 92, 246, 0.13); /* pointer spotlight */
 
-  /* Signals */
-  --ok: #5fe3a6;
-  --danger: #ff7b6b;
+  /* The cyan signal: technical detail, ticks, "verified" */
+  --cyan: #67e8f9;
+  --ok: #67e8f9;
+  --danger: #fda4af;
+
+  /* The hero backdrop (read by the WebGL shader and the CSS fallback) */
+  --glow-1: #4c1d95;
+  --glow-2: #7c3aed;
+  --glow-3: #22d3ee;
 
   /* Paper: receipts and quotes are always "printed", in both themes */
-  --paper: #f3ecdf;
-  --paper-2: #e7dece;
-  --paper-ink: #1c1814;
-  --paper-ink-2: #5d5448;
-  --paper-line: rgba(28, 24, 20, 0.18);
-  --stamp-red: #c2331c;
-  --stamp-green: #1c7a4d;
+  --paper: #f6f4ef;
+  --paper-2: #e9e5db;
+  --paper-ink: #17212e;
+  --paper-ink-2: #4c586b;
+  --paper-line: rgba(23, 33, 46, 0.2);
+  --stamp-red: #b3261e;
+  --stamp-green: #17694a;
+  --tape: rgba(167, 139, 250, 0.5);
 
   /* Drawn product mocks */
-  --mock-bg: #1c1815;
-  --mock-chip: rgba(244, 239, 230, 0.06);
-  --mock-dim: rgba(244, 239, 230, 0.13);
-  --mock-strong: rgba(244, 239, 230, 0.78);
-  --mock-line: rgba(244, 239, 230, 0.13);
-  --mock-frame: #050505;
-  --cover-bg: #100e0c;
-  /* How far a project's accent colour is pushed towards white so it stays readable on black. */
+  --mock-bg: #121a2c;
+  --mock-chip: rgba(245, 247, 252, 0.05);
+  --mock-dim: rgba(245, 247, 252, 0.13);
+  --mock-strong: rgba(245, 247, 252, 0.8);
+  --mock-line: rgba(245, 247, 252, 0.11);
+  --mock-frame: #04070d;
+  --cover-bg: #0c1322;
+  /* How far a project's own accent colour is pushed towards white so it stays readable on dark. */
   --tint: #ffffff;
   --tint-amt: 42%;
 
-  --shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.85);
-  --shadow-sm: 0 16px 40px -20px rgba(0, 0, 0, 0.7);
+  /* WhatsApp green, dark enough for white text */
+  --wa: #128c4a;
+  --wa-ring: #25d366;
 
-  --f-display: 'Bricolage Grotesque Variable', 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --shadow: 0 40px 90px -40px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 16px 40px -22px rgba(0, 0, 0, 0.7);
+  --shadow-accent: 0 14px 36px -14px rgba(124, 58, 237, 0.7);
+  --sheen: rgba(255, 255, 255, 0.3); /* the band of light that crosses a primary button */
+  --shade: rgba(0, 0, 0, 0.5); /* drop shadows under floating objects */
+
+  /* Type families: Geist for everything, Geist Mono for technical labels,
+     Instrument Serif italic for the one accent word in a headline. */
+  --f-display: 'Geist Variable', 'Geist', 'Inter Tight', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
   --f-body: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'Geist Mono Variable', 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
-  --radius: 22px;
-  --radius-lg: 30px;
-  --gutter: clamp(18px, 4vw, 44px);
+  /* Fluid type scale */
+  --fs-hero: clamp(2.5rem, 6.1vw, 5.5rem); /* 40 → 88px */
+  --fs-h1: clamp(2.4rem, 6.4vw, 5.25rem);
+  --fs-h2: clamp(2rem, 4.6vw, 3.75rem);
+  --fs-h3: clamp(1.25rem, 2vw, 1.6rem);
+  --fs-lead: clamp(1.05rem, 1.25vw, 1.2rem);
+  --fs-body: 1.0625rem; /* 17px */
+  --fs-small: 0.9rem;
+  --fs-label: 0.75rem;
+
+  /* Shape and rhythm */
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 26px;
+  --gutter: clamp(20px, 4vw, 44px);
+  --max: 1280px;
+  --section: clamp(80px, 11vw, 150px);
+
+  /* Motion */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-io: cubic-bezier(0.76, 0, 0.24, 1);
+  --t-micro: 180ms; /* hover, focus, press */
+  --t-reveal: 500ms; /* things entering the page */
   color-scheme: dark;
 }
 
 :root[data-theme='light'] {
-  --bg: #f6f1e8;
-  --bg-2: #efe8db;
-  --surface: #fffaf1;
+  --bg: #f6f4ef;
+  --bg-2: #efece4;
+  --surface: #fdfcf9;
   --surface-2: #ffffff;
 
-  --text: #17130f;
-  --text-2: #4d463d;
-  --text-3: #6e665b;
+  --text: #17212e;
+  --text-2: #445166;
+  --text-3: #5a667b;
 
-  --line: rgba(23, 19, 15, 0.1);
-  --line-2: rgba(23, 19, 15, 0.24);
+  --line: rgba(23, 33, 46, 0.11);
+  --line-2: rgba(23, 33, 46, 0.24);
+  --line-3: #7c8799;
 
-  --accent: #b5320b;
-  --accent-2: #b8600a;
-  --ember-1: #ff7a4d;
-  --ember-2: #ffab52;
-  --ember-3: #ffe0a0;
-  --glow: rgba(226, 85, 43, 0.1);
+  /* #316bee is the light accent. It carries white text at 4.7:1; as text on paper it is 4.3:1,
+     so text uses the slightly deeper --accent. */
+  --accent: #2456d4;
+  --accent-strong: #316bee;
+  --accent-deep: #1f4bc0;
+  --accent-soft: #d4e5ff;
+  --grad: linear-gradient(120deg, #1f4bc0 0%, #2a5fe0 50%, #316bee 100%);
+  --grad-text: linear-gradient(100deg, #2456d4 0%, #316bee 45%, #7c3aed 100%);
+  --glow: rgba(49, 107, 238, 0.1);
 
-  --ok: #0e8a55;
-  --danger: #c0321f;
+  --cyan: #0e7490;
+  --ok: #0e7490;
+  --danger: #b4233a;
 
-  --paper: #fffdf8;
-  --paper-2: #f1e9da;
+  --glow-1: #c7dbff;
+  --glow-2: #9dbdfb;
+  --glow-3: #d9c8ff;
 
-  --mock-bg: #fffdf8;
-  --mock-chip: rgba(23, 19, 15, 0.05);
-  --mock-dim: rgba(23, 19, 15, 0.12);
-  --mock-strong: rgba(23, 19, 15, 0.8);
-  --mock-line: rgba(23, 19, 15, 0.1);
-  --mock-frame: #17130f;
-  --cover-bg: #ece4d6;
+  --paper: #fffefb;
+  --paper-2: #f0ede5;
+  --tape: rgba(49, 107, 238, 0.32);
+
+  --mock-bg: #fffefb;
+  --mock-chip: rgba(23, 33, 46, 0.045);
+  --mock-dim: rgba(23, 33, 46, 0.13);
+  --mock-strong: rgba(23, 33, 46, 0.82);
+  --mock-line: rgba(23, 33, 46, 0.11);
+  --mock-frame: #17212e;
+  --cover-bg: #e9e5db;
   --tint: #000000;
   --tint-amt: 26%;
 
-  --shadow: 0 40px 80px -44px rgba(70, 40, 10, 0.45);
-  --shadow-sm: 0 16px 36px -22px rgba(70, 40, 10, 0.4);
+  --shadow: 0 40px 80px -44px rgba(23, 33, 46, 0.4);
+  --shadow-sm: 0 16px 36px -22px rgba(23, 33, 46, 0.35);
+  --shadow-accent: 0 14px 34px -14px rgba(49, 107, 238, 0.6);
+  --sheen: rgba(255, 255, 255, 0.4);
+  --shade: rgba(23, 33, 46, 0.3);
   color-scheme: light;
 }
 
@@ -136,15 +190,15 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--f-body);
-  font-size: 17px;
+  font-size: var(--fs-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
   transition:
-    background-color 0.5s var(--ease),
-    color 0.5s var(--ease);
+    background-color 0.22s var(--ease),
+    color 0.22s var(--ease);
 }
 
 img,
@@ -216,7 +270,7 @@ fieldset {
   color: var(--bg);
   font-weight: 600;
   transform: translateY(-200%);
-  transition: transform 0.3s var(--ease);
+  transition: transform 0.18s var(--ease);
 }
 
 .skip-link:focus {
@@ -245,14 +299,14 @@ em {
 
 .mono {
   font-family: var(--f-mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.04em;
+  font-size: var(--fs-label);
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
 .container {
   width: 100%;
-  max-width: 1320px;
+  max-width: var(--max);
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
@@ -276,15 +330,15 @@ em {
   border: 1px solid transparent;
   white-space: nowrap;
   transition:
-    transform 0.35s var(--ease),
-    color 0.35s var(--ease),
-    border-color 0.35s,
-    box-shadow 0.35s;
+    transform 0.18s var(--ease),
+    color 0.18s var(--ease),
+    border-color 0.18s,
+    box-shadow 0.18s;
 }
 
 .btn svg {
   flex-shrink: 0;
-  transition: transform 0.4s var(--ease);
+  transition: transform 0.22s var(--ease);
 }
 
 .btn:hover svg {
@@ -310,8 +364,8 @@ em {
   background: var(--grad);
   color: var(--on-accent);
   box-shadow:
-    0 12px 34px -12px rgba(255, 110, 50, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    var(--shadow-accent),
+    inset 0 1px 0 var(--sheen);
 }
 
 .btn-primary::before {
@@ -319,9 +373,9 @@ em {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  background: linear-gradient(105deg, transparent 30%, var(--sheen) 50%, transparent 70%);
   transform: translateX(-120%);
-  transition: transform 0.8s var(--ease);
+  transition: transform 0.4s var(--ease);
 }
 
 .btn-primary:hover::before {
@@ -330,8 +384,8 @@ em {
 
 .btn-primary:hover {
   box-shadow:
-    0 18px 44px -12px rgba(255, 110, 50, 0.85),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    0 18px 44px -12px color-mix(in srgb, var(--accent-strong) 85%, transparent),
+    inset 0 1px 0 var(--sheen);
 }
 
 .btn-primary:disabled {
@@ -356,7 +410,7 @@ em {
   background: var(--text);
   border-radius: inherit;
   transform: translateY(102%);
-  transition: transform 0.5s var(--ease);
+  transition: transform 0.22s var(--ease);
 }
 
 .btn-ghost:hover {
@@ -407,10 +461,10 @@ em {
   border-radius: 50%;
   border: 1px solid var(--line-2);
   transition:
-    background-color 0.35s,
-    color 0.35s,
-    border-color 0.35s,
-    transform 0.5s var(--ease);
+    background-color 0.18s,
+    color 0.18s,
+    border-color 0.18s,
+    transform 0.22s var(--ease);
 }
 
 .link-arrow:hover .round-arrow,
@@ -442,16 +496,16 @@ a:hover > .round-arrow {
 }
 
 .icon-btn {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   flex-shrink: 0;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-2);
   transition:
-    background-color 0.25s,
-    border-color 0.25s;
+    background-color 0.18s,
+    border-color 0.18s;
 }
 
 .icon-btn:hover {
@@ -464,6 +518,7 @@ a:hover > .round-arrow {
 }
 
 .pulse-dot,
+.signal-dot,
 .sleep-dot {
   display: inline-block;
   width: 8px;
@@ -474,7 +529,8 @@ a:hover > .round-arrow {
   flex-shrink: 0;
 }
 
-.pulse-dot::after {
+.pulse-dot::after,
+.signal-dot::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -534,9 +590,7 @@ a:hover > .round-arrow {
 .paper {
   position: relative;
   background-color: var(--paper);
-  background-image:
-    repeating-linear-gradient(0deg, transparent 0 27px, rgba(28, 24, 20, 0.035) 27px 28px),
-    radial-gradient(120% 80% at 0% 0%, rgba(255, 255, 255, 0.5), transparent 60%);
+  background-image: repeating-linear-gradient(0deg, transparent 0 27px, color-mix(in srgb, var(--paper-ink) 4%, transparent) 27px 28px);
   color: var(--paper-ink);
 }
 
@@ -544,7 +598,7 @@ a:hover > .round-arrow {
 
 .section {
   position: relative;
-  padding: clamp(84px, 12vw, 168px) 0;
+  padding: var(--section) 0;
 }
 
 .section-head {
@@ -575,16 +629,16 @@ a:hover > .round-arrow {
 .contact-title {
   font-family: var(--f-display);
   font-weight: 600;
-  font-size: clamp(2.3rem, 5.4vw, 4.6rem);
-  line-height: 0.98;
-  letter-spacing: -0.04em;
+  font-size: var(--fs-h2);
+  line-height: 1;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 
 .section-intro {
   margin-top: 26px;
   max-width: 62ch;
-  font-size: clamp(1.02rem, 1.3vw, 1.18rem);
+  font-size: var(--fs-lead);
   color: var(--text-2);
   text-wrap: pretty;
 }
@@ -640,7 +694,7 @@ a:hover > .round-arrow {
 .grad-text {
   font-size: 1.08em;
   line-height: 0.9;
-  background: var(--grad);
+  background: var(--grad-text);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -663,7 +717,7 @@ a:hover > .round-arrow {
   border-radius: inherit;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.5s var(--ease);
+  transition: opacity 0.22s var(--ease);
 }
 
 /* soft fill */
@@ -731,7 +785,7 @@ a:hover > .round-arrow {
   z-index: 300;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.18s;
 }
 
 .cursor.is-on {
@@ -748,11 +802,11 @@ a:hover > .round-arrow {
   border: 1.5px solid var(--accent);
   transform: translate(-50%, -50%);
   transition:
-    width 0.4s var(--ease),
-    height 0.4s var(--ease),
-    background-color 0.3s,
-    border-color 0.3s,
-    opacity 0.3s;
+    width 0.22s var(--ease),
+    height 0.22s var(--ease),
+    background-color 0.18s,
+    border-color 0.18s,
+    opacity 0.18s;
 }
 
 .cursor.is-hover .cursor-ring {
@@ -767,7 +821,7 @@ a:hover > .round-arrow {
   height: 88px;
   background: var(--grad);
   border-color: transparent;
-  box-shadow: 0 14px 40px -10px rgba(255, 110, 50, 0.7);
+  box-shadow: var(--shadow-accent);
 }
 
 .cursor.is-text .cursor-ring {
@@ -787,74 +841,13 @@ a:hover > .round-arrow {
   opacity: 0;
   transform: scale(0.6);
   transition:
-    opacity 0.25s,
-    transform 0.35s var(--ease);
+    opacity 0.18s,
+    transform 0.18s var(--ease);
 }
 
 .cursor.is-label .cursor-label {
   opacity: 1;
   transform: none;
-}
-
-.preloader {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: grid;
-  place-items: center;
-  background: var(--bg);
-  color: var(--text);
-}
-
-.preloader-mark {
-  display: flex;
-  align-items: baseline;
-  overflow: hidden;
-  padding: 0.12em 0.04em 0.2em;
-  font-family: var(--f-display);
-  font-weight: 700;
-  font-size: clamp(3.2rem, 14vw, 10rem);
-  line-height: 0.9;
-  letter-spacing: -0.06em;
-}
-
-.preloader-mark span {
-  display: inline-block;
-}
-
-.preloader-mark i {
-  width: 0.16em;
-  height: 0.16em;
-  margin-left: 0.05em;
-  border-radius: 50%;
-  background: var(--grad);
-}
-
-.preloader-foot {
-  position: absolute;
-  left: var(--gutter);
-  right: var(--gutter);
-  bottom: 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  color: var(--text-2);
-}
-
-.preloader-count {
-  font-size: 1.1rem;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
-.preloader-bar {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 4px;
-  background: var(--grad);
-  transform-origin: 0 50%;
 }
 
 /* WhatsApp shortcut */
@@ -868,13 +861,13 @@ a:hover > .round-arrow {
   height: 54px;
   padding: 0 16px;
   border-radius: 999px;
-  background: #128c4a;
-  color: #fff;
+  background: var(--wa);
+  color: var(--on-accent);
   font-weight: 600;
   font-size: 0.9rem;
   box-shadow:
-    0 18px 40px -14px rgba(18, 140, 74, 0.8),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 18px 40px -14px color-mix(in srgb, var(--wa) 80%, transparent),
+    inset 0 1px 0 var(--sheen);
 }
 
 .fab::before {
@@ -882,7 +875,7 @@ a:hover > .round-arrow {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  border: 1.5px solid #25d366;
+  border: 1.5px solid var(--wa-ring);
   animation: fab-ring 2.6s ease-out infinite;
 }
 
@@ -899,9 +892,9 @@ a:hover > .round-arrow {
   white-space: nowrap;
   opacity: 0;
   transition:
-    max-width 0.5s var(--ease),
-    opacity 0.3s,
-    margin 0.5s var(--ease);
+    max-width 0.22s var(--ease),
+    opacity 0.18s,
+    margin 0.22s var(--ease);
 }
 
 @media (hover: hover) {
@@ -924,7 +917,9 @@ a:hover > .round-arrow {
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
   }
 }

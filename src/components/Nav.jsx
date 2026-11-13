@@ -3,31 +3,32 @@ import { Link, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight, Moon, Sun } from 'lucide-react'
 import { profile } from '../data/site'
-import { useClock, useTheme } from '../lib/hooks'
+import { useClock, useMounted, useTheme } from '../lib/hooks'
 
 const links = [
-  { href: '/#work', id: 'work', label: 'Work' },
-  { href: '/#verify', id: 'verify', label: 'Verify me' },
-  { href: '/#pricing', id: 'pricing', label: 'Pricing' },
-  { href: '/#services', id: 'services', label: 'Services' },
-  { href: '/#process', id: 'process', label: 'Process' },
-  { href: '/#faq', id: 'faq', label: 'FAQ' },
+  { to: '/work', label: 'Work' },
+  { to: '/services', label: 'Services' },
+  { to: '/about', label: 'About' },
+  { to: '/contact', label: 'Contact' },
 ]
+
+const isActive = (pathname, to) => pathname === to || pathname.startsWith(`${to}/`)
 
 function ThemeToggle() {
   const [theme, toggle] = useTheme()
+  const mounted = useMounted()
   const next = theme === 'dark' ? 'light' : 'dark'
   return (
-    <button className="icon-btn theme-toggle" onClick={toggle} aria-label={`Switch to ${next} theme`} title={`Switch to ${next} theme`}>
+    <button className="icon-btn theme-toggle" onClick={toggle} aria-label={mounted ? `Switch to ${next} theme` : 'Switch colour theme'}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span
           key={theme}
           initial={{ rotate: -90, scale: 0, opacity: 0 }}
           animate={{ rotate: 0, scale: 1, opacity: 1 }}
           exit={{ rotate: 90, scale: 0, opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.2 }}
         >
-          {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </motion.span>
       </AnimatePresence>
     </button>
@@ -38,10 +39,12 @@ export default function Nav() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [hidden, setHidden] = useState(false)
-  const [active, setActive] = useState('')
   const lastY = useRef(0)
+  const header = useRef(null)
+  const burger = useRef(null)
+  const { pathname } = useLocation()
   const location = useLocation()
-  const { time } = useClock(profile.timezone)
+  const clock = useClock(profile.timezone)
 
   // Slide the bar away on the way down, bring it back on the way up.
   useEffect(() => {
@@ -58,68 +61,83 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // Highlight the section being read.
-  useEffect(() => {
-    if (location.pathname !== '/') {
-      setActive('')
-      return
-    }
-    const els = links.map((l) => document.getElementById(l.id)).filter(Boolean)
-    if (!els.length) return
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id)
-          // Leaving a section without entering another (e.g. back up to the hero) clears the highlight.
-          else setActive((a) => (a === e.target.id ? '' : a))
-        })
-      },
-      { rootMargin: '-45% 0px -50% 0px' },
-    )
-    els.forEach((el) => io.observe(el))
-    return () => io.disconnect()
-  }, [location.pathname])
-
   useEffect(() => setOpen(false), [location])
 
+  // While the menu is open it behaves like a dialog: the page behind cannot be scrolled or
+  // tabbed into, Tab cycles inside the header, Escape closes, and focus returns to the button.
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
     if (!open) return
-    const onKey = (e) => e.key === 'Escape' && setOpen(false)
+    const behind = document.querySelectorAll('.route, .footer, [data-behind-menu]')
+    behind.forEach((el) => el.setAttribute('inert', ''))
+    document.body.style.overflow = 'hidden'
+
+    const focusables = () => [...header.current.querySelectorAll('a[href], button:not([disabled])')].filter((el) => el.offsetParent !== null)
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (e.key !== 'Tab') return
+      const els = focusables()
+      const first = els[0]
+      const last = els[els.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    const toRestore = burger.current
+
+    return () => {
+      behind.forEach((el) => el.removeAttribute('inert'))
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+      // Only pull focus back if it would otherwise be lost inside the closed menu.
+      if (!document.activeElement || document.activeElement === document.body || header.current?.contains(document.activeElement)) toRestore?.focus()
+    }
   }, [open])
 
   return (
-    <header className={`nav ${scrolled ? 'is-scrolled' : ''} ${hidden && !open ? 'is-hidden' : ''} ${open ? 'is-open' : ''}`}>
+    <header ref={header} className={`nav ${scrolled ? 'is-scrolled' : ''} ${hidden && !open ? 'is-hidden' : ''} ${open ? 'is-open' : ''}`}>
       <div className="nav-inner">
-        <Link to="/" className="logo" aria-label="Pragnesh Kalotara, home">
+        <Link to="/" className="logo" aria-label={`${profile.name}, home`}>
           pragnesh
           <i />
         </Link>
 
         <nav className="nav-links" aria-label="Main">
-          {links.map((l) => (
-            <Link key={l.href} to={l.href} className={active === l.id ? 'is-active' : ''}>
-              {active === l.id && <motion.span layoutId="nav-pill" className="nav-pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
-              <span>{l.label}</span>
-            </Link>
-          ))}
+          {links.map((l) => {
+            const active = isActive(pathname, l.to)
+            return (
+              <Link key={l.to} to={l.to} className={active ? 'is-active' : ''} aria-current={active ? 'page' : undefined}>
+                {active && <motion.span layoutId="nav-pill" className="nav-pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />}
+                <span>{l.label}</span>
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="nav-actions">
-          <span className="nav-clock mono" title="Local time in Ahmedabad">
-            <i className="pulse-dot" /> {time} IST
-          </span>
+          {clock && (
+            <span className="nav-clock mono" title="Local time in Ahmedabad">
+              <i className="signal-dot" /> {clock.time} IST
+            </span>
+          )}
           <ThemeToggle />
-          <Link to="/#contact" className="btn btn-primary btn-sm nav-cta">
-            Start a project <ArrowUpRight size={16} />
+          <Link to="/contact" className="btn btn-primary btn-sm nav-cta">
+            Discuss a project <ArrowUpRight size={16} />
           </Link>
           <button
+            ref={burger}
             className={`burger ${open ? 'is-open' : ''}`}
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
+            aria-controls="mobile-menu"
           >
             <span />
             <span />
@@ -130,30 +148,34 @@ export default function Nav() {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="mobile-menu"
             className="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
             initial={{ clipPath: 'inset(0 0 100% 0)' }}
             animate={{ clipPath: 'inset(0 0 0% 0)' }}
             exit={{ clipPath: 'inset(0 0 100% 0)' }}
-            transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1] }}
+            transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
           >
             <nav aria-label="Mobile">
-              {links.map((l, i) => (
-                <div className="mobile-link-wrap" key={l.href}>
-                  <motion.div initial={{ y: '110%' }} animate={{ y: '0%' }} transition={{ delay: 0.18 + i * 0.05, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
-                    <Link to={l.href} className="mobile-link">
+              {[{ to: '/', label: 'Home' }, ...links].map((l, i) => (
+                <div className="mobile-link-wrap" key={l.to}>
+                  <motion.div initial={{ y: '110%' }} animate={{ y: '0%' }} transition={{ delay: 0.14 + i * 0.05, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
+                    <Link to={l.to} className="mobile-link" aria-current={pathname === l.to ? 'page' : undefined}>
                       <span className="mono">0{i + 1}</span> {l.label}
                     </Link>
                   </motion.div>
                 </div>
               ))}
             </nav>
-            <motion.div className="mobile-foot" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}>
-              <Link to="/#contact" className="btn btn-primary">
-                Get a free quote <ArrowUpRight size={18} />
+            <motion.div className="mobile-foot" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
+              <Link to="/contact" className="btn btn-primary btn-lg">
+                Discuss a project <ArrowUpRight size={18} />
               </Link>
-              <p className="mono">
-                <i className="pulse-dot" /> {profile.availability}
-              </p>
+              <a href={`mailto:${profile.email}`} className="mobile-mail">
+                {profile.email}
+              </a>
             </motion.div>
           </motion.div>
         )}

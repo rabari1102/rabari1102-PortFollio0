@@ -6,12 +6,10 @@ import ProjectCover from '../components/ProjectCover'
 import Reveal from '../components/ui/Reveal'
 import Kinetic from '../components/fx/Kinetic'
 import Magnetic from '../components/fx/Magnetic'
-import Seo from '../components/Seo'
 import NotFound from './NotFound'
-import { getProject, projects } from '../data/projects'
+import { getProject, projects, relatedProjects } from '../data/projects'
 
 const platformLabel = { site: 'Website', web: 'Web app', desktop: 'Desktop app', phone: 'Mobile app', combo: 'Web + Android app' }
-const EASE = [0.22, 1, 0.36, 1]
 
 export default function ProjectPage() {
   const { id } = useParams()
@@ -28,6 +26,7 @@ function ProjectView({ project }) {
   const idx = projects.indexOf(project)
   const next = projects[(idx + 1) % projects.length]
   const prev = projects[(idx - 1 + projects.length) % projects.length]
+  const related = relatedProjects(project)
   const isFreelance = project.kind === 'freelance'
 
   const meta = [
@@ -37,129 +36,147 @@ function ProjectView({ project }) {
     ['My role', isFreelance ? 'Everything: design to deploy' : 'Engineer / team lead'],
   ]
 
+  // Each block is one part of the case study. Blocks with nothing real to say are left out.
+  const blocks = [
+    { h: 'Overview', body: <p className="pp-lead">{project.summary}</p> },
+    { h: 'The challenge', body: <p>{project.problem}</p> },
+    {
+      h: isFreelance ? 'What I built' : 'My part in it',
+      body: (
+        <div>
+          <p>{project.solution}</p>
+          {project.note && <p className="pp-note">{project.note}</p>}
+        </div>
+      ),
+    },
+    {
+      h: 'Key features',
+      body: (
+        <ol className="pp-features">
+          {project.features.map((f, i) => (
+            <li key={f}>
+              <span className="mono">{String(i + 1).padStart(2, '0')}</span>
+              {f}
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+    {
+      h: 'Stack, layer by layer',
+      body: (
+        <dl className="pp-stack">
+          {Object.entries(project.stack).map(([layer, items]) => (
+            <div key={layer}>
+              <dt className="mono">{layer}</dt>
+              <dd className="chips">
+                {items.map((t) => (
+                  <span key={t} className="chip">
+                    {t}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      ),
+    },
+  ]
+
   return (
     <main id="main" className="project-page" style={{ '--c': project.accent }}>
-      <Seo title={`${project.title} · ${project.sector} — Pragnesh Kalotara`} description={project.summary} path={`/work/${project.id}`} />
       <span className="pp-glow" aria-hidden="true" />
       <div className="container">
-        <Link to="/#work" className="back-link mono">
-          <ArrowLeft size={15} /> All work
-        </Link>
+        <nav className="crumbs mono in" aria-label="Breadcrumb" style={{ '--d': '0ms' }}>
+          <ol>
+            <li>
+              <Link to="/">Home</Link>
+            </li>
+            <li>
+              <Link to="/work">Work</Link>
+            </li>
+            <li>
+              <span aria-current="page">{project.title}</span>
+            </li>
+          </ol>
+        </nav>
 
         <header className="pp-head">
-          <motion.p className="pp-kind mono" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="pp-swatch" /> {isFreelance ? 'Client project · built solo, from home' : 'Built inside a team · as engineer / lead'}
-          </motion.p>
-          <Kinetic as="h1" className="pp-title" text={project.title} play delay={0.05} />
-          <motion.p
-            className="pp-tagline"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8, ease: EASE }}
-          >
+          <p className="pp-kind mono in" style={{ '--d': '40ms' }}>
+            <span className="pp-swatch" /> {isFreelance ? 'Client project · built solo' : 'Built inside a team · as engineer / lead'}
+          </p>
+          <Kinetic as="h1" mode="css" className="pp-title" text={project.title} />
+          <p className="pp-tagline in" style={{ '--d': '300ms' }}>
             {project.tagline}
-          </motion.p>
+          </p>
 
-          <motion.dl className="pp-meta" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.42, duration: 0.8, ease: EASE }}>
+          <dl className="pp-meta in" style={{ '--d': '380ms' }}>
             {meta.map(([k, v]) => (
               <div key={k}>
                 <dt className="mono">{k}</dt>
                 <dd>{v}</dd>
               </div>
             ))}
-          </motion.dl>
+          </dl>
 
           {project.liveUrl && (
-            <motion.a
-              className="btn btn-ghost pp-live"
-              href={project.liveUrl}
-              target="_blank"
-              rel="noreferrer"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
+            <a className="btn btn-ghost pp-live in" style={{ '--d': '440ms' }} href={project.liveUrl} target="_blank" rel="noreferrer">
               Open the live product <ExternalLink size={16} />
-            </motion.a>
+            </a>
           )}
         </header>
 
-        <motion.div
-          ref={coverRef}
-          className="pp-cover"
-          initial={{ opacity: 0, y: 50, scale: 0.97 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.35, duration: 1.1, ease: EASE }}
-        >
+        <div ref={coverRef} className="pp-cover in" style={{ '--d': '420ms' }}>
           <motion.div style={{ y: coverY }}>
             <ProjectCover project={project} large />
           </motion.div>
-        </motion.div>
+        </div>
 
-        <div className="pp-numbers">
+        <dl className="pp-numbers" aria-label="Results">
           {project.numbers.map((n, i) => (
-            <Reveal key={n.label} className="pp-number" delay={i * 0.08} data-spot>
-              <strong>{n.value}</strong>
-              <span>{n.label}</span>
+            <Reveal key={n.label} className="pp-number" delay={i * 0.06} data-spot>
+              <dt>{n.value}</dt>
+              <dd>{n.label}</dd>
+            </Reveal>
+          ))}
+        </dl>
+
+        <div className="pp-body">
+          {blocks.map((b, i) => (
+            <Reveal as="section" className="pp-block" key={b.h}>
+              <h2 className="mono">
+                <span>{String(i + 1).padStart(2, '0')}</span> {b.h}
+              </h2>
+              {b.body}
             </Reveal>
           ))}
         </div>
 
-        <div className="pp-body">
-          <Reveal className="pp-block">
-            <h2 className="mono">
-              <span>01</span> The short version
+        {related.length > 0 && (
+          <section className="pp-related" aria-labelledby="related-h">
+            <h2 className="group-label mono" id="related-h">
+              <b>Related projects</b>
+              <span className="rule" aria-hidden="true" />
+              <span>similar problems, solved</span>
             </h2>
-            <p className="pp-lead">{project.summary}</p>
-          </Reveal>
-          <Reveal className="pp-block">
-            <h2 className="mono">
-              <span>02</span> The problem
-            </h2>
-            <p>{project.problem}</p>
-          </Reveal>
-          <Reveal className="pp-block">
-            <h2 className="mono">
-              <span>03</span> What I built
-            </h2>
-            <div>
-              <p>{project.solution}</p>
-              {project.note && <p className="pp-note">{project.note}</p>}
-            </div>
-          </Reveal>
-          <Reveal className="pp-block">
-            <h2 className="mono">
-              <span>04</span> Features
-            </h2>
-            <ol className="pp-features">
-              {project.features.map((f, i) => (
-                <li key={f}>
-                  <span className="mono">{String(i + 1).padStart(2, '0')}</span>
-                  {f}
-                </li>
+            <ul className="related-grid">
+              {related.map((p, i) => (
+                <Reveal as="li" key={p.id} delay={i * 0.06}>
+                  <Link to={`/work/${p.id}`} className="related" style={{ '--c': p.accent }} data-spot>
+                    <span className="mono">
+                      {p.kind === 'freelance' ? 'Client project' : 'Team project'} · {p.year}
+                    </span>
+                    <strong>{p.title}</strong>
+                    <span className="related-tag">{p.tagline}</span>
+                    <span className="round-arrow" aria-hidden="true">
+                      <ArrowUpRight size={17} />
+                    </span>
+                  </Link>
+                </Reveal>
               ))}
-            </ol>
-          </Reveal>
-          <Reveal className="pp-block">
-            <h2 className="mono">
-              <span>05</span> Stack, layer by layer
-            </h2>
-            <dl className="pp-stack">
-              {Object.entries(project.stack).map(([layer, items]) => (
-                <div key={layer}>
-                  <dt className="mono">{layer}</dt>
-                  <dd className="chips">
-                    {items.map((t) => (
-                      <span key={t} className="chip">
-                        {t}
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-        </div>
+            </ul>
+          </section>
+        )}
 
         <Reveal className="pp-cta" data-spot>
           <p className="mono">Want something like this?</p>
@@ -169,12 +186,12 @@ function ProjectView({ project }) {
           <p className="pp-cta-sub">Fixed written quote, three milestone payments, and the code is yours from day one.</p>
           <div className="hero-ctas">
             <Magnetic>
-              <Link to="/#estimate" className="btn btn-primary btn-lg">
-                Get a rough estimate <ArrowUpRight size={18} />
+              <Link to="/contact" className="btn btn-primary btn-lg">
+                Discuss your project <ArrowUpRight size={18} />
               </Link>
             </Magnetic>
-            <Link to="/#contact" className="btn btn-ghost btn-lg">
-              Talk to me
+            <Link to="/services#estimate" className="btn btn-ghost btn-lg">
+              Get a rough estimate
             </Link>
           </div>
         </Reveal>

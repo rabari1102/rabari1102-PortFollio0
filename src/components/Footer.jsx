@@ -11,8 +11,8 @@ const drop = {
   show: (i) => ({ y: '0%', rotate: 0, transition: { delay: i * 0.06, type: 'spring', stiffness: 150, damping: 17 } }),
 }
 
-// The name is drawn twice: a hairline outline, and an ember copy on top that only shows
-// through a spotlight. The spotlight follows the cursor, or drifts on its own when nobody is pointing.
+// The name is drawn twice: a hairline outline, and a lit copy on top that only shows through a
+// spotlight. The spotlight follows the cursor, or drifts on its own when nobody is pointing.
 function FooterName() {
   const ref = useRef(null)
   const [tracking, setTracking] = useState(false)
@@ -23,11 +23,11 @@ function FooterName() {
     ref.current.style.setProperty('--my', `${e.clientY - r.top}px`)
   }
 
-  const layer = (cls) => (
+  const layer = (cls, asText) => (
     <span className={cls} aria-hidden="true">
       {NAME.split('').map((ch, i) => (
-        <motion.span key={i} className="fname-ch" variants={drop} custom={i}>
-          {ch}
+        <motion.span key={i} className="fname-ch" data-rv data-ch={asText ? undefined : ch} variants={drop} custom={i}>
+          {asText ? ch : null}
         </motion.span>
       ))}
     </span>
@@ -44,9 +44,9 @@ function FooterName() {
       onPointerLeave={() => setTracking(false)}
       onPointerMove={onMove}
     >
-      <Link to="/#top" className="fname-link" aria-label={`${profile.name}, back to the top`}>
-        {layer('fname-outline')}
-        {layer('fname-fill')}
+      <Link to="/" className="fname-link" aria-label={`${profile.name}, home`}>
+        {layer('fname-outline', true)}
+        {layer('fname-fill', false)}
       </Link>
     </motion.div>
   )
@@ -56,11 +56,11 @@ const cols = [
   {
     title: 'Site',
     links: [
-      { to: '/#work', label: 'Work' },
-      { to: '/#verify', label: 'Verify me' },
-      { to: '/#pricing', label: 'Pricing' },
-      { to: '/#estimate', label: 'Estimate' },
-      { to: '/#faq', label: 'FAQ' },
+      { to: '/work', label: 'Work' },
+      { to: '/services', label: 'Services' },
+      { to: '/services#estimate', label: 'Estimate' },
+      { to: '/about', label: 'About' },
+      { to: '/contact', label: 'Contact' },
     ],
   },
   {
@@ -91,7 +91,7 @@ export default function Footer() {
             <br />
             Fixed quotes, weekly demos, and the code is <em>yours.</em>
           </p>
-          <div className="footer-cols">
+          <nav className="footer-cols" aria-label="Footer">
             {cols.map((c) => (
               <div key={c.title}>
                 <p className="mono">{c.title}</p>
@@ -110,13 +110,13 @@ export default function Footer() {
                 </ul>
               </div>
             ))}
-          </div>
+          </nav>
         </div>
 
         <FooterName />
 
         <div className="footer-bottom mono">
-          <span>
+          <span suppressHydrationWarning>
             © {new Date().getFullYear()} {profile.name} · {profile.city}
           </span>
           <span>Built at home with React, a lot of chai and a little help from AI.</span>
