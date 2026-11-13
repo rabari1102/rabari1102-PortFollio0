@@ -12,7 +12,10 @@ export default function ProjectCard({ project }) {
       <div className="pcard-body">
         <p className="pcard-meta mono">
           <span>{project.sector}</span>
-          <span>{platformLabel[project.platform]}</span>
+          <span>
+            {platformLabel[project.platform]}
+            {project.liveUrl && <b className="live-tag">Live</b>}
+          </span>
         </p>
         <h3>{project.title}</h3>
         <p className="pcard-tag">{project.tagline}</p>

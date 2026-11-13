@@ -7,7 +7,7 @@ React 18 + Vite + React Router + Framer Motion. Every page is prerendered to rea
 ```bash
 npm install
 npm run dev        # develop at localhost:5173
-npm run build      # sitemap → build → prerender 18 pages + 404 into dist/
+npm run build      # sitemap → build → prerender every page + 404 into dist/
 npm run preview    # serve dist/ the way production does (clean URLs, real 404) at localhost:4173
 npm test           # 25 unit tests
 npm run test:e2e   # 67 browser tests (run `npm run build` first)

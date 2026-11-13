@@ -8,7 +8,7 @@ test('the main navigation reaches every page and marks the current one', async (
   const nav = page.getByRole('navigation', { name: 'Main' })
 
   for (const [label, url, heading] of [
-    ['Work', '/work', /Thirteen products/],
+    ['Work', '/work', /Sixteen products/],
     ['Services', '/services', /One person/],
     ['About', '/about', /Backend at the core/],
     ['Contact', '/contact', /Have an idea worth building/],
@@ -109,17 +109,17 @@ test('the work page filter narrows the list', async ({ page }) => {
   await ready(page)
   const cards = page.locator('.pcard')
   const rows = page.locator('.team-row')
-  await expect(cards).toHaveCount(6)
+  await expect(cards).toHaveCount(9)
   await expect(rows).toHaveCount(7)
 
   await page.getByRole('button', { name: /Desktop software/ }).click()
   await expect(page.getByRole('button', { name: /Desktop software/ })).toHaveAttribute('aria-pressed', 'true')
   await expect(cards).toHaveCount(2)
   await expect(rows).toHaveCount(1)
-  await expect(page.getByRole('status')).toContainText('Showing 3 of 13 projects')
+  await expect(page.getByRole('status')).toContainText('Showing 3 of 16 projects')
 
   await page.getByRole('button', { name: /Everything/ }).click()
-  await expect(cards).toHaveCount(6)
+  await expect(cards).toHaveCount(9)
 
   await cards.first().click()
   await expect(page).toHaveURL(/\/work\/tripkoz$/)

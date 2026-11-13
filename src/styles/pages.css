@@ -295,7 +295,6 @@ html:not(.js) .vtick-mark {
   margin-left: 2px;
   font-family: var(--f-mono);
   font-size: 0.66rem;
-  opacity: 0.8;
 }
 
 .pcard-grid {
@@ -915,4 +914,22 @@ html:not(.js) .vtick-mark {
   .footer {
     padding-bottom: max(28px, env(safe-area-inset-bottom));
   }
+}
+
+/* Marks a project that has a real, public link. */
+.live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  font-weight: 500;
+  color: var(--ok);
+}
+
+.live-tag::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
 }

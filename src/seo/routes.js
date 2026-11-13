@@ -13,16 +13,16 @@ const pages = {
   '/': {
     title: `${NAME} | Freelance Full-Stack & Backend Developer`,
     description:
-      'Freelance full-stack developer in Ahmedabad, India. I build web apps, SaaS, Android apps, desktop software and backend APIs, end to end. See 13 shipped products.',
+      'Freelance full-stack developer in Ahmedabad, India. I build web apps, SaaS, Android apps, desktop software and backend APIs, end to end. See 16 shipped products.',
     type: 'WebPage',
     crumb: 'Home',
     priority: '1.0',
     changefreq: 'weekly',
   },
   '/work': {
-    title: `Work: 13 shipped products | ${NAME}`,
+    title: `Work: ${projects.length} shipped products | ${NAME}`,
     description:
-      'Case studies from 13 shipped products: school and hospital software, fleet tracking, pharmacy billing, bank automation, IoT telemetry and access control.',
+      'Case studies from 16 shipped products: school and hospital software, fleet tracking, a paid marketplace, pharmacy billing, bank automation and IoT telemetry.',
     type: 'CollectionPage',
     crumb: 'Work',
     priority: '0.9',

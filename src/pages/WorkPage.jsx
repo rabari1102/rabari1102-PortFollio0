@@ -20,8 +20,8 @@ export default function WorkPage() {
       <PageHead
         crumbs={[{ to: '/', label: 'Home' }, { label: 'Work' }]}
         label="Work"
-        title={'Thirteen products,\n*shipped.*'}
-        intro="Six I built on my own for clients, from a children's hospital to a bank automation tool. Seven I built or led inside product companies. The two are kept apart on purpose, so you always know which is which."
+        title={'Sixteen products,\n*shipped.*'}
+        intro="Nine I built on my own, from a children's hospital system to a paid marketplace. Seven I built or led inside product companies. The two are kept apart on purpose, so you always know which is which."
       />
 
       <section className="section work-index">

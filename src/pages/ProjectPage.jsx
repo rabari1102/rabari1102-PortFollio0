@@ -103,7 +103,7 @@ function ProjectView({ project }) {
 
         <header className="pp-head">
           <p className="pp-kind mono in" style={{ '--d': '40ms' }}>
-            <span className="pp-swatch" /> {isFreelance ? 'Client project · built solo' : 'Built inside a team · as engineer / lead'}
+            <span className="pp-swatch" /> {project.kindLabel || (isFreelance ? 'Client project · built solo' : 'Built inside a team · as engineer / lead')}
           </p>
           <Kinetic as="h1" mode="css" className="pp-title" text={project.title} />
           <p className="pp-tagline in" style={{ '--d': '300ms' }}>
@@ -164,7 +164,7 @@ function ProjectView({ project }) {
                 <Reveal as="li" key={p.id} delay={i * 0.06}>
                   <Link to={`/work/${p.id}`} className="related" style={{ '--c': p.accent }} data-spot>
                     <span className="mono">
-                      {p.kind === 'freelance' ? 'Client project' : 'Team project'} · {p.year}
+                      {p.kind === 'freelance' ? 'Solo project' : 'Team project'} · {p.year}
                     </span>
                     <strong>{p.title}</strong>
                     <span className="related-tag">{p.tagline}</span>

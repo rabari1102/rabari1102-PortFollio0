@@ -38,8 +38,8 @@ export default function SelectedWork() {
       <div className="container">
         <Reveal className="work-more">
           <p>
-            <b>{projects.length} projects in all.</b> {client} built solo for my own clients, {team} built or led inside product teams. The two are always
-            labelled, so you know which is which.
+            <b>{projects.length} projects in all.</b> {client} built solo, {team} built or led inside product teams. The two are always labelled, so you know
+            which is which.
           </p>
           <Link to="/work" className="btn btn-ghost btn-lg">
             See all {projects.length} projects <ArrowUpRight size={18} />

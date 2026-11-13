@@ -26,6 +26,7 @@ export default function CaseCard({ project, i, total, progress, stacked }) {
             </span>
             <span>{project.sector}</span>
             <span>{platformLabel[project.platform]}</span>
+            {project.liveUrl && <b className="live-tag">Live</b>}
           </p>
           <h3 className="case-title">
             <Link to={to}>{project.title}</Link>
