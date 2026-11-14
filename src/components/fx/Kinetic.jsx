@@ -16,7 +16,9 @@ const EASE = [0.22, 1, 0.36, 1]
 
 export const plain = (text) => text.replace(/\*/g, '').replace(/\n/g, ' ')
 
-export default function Kinetic({ text, as = 'h2', className = '', mode = 'scroll', delay = 0, stagger = 0.05 }) {
+// letters: also wrap every character of the plain words in its own span (class "k-ch"), so an
+//   effect can address single letters. Used by the hero's weight-reactive headline.
+export default function Kinetic({ text, as = 'h2', className = '', mode = 'scroll', delay = 0, stagger = 0.05, letters = false }) {
   const ref = useRef(null)
   const controls = useAnimationControls()
   useScrollReveal(ref, controls, { hidden: 'hidden', shown: 'show', margin: '0px 0px -10% 0px' })
@@ -30,7 +32,17 @@ export default function Kinetic({ text, as = 'h2', className = '', mode = 'scrol
         {line.split(' ').map((word, wi, all) => {
           const accent = /^\*.+\*[.,!?]?$/.test(word)
           const i = n++
-          const body = accent ? <em>{word.replace(/\*/g, '')}</em> : word
+          const body = accent ? (
+            <em>{word.replace(/\*/g, '')}</em>
+          ) : letters ? (
+            [...word].map((ch, ci) => (
+              <span className="k-ch" key={ci}>
+                {ch}
+              </span>
+            ))
+          ) : (
+            word
+          )
           return [
             <span className="k-word" key={wi}>
               {render(body, i, accent)}

@@ -5,7 +5,6 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, ExternalLink } from 'lucide-react'
 import ProjectCover from '../components/ProjectCover'
 import Reveal from '../components/ui/Reveal'
 import Kinetic from '../components/fx/Kinetic'
-import Magnetic from '../components/fx/Magnetic'
 import NotFound from './NotFound'
 import { getProject, projects, relatedProjects } from '../data/projects'
 
@@ -85,7 +84,6 @@ function ProjectView({ project }) {
 
   return (
     <main id="main" className="project-page" style={{ '--c': project.accent }}>
-      <span className="pp-glow" aria-hidden="true" />
       <div className="container">
         <nav className="crumbs mono in" aria-label="Breadcrumb" style={{ '--d': '0ms' }}>
           <ol>
@@ -103,7 +101,7 @@ function ProjectView({ project }) {
 
         <header className="pp-head">
           <p className="pp-kind mono in" style={{ '--d': '40ms' }}>
-            <span className="pp-swatch" /> {isFreelance ? 'Client project · built solo' : 'Built inside a team · as engineer / lead'}
+            <span className="pp-swatch" /> {project.kindLabel || (isFreelance ? 'Client project · built solo' : 'Built inside a team · as engineer / lead')}
           </p>
           <Kinetic as="h1" mode="css" className="pp-title" text={project.title} />
           <p className="pp-tagline in" style={{ '--d': '300ms' }}>
@@ -164,7 +162,7 @@ function ProjectView({ project }) {
                 <Reveal as="li" key={p.id} delay={i * 0.06}>
                   <Link to={`/work/${p.id}`} className="related" style={{ '--c': p.accent }} data-spot>
                     <span className="mono">
-                      {p.kind === 'freelance' ? 'Client project' : 'Team project'} · {p.year}
+                      {p.kind === 'freelance' ? 'Solo project' : 'Team project'} · {p.year}
                     </span>
                     <strong>{p.title}</strong>
                     <span className="related-tag">{p.tagline}</span>
@@ -177,24 +175,6 @@ function ProjectView({ project }) {
             </ul>
           </section>
         )}
-
-        <Reveal className="pp-cta" data-spot>
-          <p className="mono">Want something like this?</p>
-          <h2>
-            Let's build <em>yours.</em>
-          </h2>
-          <p className="pp-cta-sub">Fixed written quote, three milestone payments, and the code is yours from day one.</p>
-          <div className="hero-ctas">
-            <Magnetic>
-              <Link to="/contact" className="btn btn-primary btn-lg">
-                Discuss your project <ArrowUpRight size={18} />
-              </Link>
-            </Magnetic>
-            <Link to="/services#estimate" className="btn btn-ghost btn-lg">
-              Get a rough estimate
-            </Link>
-          </div>
-        </Reveal>
 
         <nav className="pp-pager" aria-label="More projects">
           <Link to={`/work/${prev.id}`} className="pp-pager-link" style={{ '--c': prev.accent }}>

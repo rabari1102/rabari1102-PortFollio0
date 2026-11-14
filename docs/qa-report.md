@@ -94,3 +94,10 @@ Checked through automated keyboard tests: skip link, menu focus trap and return,
 3. **Two moderate advisories in React Router 6** (`GHSA-wrjc-x8rr-h8h6`, open redirect through a backslash in a link target; `GHSA-337j-9hxr-rhxg`, error deserialisation in data-router server hydration). The fix is a major upgrade to v7. Neither applies as the site is written: every link and `navigate()` target is a fixed string, and the data-router hydration API is not used. Upgrading to v7 is a sensible follow-up.
 4. **Cross-browser and real-device testing**, as above.
 5. **Structured data** not run through Google's Rich Results Test.
+
+## Update after the Ink & Signal redesign (2026-11-13)
+
+- 25 unit tests and 74 browser tests pass (Chromium). Tests that described the old layout were rewritten for the new one: work index rows, the selected-work split, the process strip moving with the scroll, the statement inking in.
+- Automated accessibility scan: 0 violations on every page type in both themes.
+- Checked by eye at 1440, 1280 and 390 px wide, dark and light.
+- Still not tested: Firefox, Safari, real phones, a screen reader.

@@ -4,6 +4,8 @@
 **Baseline audited:** commit `ae29852` on `main`, which is what thepragnesh.in was serving (confirmed from the Vercel production deployment record).
 **Stack:** React 18, Vite 6, React Router 6, Framer Motion 13, plain CSS with custom properties, deployed on Vercel. JavaScript, no TypeScript. Content in `src/data/*`.
 
+> **Update, 2026-11-13:** three live projects were added after this audit (BazaarTop, President Hotel & Resort, Krishna Stone Suppliers) and TripKoz gained its public link. The site now has 16 projects and 21 pages; figures below describe the audit as it was run.
+
 ## How the audit was done, and its limits
 
 - Read every source file, config file and script in the repository.

@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Check } from 'lucide-react'
+import { ArrowUpRight, Check, AppWindow, Globe, LayoutDashboard, Server, Smartphone, Sparkles } from 'lucide-react'
 import Reveal from './ui/Reveal'
 import { inr } from './ui/CountUp'
-import { serviceIcons } from './ServicesTeaser'
 import { services } from '../data/services'
 import { getProject } from '../data/projects'
+
+const serviceIcons = { web: LayoutDashboard, mobile: Smartphone, desktop: AppWindow, website: Globe, backend: Server, ai: Sparkles }
 
 // The full description of every service, on /services. Each one has its own #anchor.
 export default function ServiceList() {

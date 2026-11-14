@@ -33,7 +33,7 @@ export const hero = {
 // The credibility strip under the hero. Every number here comes from the project and
 // experience data below it in this folder. Only keep figures you can back up on a call.
 export const heroFacts = [
-  { value: '13', label: 'products shipped across web, mobile and desktop' },
+  { value: '16', label: 'products shipped across web, mobile and desktop' },
   { value: '3.8 yrs', label: 'building production software, team lead since 2025' },
   { value: '6', label: 'developers led across backend, frontend and mobile' },
   { value: '5,000+', label: 'live IoT devices on a platform I architected' },

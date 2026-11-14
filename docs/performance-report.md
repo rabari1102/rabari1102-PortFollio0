@@ -85,3 +85,17 @@ Lab numbers say what is possible; field data says what visitors get.
 - **Vercel Speed Insights:** enable it for the project in the Vercel dashboard and add the `@vercel/speed-insights` package. This is a third-party script and was not added without asking.
 - **PageSpeed Insights** (pagespeed.web.dev) shows Chrome field data once the site has enough traffic.
 - **Search Console → Core Web Vitals**, after the property is verified.
+
+## Update after the Ink & Signal redesign (2026-11-13)
+
+The WebGL backdrop, the device stage and the instrument frame were removed; the hero is now type only. Same lab setup as above.
+
+| Page | Device | Performance | Accessibility | Best practices | SEO | LCP | Blocking time | CLS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Home | Mobile | 92 | 100 | 100 | 100 | 0.9 s | 340 ms | 0.002 |
+| Home | Desktop | 100 | 100 | 100 | 100 | 0.3 s | 0 ms | 0.014 |
+| Work | Mobile | 93 | 100 | 100 | 100 | 0.9 s | 310 ms | 0 |
+| Services | Mobile | 98 | 100 | 100 | 100 | 0.9 s | 160 ms | 0.001 |
+| Case study | Mobile | 94 | 100 | 100 | 100 | 0.9 s | 290 ms | 0 |
+
+The headline serif (Instrument Serif roman, about 22 kB) is now preloaded alongside the body font, because the largest element on every page is set in it.

@@ -28,6 +28,7 @@ export const projects = [
     platform: 'combo',
     accent: '#E2552B',
     categories: ['saas', 'mobile', 'iot'],
+    liveUrl: 'https://www.tripkoz.com',
     summary:
       'A full SaaS for schools and fleet operators: plan routes and stops, assign drivers and vehicles, and let parents watch the bus arrive on a live map.',
     problem:
@@ -236,6 +237,117 @@ export const projects = [
       { value: '3D', label: 'equipment viewers' },
       { value: '0', label: 'framework runtime shipped' },
     ],
+  },
+
+  {
+    id: 'bazaartop',
+    kind: 'freelance',
+    // Shown instead of "Client project" on the case-study page.
+    kindLabel: 'Marketplace product · built solo',
+    title: 'BazaarTop',
+    tagline: 'Paid featured-product leaderboard for Indian online sellers',
+    sector: 'Marketplace · Advertising',
+    year: '2026',
+    platform: 'web',
+    accent: '#D9480F',
+    categories: ['saas'],
+    liveUrl: 'https://www.bazaartop.in',
+    summary:
+      'A directory where sellers on Instagram, WhatsApp or their own store list a product and pay to rank higher. Shoppers browse the board and buy directly from the seller.',
+    problem:
+      'Small sellers have no affordable place to get a product noticed, and a "pay to rank" board only works if a payment can never be credited twice, faked or lost.',
+    solution:
+      'A NestJS API and a Next.js front end in one workspace, sharing a single category list. A rank only moves when a signed Razorpay webhook arrives: the signature is checked on the raw request body, and the payment and the listing total are updated in one database transaction, so a repeated delivery is credited exactly once.',
+    features: [
+      'Three boards: all-time, today and trending, each also per category and subcategory',
+      '21 categories and 105 subcategories, chosen with a searchable icon picker',
+      'Razorpay checkout with signed, idempotent webhooks; GST stored separately from the ranking fee',
+      'Guest checkout with just an email; optional Google sign-in for "My listings"',
+      'Email when a listing is overtaken, rate-limited to one per listing per hour, with one-click unsubscribe',
+      'Admin moderation of listings',
+      'Sitemap that splits into an index above 50,000 URLs; link rules that reject shorteners and affiliate links',
+    ],
+    stack: {
+      Web: ['Next.js 15', 'React 19', 'Tailwind CSS 4'],
+      Backend: ['NestJS 11', 'TypeScript', 'Prisma 6', 'Razorpay'],
+      Data: ['PostgreSQL 16'],
+      Infra: ['Vercel', 'npm workspaces'],
+    },
+    numbers: [
+      { value: '21', label: 'categories, 105 subcategories' },
+      { value: '1×', label: 'each payment credited, however often the webhook repeats' },
+      { value: '3', label: 'leaderboards: all-time, today, trending' },
+    ],
+  },
+  {
+    id: 'president-hotel',
+    kind: 'freelance',
+    title: 'President Hotel & Resort',
+    tagline: 'Scroll-driven website for a hotel and a resort in Surendranagar',
+    sector: 'Hospitality',
+    year: '2026',
+    platform: 'site',
+    accent: '#B08D57',
+    categories: ['website'],
+    liveUrl: 'https://presidenthotel.vercel.app',
+    summary:
+      'An eight-page website for two properties, a city hotel and a highway resort, with rooms, dining, weddings and events, and booking enquiries that go straight to WhatsApp.',
+    problem:
+      'Two properties under one name needed one site that shows both, and the owners wanted bookings to reach them on WhatsApp without running a server.',
+    solution:
+      'Plain HTML, CSS and JavaScript with no framework and no build step, so the folder can be uploaded to any host as it is. The header, menu, footer and booking widgets come from one shared file. Forms open WhatsApp with the guest\u2019s details already written.',
+    features: [
+      'Eight pages: home, the hotel, the resort, dining, weddings and events, experience, our story, contact',
+      'Booking and enquiry forms that open WhatsApp pre-filled',
+      'Hero slideshow, an image that grows to full screen, a horizontal "journey" driven by vertical scroll',
+      'Stacking cards, drifting photo rows with a lightbox, word-by-word headings',
+      'Smooth scrolling with Lenis and a progress line in place of the scrollbar',
+      'Responsive at desktop, tablet and phone widths',
+    ],
+    stack: {
+      Web: ['HTML', 'CSS', 'JavaScript', 'Lenis'],
+      Infra: ['Vercel'],
+    },
+    numbers: [
+      { value: '8', label: 'pages' },
+      { value: '2', label: 'properties on one site' },
+      { value: '0', label: 'frameworks or build steps' },
+    ],
+  },
+  {
+    id: 'krishna-stone',
+    kind: 'freelance',
+    title: 'Krishna Stone Suppliers',
+    tagline: 'Catalogue website for a stone supplier in Gujarat',
+    sector: 'Construction materials',
+    year: '2026',
+    platform: 'site',
+    accent: '#C2703D',
+    categories: ['website'],
+    liveUrl: 'https://krishnastonesupplyers.in',
+    summary:
+      'A fast static site with a materials catalogue, applications, a gallery and a quote request that hands the enquiry to WhatsApp, phone or email.',
+    problem:
+      'A local supplier needed to be found online and to receive enquiries, with nothing to host, patch or pay for each month.',
+    solution:
+      'A Next.js site exported to plain HTML, CSS and JavaScript, so there is no server, database or CMS to maintain. Product pages are generated from one list at build time. Fonts are self-hosted, and every animation is done with CSS and Motion rather than a heavier animation library.',
+    features: [
+      'Materials catalogue with a generated page for each product',
+      'Applications, gallery, FAQ and privacy pages',
+      'Request-a-quote form that composes the enquiry for WhatsApp, phone or email',
+      'Sitemap, robots file and a generated share image',
+      'Type checking, linting and build run as one check',
+    ],
+    stack: {
+      Web: ['Next.js 16', 'React 19', 'TypeScript', 'Tailwind CSS 4', 'Motion'],
+      Infra: ['Static export', 'Vercel'],
+    },
+    numbers: [
+      { value: '9', label: 'product pages, generated from one list' },
+      { value: '0', label: 'servers or databases to maintain' },
+      { value: '3', label: 'ways to enquire: WhatsApp, phone, email' },
+    ],
+    note: 'The catalogue entries and photographs are placeholders until the client supplies their own.',
   },
 
   // Built while employed

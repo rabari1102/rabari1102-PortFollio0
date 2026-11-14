@@ -166,7 +166,7 @@
   display: inline-block;
   margin-top: 20px;
   padding: 12px 16px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   border: 1px dashed color-mix(in srgb, var(--c-hi) 55%, transparent);
   background: color-mix(in srgb, var(--c-hi) 8%, transparent);
   color: var(--text);

@@ -27,7 +27,7 @@ test('landscape phone: the hero still shows the headline and both buttons', asyn
   await page.setViewportSize({ width: 844, height: 390 })
   await page.goto('/')
   await expect(page.locator('h1')).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Explore my work' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'See all the work' })).toBeVisible()
   await expectNoHorizontalOverflow(page)
 })
 
